@@ -4,6 +4,7 @@ from pokereval.hand_evaluator import HandEvaluator
 import random
 from numpy.random import choice
 from itertools import combinations
+from operator import attrgetter
 
 
 def buildFullDeck():
@@ -201,7 +202,7 @@ def getHandStrengthSquaredSampled(hand, board, deck):
 
 	numCardsToSample = 5 - len(board)
 
-	num_samples = 100
+	num_samples = 500
 	remainingCardCombs = []
 	for s in range(num_samples):
 		comb = []
@@ -225,6 +226,40 @@ def getHandStrengthSquaredSampled(hand, board, deck):
 	t1 = time.time()
 	#print(t1-t0)
 	return avgHandStrength
+
+
+def getHandStrengthSampled(hand, board, deck):
+	t0 = time.time()
+	assert len(hand) + len(board) <= 7, "Error: hand cannot have more than 7 cards."
+	assert len(hand) + len(board) + len(deck) == 52, "Error: hand and deck should add up to 52 cards"
+
+	numCardsToSample = 5 - len(board)
+
+	num_samples = 500
+	remainingCardCombs = []
+	for s in range(num_samples):
+		comb = []
+		
+		while len(comb) < numCardsToSample:
+			card = random.choice(deck)
+			if card not in comb:
+				comb.append(card)
+
+		remainingCardCombs.append(comb)
+
+	handStrengthSum = 0
+	numCombsConsidered = 0
+
+	# this is taking all the time
+	for c in remainingCardCombs:
+		numCombsConsidered+=1
+		handStrengthSum += HandEvaluator.evaluate_hand(hand,board+c)
+
+	avgHandStrength = float(handStrengthSum) / numCombsConsidered
+	t1 = time.time()
+	#print(t1-t0)
+	return avgHandStrength
+
 
 
 def testHandStrengthFunctions():
@@ -253,11 +288,35 @@ def testHandStrengthFunctions():
 
 #testHandStrengthFunctions()
 
+
+
+def getPreflopHSS(hand):
+	"""
+	Gets preflop HSS values from lookup table (hss_preflop.txt)
+	"""
+	# this sort works because card1 is guaranteed to be <= the rank of card2 in lookup tables
+	hand = sorted(hand, key=attrgetter('rank','suit'))
+	handstr = str(hand[0]) + str(hand[1])
+	handstr = handstr.replace('<Card(', '')
+	handstr = handstr.replace(')>', '')
+	with open('hss_preflop.txt') as f:
+		for line in f:
+			if handstr[0]==line[0]:
+				if handstr[1]==line[1]:
+					if handstr==line[0:4]:
+						hss = float(line.split(":")[1])
+						f.close()
+						return hss
+	f.close()
+	return None
+
+
 def writePreflopHandStrengthSquaredFile():
+	time0 = time.time()
 	deck = buildFullDeck()
 	hands = combinations(deck, 2)
 
-	with open('hss_preflop.txt', 'w') as f:
+	with open('hss_preflop2.txt', 'w') as f:
 		counter = 0
 		for h in hands:
 			counter += 1
@@ -269,12 +328,59 @@ def writePreflopHandStrengthSquaredFile():
 			hss_sampled = getHandStrengthSquaredSampled(h, [], current_deck)
 
 			handstr = str(hand[0]) + str(hand[1])
-			handstr.replace('<Card(', '')
-			handstr.replace(')>', '')
+			handstr = handstr.replace('<Card(', '')
+			handstr = handstr.replace(')>', '')
 
 			f.write(handstr+":"+str(hss_sampled)+"\n")
 			f.flush()
 	
+	time1 = time.time()
+	print "Took", time1-time0, "secs"
 	f.close()
 
-writePreflopHandStrengthSquaredFile()
+
+def writePreflopHandStrengthFile():
+	time0 = time.time()
+	deck = buildFullDeck()
+	hands = combinations(deck, 2)
+
+	with open('hand_strength_preflop.txt', 'w') as f:
+		counter = 0
+		for h in hands:
+			counter += 1
+			print "Working on hand", counter
+			hand = list(h)
+			current_deck = deck[:]
+			current_deck.remove(hand[0])
+			current_deck.remove(hand[1])
+			hss_sampled = getHandStrengthSampled(h, [], current_deck)
+
+			handstr = str(hand[0]) + str(hand[1])
+			handstr = handstr.replace('<Card(', '')
+			handstr = handstr.replace(')>', '')
+
+			f.write(handstr+":"+str(hss_sampled)+"\n")
+			f.flush()
+	
+	time1 = time.time()
+	print "Took", time1-time0, "secs"
+	f.close()
+
+
+
+d = Dealer()
+hand = d.dealHand()
+flop = d.dealFlop()
+deck = d.getCurrentDeck()
+
+time0 = time.time()
+hss = getPreflopHSS(hand)
+time1 = time.time()
+print hand
+print time1-time0
+print hss
+
+
+
+
+
