@@ -8,7 +8,6 @@ from itertools import combinations
 from operator import attrgetter
 import os
 from pbots_calc import calc, Results
-import pbots_calc
 
 
 def buildFullDeck():
@@ -203,6 +202,8 @@ def convertSyntax(cards):
 	"""
 	Converts a list of Card objects to correct syntax for pbots_calc
 	i.e Card(4,1) -> 4s
+
+	OR, if cards is just a single cards, it converts a single card object into a string
 	"""
 
 	if type(cards) == list:
@@ -231,7 +232,7 @@ def testGetHandStrength():
 	print "95 percent data within:", 2*std(strengths)
 
 
-def determineBestDiscard(hand, board, iters=100):
+def determineBestDiscard(hand, board, min_improvement=0.05, iters=40):
 	"""
 	Given a hand and either a flop or turn board, returns whether the player should discard, and if so, which card they should choose.
 	hand: a list of Card objects
@@ -240,15 +241,16 @@ def determineBestDiscard(hand, board, iters=100):
 	originalHandStr = convertSyntax(hand)+":xx"
 	boardstr = convertSyntax(board)
 
-	originalHandEV = calc(originalHandStr, boardstr, "", iters)
+	originalHandEV = calc(originalHandStr, boardstr, "", 1000).ev[0]
 
 	swapFirstEVSum = 0
 	swapSecondEVSum = 0
 	numCards = 0
 
 	for card in FULL_DECK:
-		if card not in board and card not in hand:
-
+		if card in board or card in hand:
+			continue
+		else:
 			# increment
 			numCards += 1
 
@@ -273,11 +275,12 @@ def determineBestDiscard(hand, board, iters=100):
 	avgSwapFirstEV = float(swapFirstEVSum) / numCards
 	avgSwapSecondEV = float(swapSecondEVSum) / numCards
 
-	if avgSwapFirstEV > originalHandEV or avgSwapSecondEV > originalHandEV:
+	# if either swap increases EV by more than 5%
+	if avgSwapFirstEV > originalHandEV+min_improvement or avgSwapSecondEV > originalHandEV+min_improvement:
 		if avgSwapFirstEV > avgSwapSecondEV:
-			return (True, avgSwapFirstEV, 0)
+			return (True, avgSwapFirstEV, 0, originalHandEV)
 		else:
-			return (True, avgSwapSecondEV, 1)
+			return (True, avgSwapSecondEV, 1, originalHandEV)
 	else:
 		return (False, 0, None)
 
@@ -300,7 +303,12 @@ hand = d.dealHand()
 flop = d.dealFlop()
 print hand
 print flop
+
+time0 = time.time()
 print determineBestDiscard(hand,flop)
+time1 = time.time()
+
+print "Time:", time1-time0
 
 # res = calc(convertSyntax(hand)+":"+convertSyntax(hand), convertSyntax(flop), "", 1000)
 # print res
