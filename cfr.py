@@ -3,6 +3,7 @@ from pokereval.card import Card
 from pokereval.hand_evaluator import HandEvaluator
 import random
 from numpy.random import choice
+from numpy import var, std
 from itertools import combinations
 from operator import attrgetter
 import os
@@ -185,38 +186,17 @@ def getRiverHSS(hand,river):
 	return (HandEvaluator.evaluate_hand(hand,river) ** 2)
 
 
-"""
-class Results:
-    def __init__(self, res):
-        self.size = res.size
-        self.MC_used = res.MC
-        self.iters = res.iters
-        self.ev = []
-        self.hands = []
-        for i in range(self.size):
-            self.ev.append(res.ev[i])
-            self.hands.append(res.hands[i])
-
-    def __str__(self):
-        return str(zip(self.hands, self.ev))
-
-def calc(hands, board, dead, iters):
-    res = pcalc.alloc_results()
-    err = pcalc.calc(hands, board, dead, iters, res)
-    if err > 0:
-        results = Results(res[0])
-    else:
-        print "error: could not parse input or something..."
-        results = None
-    pcalc.free_results(res)
-    return results
-"""
-
-def getHandStrength(hand, board, iters=10000):
+def getHandStrength(hand, board, iters=1000):
 	"""
 	Uses pbots calc library to get the hand strength of a given hand against a given board.
 	hand: a list of 2 Card objects
 	board: a list of Card objects (could be [] or contain up to 5 cards)
+	
+	With iters=500: 95% of data within 3.8% of actual
+	With iters=1000: 95% of data within 2.7% of actual
+	With iters=2000: 95% of data within 2.2% of actual
+	With iters=4000: 95% of data within 1.7% of actual
+
 	"""
 	#convert the hand to a string to feed into pbots_calc
 
@@ -238,10 +218,26 @@ def convertSyntax(cards):
 	return cardstr
 
 
+def testGetHandStrength():
+	hand = [Card(9,1), Card(4,3)]
+	flop = [Card(2,1), Card(13,2), Card(13,3)]
+	time0=time.time()
+	strengths = []
+	for i in range(1000):
+		strengths.append(getHandStrength(hand,flop))
+		print getHandStrength(hand, flop)
+	time1 = time.time()
+	print "Time:", time1-time0
 
-d = Dealer()
-hand = d.dealHand()
-flop = d.dealFlop()
-print hand
-print flop
-print getHandStrength(hand, flop)
+	print "STD:", std(strengths)
+	print "Var:", var(strengths)
+	print "95 percent data within:", 2*std(strengths)
+
+
+
+
+# d = Dealer()
+# hand = d.dealHand()
+# flop = d.dealFlop()
+# print hand
+# print flop
