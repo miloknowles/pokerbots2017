@@ -5,6 +5,10 @@ import random
 from numpy.random import choice
 from itertools import combinations
 from operator import attrgetter
+import os
+from pbots_calc import calc, Results
+import pbots_calc
+
 
 
 def buildFullDeck():
@@ -172,215 +176,72 @@ def convertHtoI(history):
 	raise NotImplementedError
 
 
-def getHandStrengthSquaredExhaustive(hand, board, deck):
+
+def getRiverHSS(hand,river):
 	"""
-	Computes the hand strength squared: the expectation of the square of the hand strength after the last card is revealed
-	hand: (list of Card objects)
-	deck: the current deck (hand should be removed from it), should be shuffled also
+	Gets the HSS of a hand and a given board on the river.
+	There is no lookup, just calls the HandEvaluator.evaluate_hand() function
 	"""
-	assert len(hand) + len(board) <= 7, "Error: hand cannot have more than 7 cards."
-	assert len(hand) + len(board) + len(deck) == 52, "Error: hand and deck should add up to 52 cards"
-
-	numCardsToSample = 5 - len(board)
-	# compute the expectation of the hand strength squared when there is a full board
-	# this is the average hand strength over all possible outcomes for the board
-	remainingCardCombs = combinations(deck, numCardsToSample)
-	handStrengthSum = 0
-	numCombsConsidered = 0
-	for comb in remainingCardCombs:
-		newBoard = board+list(comb)
-		numCombsConsidered+=1
-		handStrengthSum += (HandEvaluator.evaluate_hand(hand,newBoard) ** 2)
-
-	avgHandStrength = float(handStrengthSum) / numCombsConsidered
-	return avgHandStrength
-
-def getHandStrengthSquaredSampled(hand, board, deck):
-	t0 = time.time()
-	assert len(hand) + len(board) <= 7, "Error: hand cannot have more than 7 cards."
-	assert len(hand) + len(board) + len(deck) == 52, "Error: hand and deck should add up to 52 cards"
-
-	numCardsToSample = 5 - len(board)
-
-	num_samples = 500
-	remainingCardCombs = []
-	for s in range(num_samples):
-		comb = []
-		
-		while len(comb) < numCardsToSample:
-			card = random.choice(deck)
-			if card not in comb:
-				comb.append(card)
-
-		remainingCardCombs.append(comb)
-
-	handStrengthSum = 0
-	numCombsConsidered = 0
-
-	# this is taking all the time
-	for c in remainingCardCombs:
-		numCombsConsidered+=1
-		handStrengthSum += (HandEvaluator.evaluate_hand(hand,board+c) ** 2)
-
-	avgHandStrength = float(handStrengthSum) / numCombsConsidered
-	t1 = time.time()
-	#print(t1-t0)
-	return avgHandStrength
+	return (HandEvaluator.evaluate_hand(hand,river) ** 2)
 
 
-def getHandStrengthSampled(hand, board, deck):
-	t0 = time.time()
-	assert len(hand) + len(board) <= 7, "Error: hand cannot have more than 7 cards."
-	assert len(hand) + len(board) + len(deck) == 52, "Error: hand and deck should add up to 52 cards"
+"""
+class Results:
+    def __init__(self, res):
+        self.size = res.size
+        self.MC_used = res.MC
+        self.iters = res.iters
+        self.ev = []
+        self.hands = []
+        for i in range(self.size):
+            self.ev.append(res.ev[i])
+            self.hands.append(res.hands[i])
 
-	numCardsToSample = 5 - len(board)
+    def __str__(self):
+        return str(zip(self.hands, self.ev))
 
-	num_samples = 500
-	remainingCardCombs = []
-	for s in range(num_samples):
-		comb = []
-		
-		while len(comb) < numCardsToSample:
-			card = random.choice(deck)
-			if card not in comb:
-				comb.append(card)
+def calc(hands, board, dead, iters):
+    res = pcalc.alloc_results()
+    err = pcalc.calc(hands, board, dead, iters, res)
+    if err > 0:
+        results = Results(res[0])
+    else:
+        print "error: could not parse input or something..."
+        results = None
+    pcalc.free_results(res)
+    return results
+"""
 
-		remainingCardCombs.append(comb)
-
-	handStrengthSum = 0
-	numCombsConsidered = 0
-
-	# this is taking all the time
-	for c in remainingCardCombs:
-		numCombsConsidered+=1
-		handStrengthSum += HandEvaluator.evaluate_hand(hand,board+c)
-
-	avgHandStrength = float(handStrengthSum) / numCombsConsidered
-	t1 = time.time()
-	#print(t1-t0)
-	return avgHandStrength
-
-
-
-def testHandStrengthFunctions():
-	diffs = []
-	for i in range(10):
-		print "Iteration", i
-		d = Dealer()
-		hand = d.dealHand()
-		flop = d.dealFlop()
-		deck = d.getCurrentDeck()
-
-		print "Hand", hand
-		print "Board", flop
-		initial_strenght = HandEvaluator.evaluate_hand(hand, [])
-		print "Initial strength:", initial_strenght**2
-
-		hss_sampled = getHandStrengthSquaredSampled(hand,flop,deck)
-		print "Sampled:", hss_sampled
-
-		#hss = getHandStrengthSquaredExhaustive(hand, flop, deck)
-		#print "Exhaustive:", hss
-
-		#diffs.append(abs(hss-hss_sampled))
-
-	#print "Average difference between sampled and exhaustive:", sum(diffs) / 10
-
-#testHandStrengthFunctions()
-
-
-
-def getPreflopHSS(hand):
+def getHandStrength(hand, board, iters=10000):
 	"""
-	Gets preflop HSS values from lookup table (hss_preflop.txt)
+	Uses pbots calc library to get the hand strength of a given hand against a given board.
+	hand: a list of 2 Card objects
+	board: a list of Card objects (could be [] or contain up to 5 cards)
 	"""
-	# this sort works because card1 is guaranteed to be <= the rank of card2 in lookup tables
-	hand = sorted(hand, key=attrgetter('rank','suit'))
-	handstr = str(hand[0]) + str(hand[1])
-	handstr = handstr.replace('<Card(', '')
-	handstr = handstr.replace(')>', '')
-	with open('hss_preflop.txt') as f:
-		for line in f:
-			if handstr[0]==line[0]:
-				if handstr[1]==line[1]:
-					if handstr==line[0:4]:
-						hss = float(line.split(":")[1])
-						f.close()
-						return hss
-	f.close()
-	return None
+	#convert the hand to a string to feed into pbots_calc
 
+	# the "xx" tells pbots_calc to compare hand against a random opponent hand
+	handstr = convertSyntax(hand)+":xx"
+	boardstr = convertSyntax(board)
 
-def writePreflopHandStrengthSquaredFile():
-	time0 = time.time()
-	deck = buildFullDeck()
-	hands = combinations(deck, 2)
+	#note the empty "" parameter is telling pbots_calc not to remove any extra cards from the deck
+	res = calc(handstr, boardstr, "", iters)
+	return res.ev[0] # return the EV of our hand
 
-	with open('hss_preflop2.txt', 'w') as f:
-		counter = 0
-		for h in hands:
-			counter += 1
-			print "Working on hand", counter
-			hand = list(h)
-			current_deck = deck[:]
-			current_deck.remove(hand[0])
-			current_deck.remove(hand[1])
-			hss_sampled = getHandStrengthSquaredSampled(h, [], current_deck)
-
-			handstr = str(hand[0]) + str(hand[1])
-			handstr = handstr.replace('<Card(', '')
-			handstr = handstr.replace(')>', '')
-
-			f.write(handstr+":"+str(hss_sampled)+"\n")
-			f.flush()
-	
-	time1 = time.time()
-	print "Took", time1-time0, "secs"
-	f.close()
-
-
-def writePreflopHandStrengthFile():
-	time0 = time.time()
-	deck = buildFullDeck()
-	hands = combinations(deck, 2)
-
-	with open('hand_strength_preflop.txt', 'w') as f:
-		counter = 0
-		for h in hands:
-			counter += 1
-			print "Working on hand", counter
-			hand = list(h)
-			current_deck = deck[:]
-			current_deck.remove(hand[0])
-			current_deck.remove(hand[1])
-			hss_sampled = getHandStrengthSampled(h, [], current_deck)
-
-			handstr = str(hand[0]) + str(hand[1])
-			handstr = handstr.replace('<Card(', '')
-			handstr = handstr.replace(')>', '')
-
-			f.write(handstr+":"+str(hss_sampled)+"\n")
-			f.flush()
-	
-	time1 = time.time()
-	print "Took", time1-time0, "secs"
-	f.close()
+def convertSyntax(cards):
+	"""
+	Converts a list of Card objects to correct syntax for pbots_calc
+	"""
+	cardstr = ""
+	for c in cards:
+		cardstr+=(c.RANK_TO_STRING[c.rank]+c.SUIT_TO_STRING[c.suit])
+	return cardstr
 
 
 
 d = Dealer()
 hand = d.dealHand()
 flop = d.dealFlop()
-deck = d.getCurrentDeck()
-
-time0 = time.time()
-hss = getPreflopHSS(hand)
-time1 = time.time()
 print hand
-print time1-time0
-print hss
-
-
-
-
-
+print flop
+print getHandStrength(hand, flop)
