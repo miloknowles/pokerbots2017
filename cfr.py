@@ -11,7 +11,6 @@ from pbots_calc import calc, Results
 import pbots_calc
 
 
-
 def buildFullDeck():
 	"""
 	Vals: 2-14 = 2-A
@@ -52,15 +51,6 @@ class Dealer(object):
 
     def getCurrentDeck(self):
     	return self.deck
-
-
-# DEFINE THINGS #
-CUMULATIVE_REGRETS = {}
-CUMULATIVE_STRATEGY = {}
-EPSILON = 0.05
-TAU = 1000
-BETA = 10e6
-# END DEFINITIONS #
 
 
 def getCumulativeRegrets(I):
@@ -104,7 +94,7 @@ def chooseAction(strategy):
 	"""
 	Chooses an action from the strategy profile.
 	strategy: a strategy profile of weights for each action 1,2,...,len(strategy)
-	Tested with a million choices.
+	Tested with a million choices, is very close in practice to the profile given.
 	"""
 	assert (sum(strategy) < 1.03 and sum(strategy) > 0.97), "Error: Strategy profile probabilities do not add up to 1."
 
@@ -114,6 +104,7 @@ def chooseAction(strategy):
 		cutoff += strategy[a]
 		if random_float <= cutoff:
 			return a
+
 
 def updateCumulativeRegrets(I, regrets, weight):
 	"""
@@ -168,7 +159,6 @@ def updateCumulativeStrategy(I, strategy, weight):
 	assert(False)
 
 
-
 def convertHtoI(history):
 	"""
 	Uses predefined abstraction rules to convert a sequency (history) into an information set.
@@ -196,9 +186,9 @@ def getHandStrength(hand, board, iters=1000):
 	With iters=1000: 95% of data within 2.7% of actual
 	With iters=2000: 95% of data within 2.2% of actual
 	With iters=4000: 95% of data within 1.7% of actual
-
 	"""
-	#convert the hand to a string to feed into pbots_calc
+	assert len(board) <= 5, "Error: board must have 3-5 cards"
+	assert (len(hand)==2), "Error: hand must contain exactly 2 cards"
 
 	# the "xx" tells pbots_calc to compare hand against a random opponent hand
 	handstr = convertSyntax(hand)+":xx"
@@ -208,23 +198,30 @@ def getHandStrength(hand, board, iters=1000):
 	res = calc(handstr, boardstr, "", iters)
 	return res.ev[0] # return the EV of our hand
 
+
 def convertSyntax(cards):
 	"""
 	Converts a list of Card objects to correct syntax for pbots_calc
+	i.e Card(4,1) -> 4s
 	"""
-	cardstr = ""
-	for c in cards:
-		cardstr+=(c.RANK_TO_STRING[c.rank]+c.SUIT_TO_STRING[c.suit])
-	return cardstr
+
+	if type(cards) == list:
+		cardstr = ""
+		for c in cards:
+			cardstr+=(c.RANK_TO_STRING[c.rank]+c.SUIT_TO_STRING[c.suit])
+		return cardstr
+	else:
+		return cards.RANK_TO_STRING[cards.rank]+cards.SUIT_TO_STRING[cards.suit]
 
 
 def testGetHandStrength():
+	iters = 1000
 	hand = [Card(9,1), Card(4,3)]
 	flop = [Card(2,1), Card(13,2), Card(13,3)]
 	time0=time.time()
 	strengths = []
 	for i in range(1000):
-		strengths.append(getHandStrength(hand,flop))
+		strengths.append(getHandStrength(hand,flop,iters))
 		print getHandStrength(hand, flop)
 	time1 = time.time()
 	print "Time:", time1-time0
@@ -234,10 +231,77 @@ def testGetHandStrength():
 	print "95 percent data within:", 2*std(strengths)
 
 
+def determineBestDiscard(hand, board, iters=100):
+	"""
+	Given a hand and either a flop or turn board, returns whether the player should discard, and if so, which card they should choose.
+	hand: a list of Card objects
+	board: a list of Card objects
+	"""
+	originalHandStr = convertSyntax(hand)+":xx"
+	boardstr = convertSyntax(board)
+
+	originalHandEV = calc(originalHandStr, boardstr, "", iters)
+
+	swapFirstEVSum = 0
+	swapSecondEVSum = 0
+	numCards = 0
+
+	for card in FULL_DECK:
+		if card not in board and card not in hand:
+
+			# increment
+			numCards += 1
+
+			cardstr = convertSyntax(card)
+
+			# compare original hand to the hand made by replacing first card with CARD
+			swapFirstStr = cardstr+originalHandStr[2:4]+":xx"
+
+			# compare original hand to the hand made by replacing second card with CARD
+			swapSecondStr = originalHandStr[0:2]+cardstr+":xx"
+
+			# print("First:", swapFirstStr)
+			# print("Second:", swapSecondStr)
+
+			swap_first_res = calc(swapFirstStr, boardstr, "", iters)
+			swap_second_res = calc(swapSecondStr, boardstr, "", iters)
+
+			swapFirstEVSum += swap_first_res.ev[0]
+			swapSecondEVSum += swap_second_res.ev[0]
+
+	# calculate the average EV of swapping first and second when we play them against the original hand
+	avgSwapFirstEV = float(swapFirstEVSum) / numCards
+	avgSwapSecondEV = float(swapSecondEVSum) / numCards
+
+	if avgSwapFirstEV > originalHandEV or avgSwapSecondEV > originalHandEV:
+		if avgSwapFirstEV > avgSwapSecondEV:
+			return (True, avgSwapFirstEV, 0)
+		else:
+			return (True, avgSwapSecondEV, 1)
+	else:
+		return (False, 0, None)
 
 
-# d = Dealer()
-# hand = d.dealHand()
-# flop = d.dealFlop()
-# print hand
-# print flop
+
+
+# DEFINE THINGS #
+FULL_DECK = buildFullDeck()
+CUMULATIVE_REGRETS = {}
+CUMULATIVE_STRATEGY = {}
+EPSILON = 0.05
+TAU = 1000
+BETA = 10e6
+HAND_STRENGTH_ITERS = 1000
+# END DEFINITIONS #
+
+
+d = Dealer()
+hand = d.dealHand()
+flop = d.dealFlop()
+print hand
+print flop
+print determineBestDiscard(hand,flop)
+
+# res = calc(convertSyntax(hand)+":"+convertSyntax(hand), convertSyntax(flop), "", 1000)
+# print res
+
