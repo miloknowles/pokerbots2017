@@ -2,7 +2,7 @@ import time
 from pokereval.card import Card
 from pokereval.hand_evaluator import HandEvaluator
 from numpy.random import choice
-from numpy import var, std
+from numpy import var, std, mean
 from random import shuffle
 from itertools import combinations
 from operator import attrgetter
@@ -231,7 +231,7 @@ def testGetHandStrength():
 	print "95 percent data within:", 2*std(strengths)
 
 
-def determineBestDiscard(hand, board, min_improvement=0.1, iters=100):
+def determineBestDiscard(hand, board, min_improvement=0.01, iters=100):
 	"""
 	Given a hand and either a flop or turn board, returns whether the player should discard, and if so, which card they should choose.
 	hand: a list of Card objects
@@ -368,7 +368,6 @@ def determineBestDiscard2(hand, board, min_improvement=0.05, iters=100):
 	EV2_VS_ORIGINAL_HAND = calc(originalHandStr + ":" + cmp_hand_str2, boardstr, "", 500).ev[0]
 	EV3_VS_ORIGINAL_HAND = calc(originalHandStr + ":" + cmp_hand_str3, boardstr, "", 500).ev[0]
 
-	# now we have an intermediate hand with moderate EV
 
 	avgSwapFirstEVList = []
 	avgSwapSecondEVList = []
@@ -404,7 +403,42 @@ def determineBestDiscard2(hand, board, min_improvement=0.05, iters=100):
 	print avgSwapFirstEVList
 	print avgSwapSecondEVList
 
-	
+	# we have 3 comparison hands
+	# computed the average EV if we swap the first card vs. each comparison hand
+	# computed the avg EV if we swap the second card vs. each comparison hand 
+
+	if (float(sum(avgSwapFirstEVList)) / 3) > (float(sum(avgSwapSecondEVList)) / 3):
+		bestDiscard = 0
+	else:
+		bestDiscard = 1
+
+	if bestDiscard==0:
+		beatsum = 0
+		if avgSwapFirstEVList[0]>EV1_VS_ORIGINAL_HAND:
+			beatsum += 1
+		if avgSwapFirstEVList[1]>EV2_VS_ORIGINAL_HAND:
+			beatsum += 1
+		if avgSwapFirstEVList[2]>EV3_VS_ORIGINAL_HAND:
+			beatsum += 1
+
+		if beatsum >= 2:
+			return (True, 0.5, 0)
+		else:
+			return(False,0,None)
+	else:
+		beatsum=0
+		if avgSwapSecondEVList[0]>EV1_VS_ORIGINAL_HAND:
+			beatsum += 1
+		if avgSwapSecondEVList[1]>EV2_VS_ORIGINAL_HAND:
+			beatsum += 1
+		if avgSwapSecondEVList[2]>EV3_VS_ORIGINAL_HAND:
+			beatsum += 1
+
+		if beatsum >=2:
+			return (True, 0.5, 1)
+		else:
+			return (False, 0, None)
+
 
 
 # DEFINE THINGS #
@@ -439,17 +473,18 @@ def testDiscard():
 		print "Time:", time1-time0
 
 		time2 = time.time()
-		determineBestDiscard2(hand,flop)
+		sampled = determineBestDiscard2(hand,flop)
 		time3 = time.time()
+		print sampled
 		print "Time:", time3-time2
 
-		# if exhaustive[0] != sampled[0]:
-		# 	bool_disagrees += 1
-		# elif exhaustive[2] != sampled[2]:
-		# 	card_disagrees += 1
+		if exhaustive[0] != sampled[0]:
+			bool_disagrees += 1
+		elif exhaustive[2] != sampled[2]:
+			card_disagrees += 1
 
-	#print "T/F Different:", float(bool_disagrees) / 100
-	#print "Card disagrees:", float(card_disagrees) / 100
+	print "T/F Different:", float(bool_disagrees) / 100
+	print "Card disagrees:", float(card_disagrees) / 100
 
 testDiscard()
 
