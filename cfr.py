@@ -231,7 +231,7 @@ def testGetHandStrength():
 	print "95 percent data within:", 2*std(strengths)
 
 
-def determineBestDiscard(hand, board, min_improvement=0.03, iters=1000):
+def determineBestDiscard(hand, board, min_improvement=0.03, iters=100):
 	"""
 	Given a hand and either a flop or turn board, returns whether the player should discard, and if so, which card they should choose.
 	hand: a list of Card objects
@@ -284,7 +284,7 @@ def determineBestDiscard(hand, board, min_improvement=0.03, iters=1000):
 		return (False, None, 0, originalHandEV)
 
 
-def determineBestCardToKeep(hand, board, iters=1000):
+def determineBestCardToKeep(hand, board, iters=2000, highcard_weight=0.03):
 	"""
 	Given a hand and either a flop or turn board, returns whether the player should discard, and if so, which card they should choose.
 	hand: a list of Card objects
@@ -301,57 +301,42 @@ def determineBestCardToKeep(hand, board, iters=1000):
 		else:
 			neutralDeck.append(card)
 
+	# can't let comparison card be within +/- of value of cards in the hand
+	forbiddenRanks = [hand[0].rank, hand[1].rank, hand[0].rank-1, hand[1].rank-1, hand[0].rank+1, hand[1].rank+1]
+
 	# shuffle so that we can pop random cards off of top
 	shuffle(neutralDeck)
 
 	# get two comparison cards that will be swapped
-	
 	cmpCard1 = neutralDeck.pop(0)
 
 	# note: we make sure that these comparison cards are not the same rank as either card in our hand!
-	while cmpCard1.rank==hand[0].rank or cmpCard1.rank==hand[1].rank or cmpCard1.suit==hand[0].suit or cmpCard1.suit==hand[1].suit:
+	while cmpCard1.rank in forbiddenRanks or cmpCard1.suit==hand[0].suit or cmpCard1.suit==hand[1].suit:
 		cmpCard1 = neutralDeck.pop(0)
 
 	cmpCard2 = neutralDeck.pop(0)
-	while cmpCard2.rank==hand[0].rank or cmpCard2.rank==hand[1].rank or cmpCard2.suit==hand[0].suit or cmpCard2.suit == hand[1].suit:
+	while cmpCard2.rank in forbiddenRanks or cmpCard2.suit==hand[0].suit or cmpCard2.suit == hand[1].suit:
 		cmpCard2 = neutralDeck.pop(0)
 
-	cmpCard3 = neutralDeck.pop(0)
-	while cmpCard3.rank==hand[0].rank or cmpCard3.rank==hand[1].rank or cmpCard3.suit==hand[0].suit or cmpCard3.suit == hand[1].suit:
-		cmpCard3 = neutralDeck.pop(0)
-
-	cmpCard4 = neutralDeck.pop(0)
-	while cmpCard4.rank==hand[0].rank or cmpCard4.rank==hand[1].rank or cmpCard4.suit==hand[0].suit or cmpCard4.suit == hand[1].suit:
-		cmpCard4 = neutralDeck.pop(0)
 	# now we have 2 "neutral" comparison cards
 	cmpCard1Str = convertSyntax(cmpCard1)
 	cmpCard2Str = convertSyntax(cmpCard2)
-	cmpCard3Str = convertSyntax(cmpCard3)
-	cmpCard4Str = convertSyntax(cmpCard4)
+	print "Cmp Cards:", cmpCard1Str, cmpCard2Str
 
 	# play [C_1, C1*] against [C_2, C2*]
 	res1 = calc("%s%s:%s%s" % (originalHandStr[0:2], cmpCard1Str, originalHandStr[2:4], cmpCard2Str), boardStr, "", iters)
 	# play [C_1, C2*] against [C_2, C1*]
 	res2 = calc("%s%s:%s%s" % (originalHandStr[0:2], cmpCard2Str, originalHandStr[2:4], cmpCard1Str), boardStr, "", iters)
 
-	res3 = calc("%s%s:%s%s" % (originalHandStr[0:2], cmpCard3Str, originalHandStr[2:4], cmpCard4Str), boardStr, "", iters)
-
-	res4 = calc("%s%s:%s%s" % (originalHandStr[0:2], cmpCard4Str, originalHandStr[2:4], cmpCard3Str), boardStr, "", iters)
-
 	# determine which card is stronger, and should be kept
-	C1_scores = [res1.ev[0], res2.ev[0], res3.ev[0], res4.ev[0]] # the EVs for hands where we KEPT C1
-	C2_scores = [res1.ev[1], res2.ev[1], res3.ev[1], res4.ev[1]] # the EVs for hands where we KEPT C2
+	C1_scores = [res1.ev[0], res2.ev[0]] # the EVs for hands where we KEPT C1
+	C2_scores = [res1.ev[1], res2.ev[1]] # the EVs for hands where we KEPT C2
 
-	# keepCard = None
-	# if C1_scores[0] > C2_scores[0] and C1_scores[1] > C2_scores[1]: # C1 is clearly better to keep (won in both cases)
-	# 	keepCard = 0
-	# elif C2_scores[0] > C1_scores[0] and C2_scores[1] > C1_scores[1]: # C2 is clearly better to keep
-	# 	keepCard = 1
+	print C1_scores
+	print C2_scores
 
-	# else: # C1 and C2 are somewhat close in their value to keep
-
-	avgC1Score = mean(C1_scores)
-	avgC2Score = mean(C2_scores)
+	avgC1Score = mean(C1_scores) + highcard_weight * (hand[0].rank-hand[1].rank)
+	avgC2Score = mean(C2_scores) + highcard_weight * (hand[1].rank-hand[0].rank)
 
 	if avgC1Score > avgC2Score: # C1 is better to keep
 		keepCard = 0
@@ -359,6 +344,7 @@ def determineBestCardToKeep(hand, board, iters=1000):
 		keepCard = 1
 
 	return keepCard
+
 
 
 def determineBestDiscardFast(hand, board, min_improvement=0.03, iters=1000):
@@ -422,6 +408,8 @@ def testDetermineDiscard():
 	card_disagrees = 0
 
 	for i in range(500):
+
+		assert len(FULL_DECK)==52, "Full deck is depleted!"
 		print(i)
 		d = Dealer()
 		hand = d.dealHand()
@@ -445,8 +433,10 @@ def testDetermineDiscard():
 
 		if exhaustive[0] != fast[0]:
 			bool_disagrees += 1
+			print "------------------ BOOL DISAGREES --------------------"
 		elif exhaustive[1] != fast[1]:
 			card_disagrees += 1
+			print "------------------ CARD DISAGREES --------------------"
 
 	print "T/F Different:", float(bool_disagrees) / 500
 	print "Card disagrees:", float(card_disagrees) / 500
