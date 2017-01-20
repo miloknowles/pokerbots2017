@@ -231,7 +231,7 @@ def testGetHandStrength():
 	print "95 percent data within:", 2*std(strengths)
 
 
-def determineBestDiscard(hand, board, min_improvement=0.01, iters=100):
+def determineBestDiscard(hand, board, min_improvement=0.03, iters=1000):
 	"""
 	Given a hand and either a flop or turn board, returns whether the player should discard, and if so, which card they should choose.
 	hand: a list of Card objects
@@ -277,168 +277,132 @@ def determineBestDiscard(hand, board, min_improvement=0.01, iters=100):
 	# if either swap increases EV by more than 5%
 	if avgSwapFirstEV > originalHandEV+min_improvement or avgSwapSecondEV > originalHandEV+min_improvement:
 		if avgSwapFirstEV > avgSwapSecondEV:
-			return (True, avgSwapFirstEV, 0, originalHandEV)
+			return (True, 0, avgSwapFirstEV, originalHandEV)
 		else:
-			return (True, avgSwapSecondEV, 1, originalHandEV)
+			return (True, 1, avgSwapSecondEV, originalHandEV)
 	else:
-		return (False, 0, None)
+		return (False, None, 0, originalHandEV)
 
 
-def determineBestDiscardSampled(hand, board, min_improvement=0.1, iters=50, num_cards_to_sample=25):
-	"""
-	Given a hand and either a flop or turn board, returns whether the player should discard, and if so, which card they should choose.
-	hand: a list of Card objects
-	board: a list of Card objects
-	"""
-	originalHandStr = convertSyntax(hand)+":xx"
-	boardstr = convertSyntax(board)
-
-	originalHandEV = calc(originalHandStr, boardstr, "", 1000).ev[0]
-
-	swapFirstEVSum = 0
-	swapSecondEVSum = 0
-	numCards = 0
-
-	for sample in range(num_cards_to_sample):
-		card = choice(FULL_DECK)
-		if card in board or card in hand:
-			continue
-		else:
-			# increment
-			numCards += 1
-
-			cardstr = convertSyntax(card)+":xx"
-
-			# compare original hand to the hand made by replacing first card with CARD
-			swapFirstStr = originalHandStr[2:4]+cardstr
-
-			# compare original hand to the hand made by replacing second card with CARD
-			swapSecondStr = originalHandStr[0:2]+cardstr
-
-			time0=time.time()
-			swapFirstEVSum += calc(swapFirstStr, boardstr, "", iters).ev[0]
-			swapSecondEVSum += calc(swapSecondStr, boardstr, "", iters).ev[0]
-			time1=time.time()
-			#print time1-time0 
-
-	# calculate the average EV of swapping first and second when we play them against the original hand
-	avgSwapFirstEV = float(swapFirstEVSum) / numCards
-	avgSwapSecondEV = float(swapSecondEVSum) / numCards
-
-	# if either swap increases EV by more than 5%
-	if avgSwapFirstEV > originalHandEV+min_improvement or avgSwapSecondEV > originalHandEV+min_improvement:
-		if avgSwapFirstEV > avgSwapSecondEV:
-			return (True, avgSwapFirstEV, 0, originalHandEV)
-		else:
-			return (True, avgSwapSecondEV, 1, originalHandEV)
-	else:
-		return (False, 0, None)
-
-
-def determineBestDiscard2(hand, board, min_improvement=0.05, iters=100):
+def determineBestCardToKeep(hand, board, iters=1000):
 	"""
 	Given a hand and either a flop or turn board, returns whether the player should discard, and if so, which card they should choose.
 	hand: a list of Card objects
 	board: a list of Card objects
 	"""
 	originalHandStr = convertSyntax(hand)
-	boardstr = convertSyntax(board)
+	boardStr = convertSyntax(board)
 
-	neutral_deck = []
-	for c in FULL_DECK:
-		if c in board or c in hand:
+	# create a neutral deck that does not contain any cards from the hand or board
+	neutralDeck = []
+	for card in FULL_DECK:
+		if card in board or card in hand:
 			continue
 		else:
-			neutral_deck.append(c)
+			neutralDeck.append(card)
 
-	shuffle(neutral_deck)
+	# shuffle so that we can pop random cards off of top
+	shuffle(neutralDeck)
 
-	# using neutral deck, choosing an intermediary hand that we can compare to
-	cmp_hand1 = neutral_deck[0:2]
-	cmp_hand2 = neutral_deck[2:4]
-	cmp_hand3 = neutral_deck[4:6]
+	# get two comparison cards that will be swapped
+	
+	cmpCard1 = neutralDeck.pop(0)
 
-	cmp_hand_str1 = convertSyntax(cmp_hand1)
-	cmp_hand_str2 = convertSyntax(cmp_hand2)
-	cmp_hand_str3 = convertSyntax(cmp_hand3)
+	# note: we make sure that these comparison cards are not the same rank as either card in our hand!
+	while cmpCard1.rank==hand[0].rank or cmpCard1.rank==hand[1].rank or cmpCard1.suit==hand[0].suit or cmpCard1.suit==hand[1].suit:
+		cmpCard1 = neutralDeck.pop(0)
 
-	cmp_hand_strs = [cmp_hand_str1, cmp_hand_str2, cmp_hand_str3]
+	cmpCard2 = neutralDeck.pop(0)
+	while cmpCard2.rank==hand[0].rank or cmpCard2.rank==hand[1].rank or cmpCard2.suit==hand[0].suit or cmpCard2.suit == hand[1].suit:
+		cmpCard2 = neutralDeck.pop(0)
 
-	EV1_VS_ORIGINAL_HAND = calc(originalHandStr + ":" + cmp_hand_str1, boardstr, "", 500).ev[0]
-	EV2_VS_ORIGINAL_HAND = calc(originalHandStr + ":" + cmp_hand_str2, boardstr, "", 500).ev[0]
-	EV3_VS_ORIGINAL_HAND = calc(originalHandStr + ":" + cmp_hand_str3, boardstr, "", 500).ev[0]
+	cmpCard3 = neutralDeck.pop(0)
+	while cmpCard3.rank==hand[0].rank or cmpCard3.rank==hand[1].rank or cmpCard3.suit==hand[0].suit or cmpCard3.suit == hand[1].suit:
+		cmpCard3 = neutralDeck.pop(0)
+
+	cmpCard4 = neutralDeck.pop(0)
+	while cmpCard4.rank==hand[0].rank or cmpCard4.rank==hand[1].rank or cmpCard4.suit==hand[0].suit or cmpCard4.suit == hand[1].suit:
+		cmpCard4 = neutralDeck.pop(0)
+	# now we have 2 "neutral" comparison cards
+	cmpCard1Str = convertSyntax(cmpCard1)
+	cmpCard2Str = convertSyntax(cmpCard2)
+	cmpCard3Str = convertSyntax(cmpCard3)
+	cmpCard4Str = convertSyntax(cmpCard4)
+
+	# play [C_1, C1*] against [C_2, C2*]
+	res1 = calc("%s%s:%s%s" % (originalHandStr[0:2], cmpCard1Str, originalHandStr[2:4], cmpCard2Str), boardStr, "", iters)
+	# play [C_1, C2*] against [C_2, C1*]
+	res2 = calc("%s%s:%s%s" % (originalHandStr[0:2], cmpCard2Str, originalHandStr[2:4], cmpCard1Str), boardStr, "", iters)
+
+	res3 = calc("%s%s:%s%s" % (originalHandStr[0:2], cmpCard3Str, originalHandStr[2:4], cmpCard4Str), boardStr, "", iters)
+
+	res4 = calc("%s%s:%s%s" % (originalHandStr[0:2], cmpCard4Str, originalHandStr[2:4], cmpCard3Str), boardStr, "", iters)
+
+	# determine which card is stronger, and should be kept
+	C1_scores = [res1.ev[0], res2.ev[0], res3.ev[0], res4.ev[0]] # the EVs for hands where we KEPT C1
+	C2_scores = [res1.ev[1], res2.ev[1], res3.ev[1], res4.ev[1]] # the EVs for hands where we KEPT C2
+
+	# keepCard = None
+	# if C1_scores[0] > C2_scores[0] and C1_scores[1] > C2_scores[1]: # C1 is clearly better to keep (won in both cases)
+	# 	keepCard = 0
+	# elif C2_scores[0] > C1_scores[0] and C2_scores[1] > C1_scores[1]: # C2 is clearly better to keep
+	# 	keepCard = 1
+
+	# else: # C1 and C2 are somewhat close in their value to keep
+
+	avgC1Score = mean(C1_scores)
+	avgC2Score = mean(C2_scores)
+
+	if avgC1Score > avgC2Score: # C1 is better to keep
+		keepCard = 0
+	else:
+		keepCard = 1
+
+	return keepCard
 
 
-	avgSwapFirstEVList = []
-	avgSwapSecondEVList = []
+def determineBestDiscardFast(hand, board, min_improvement=0.03, iters=1000):
+	"""
+	min_improvement: the EV % that swapping must increase our hand by in order to go for the swap
 
-	for chs in cmp_hand_strs:
-		swapFirstEVSum = 0
-		swapSecondEVSum = 0
-		numCards = 0
-		for i in range(6, len(neutral_deck)):
+	Returns:
+	-whether we should swap
+	-if so, the index of the card in our hand we should swap (0 or 1)
+	-the avg. EV of swapping that card
+	-the original EV of our hand as is 
+	"""
 
-			cardstr = convertSyntax(neutral_deck[i])
+	# if we were to keep a card, determine which one is best
+	keepCard = determineBestCardToKeep(hand, board)
+	print "Playoff thinks we should discard:", 1-keepCard
 
-			# compare original hand to the hand made by replacing first card with CARD
-			swapFirstStr = "%s%s:%s" % (cardstr,originalHandStr[2:4],chs)
+	boardStr = convertSyntax(board)
+	originalHandEV = calc("%s:xx" % convertSyntax(hand), boardStr, "", 1000).ev[0]
 
-			# compare original hand to the hand made by replacing second card with CARD
-			swapSecondStr = "%s%s:%s" % (originalHandStr[0:2],cardstr,chs)
-
-			swap_first_res = calc(swapFirstStr, boardstr, "", iters)
-			swap_second_res = calc(swapSecondStr, boardstr, "", iters)
-
+	numCards = 0
+	swapEVSum = 0
+	for card in FULL_DECK:
+		if card in board or card in hand:
+			continue
+		else:
 			# increment
 			numCards += 1
 
-			swapFirstEVSum += swap_first_res.ev[0]
-			swapSecondEVSum += swap_second_res.ev[0]
+			cardstr = convertSyntax(card)
 
+			# remember, we want to KEEP our keepCard and swap the other card!!!
+			swapStr = "%s%s%s" % (cardstr,convertSyntax(hand[keepCard]),":xx")
+			swapRes = calc(swapStr, boardStr, "", iters)
+			swapEVSum += swapRes.ev[0]
 
-		# calculate the average EV of swapping first and second when we play them against the original hand
-		avgSwapFirstEVList.append(float(swapFirstEVSum) / numCards)
-		avgSwapSecondEVList.append(float(swapSecondEVSum) / numCards)
+	# calculate the average EV of swapping the card besides our keepCard
+	avgSwapEV = float(swapEVSum) / numCards
 
-	print avgSwapFirstEVList
-	print avgSwapSecondEVList
-
-	# we have 3 comparison hands
-	# computed the average EV if we swap the first card vs. each comparison hand
-	# computed the avg EV if we swap the second card vs. each comparison hand 
-
-	if (float(sum(avgSwapFirstEVList)) / 3) > (float(sum(avgSwapSecondEVList)) / 3):
-		bestDiscard = 0
+	# if either swap increases EV by more than 5%
+	if avgSwapEV > originalHandEV + min_improvement:
+		return (True, 1-keepCard, avgSwapEV, originalHandEV)
 	else:
-		bestDiscard = 1
-
-	if bestDiscard==0:
-		beatsum = 0
-		if avgSwapFirstEVList[0]>EV1_VS_ORIGINAL_HAND:
-			beatsum += 1
-		if avgSwapFirstEVList[1]>EV2_VS_ORIGINAL_HAND:
-			beatsum += 1
-		if avgSwapFirstEVList[2]>EV3_VS_ORIGINAL_HAND:
-			beatsum += 1
-
-		if beatsum >= 2:
-			return (True, 0.5, 0)
-		else:
-			return(False,0,None)
-	else:
-		beatsum=0
-		if avgSwapSecondEVList[0]>EV1_VS_ORIGINAL_HAND:
-			beatsum += 1
-		if avgSwapSecondEVList[1]>EV2_VS_ORIGINAL_HAND:
-			beatsum += 1
-		if avgSwapSecondEVList[2]>EV3_VS_ORIGINAL_HAND:
-			beatsum += 1
-
-		if beatsum >=2:
-			return (True, 0.5, 1)
-		else:
-			return (False, 0, None)
-
+		return (False, None, 0, originalHandEV)
 
 
 # DEFINE THINGS #
@@ -451,42 +415,44 @@ BETA = 10e6
 HAND_STRENGTH_ITERS = 1000
 # END DEFINITIONS #
 
-def testDiscard():
-	"""
-	T/F Different: 0.136
-	Card disagrees: 0.202
-	"""
+
+def testDetermineDiscard():
+
 	bool_disagrees = 0
 	card_disagrees = 0
-	for i in range(100):
+
+	for i in range(500):
 		print(i)
 		d = Dealer()
 		hand = d.dealHand()
 		flop = d.dealFlop()
-		print hand
-		print flop
+		print "Hand:", hand
+		print "Flop:", flop
 
+		# check with exhaustive method
 		time0 = time.time()
-		exhaustive = determineBestDiscard(hand,flop)
+		exhaustive = determineBestDiscard(hand,flop, 0.05, 100)
 		print "Exhaustive:", exhaustive
 		time1 = time.time()
 		print "Time:", time1-time0
 
-		time2 = time.time()
-		sampled = determineBestDiscard2(hand,flop)
-		time3 = time.time()
-		print sampled
-		print "Time:", time3-time2
+		# check with the playoff method
+		time0 = time.time()
+		fast = determineBestDiscardFast(hand,flop, 0.05, 100)
+		print "Fast:", fast
+		time1 = time.time()
+		print "Time:", time1-time0
 
-		if exhaustive[0] != sampled[0]:
+		if exhaustive[0] != fast[0]:
 			bool_disagrees += 1
-		elif exhaustive[2] != sampled[2]:
+		elif exhaustive[1] != fast[1]:
 			card_disagrees += 1
 
-	print "T/F Different:", float(bool_disagrees) / 100
-	print "Card disagrees:", float(card_disagrees) / 100
+	print "T/F Different:", float(bool_disagrees) / 500
+	print "Card disagrees:", float(card_disagrees) / 500
 
-testDiscard()
+testDetermineDiscard()
+
 
 # d = Dealer()
 # hand = d.dealHand()
