@@ -382,7 +382,8 @@ class History(object):
 	"""
 	Gets passed down a game tree.
 	"""
-	def __init__(history, node_type, current_street, current_round, button_player, dealer, active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board):
+	def __init__(history, node_type, current_street, current_round, button_player, dealer, \
+					active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board):
 		"""
 		history: a list of strings representing the history of actions so far
 		node_type: (0,1,2)for chance, action, or terminal
@@ -391,6 +392,9 @@ class History(object):
 		button_player: (0,1) the player who has the button (has the SB, acts first before flop, second after flop)
 		dealer: a Dealer object, which will contain the deck at the current moment in history
 		active_player: the player whose move it is (0,1)
+
+		p1_inpot: the amount that P1 has contributed to the CURRENT betting round
+		p2_inpot: the amount that P2 has contributed to the CURRENT betting round
 		"""
 		self.History = history_list
 		self.NodeType = node_type
@@ -414,6 +418,39 @@ class History(object):
 		"""
 		assert self.NodeType == 1, "Error: trying to get legal actions for a non-action node!"
 
+		# IF WE ARE AT A DISCARD ACTION NODE
+		if self.Street == 1 or self.Street == 2 and self.Round == "D": # flop/turn, and we have the option to discard
+			if self.ActivePlayer==0:
+				return ["CHECK", "DISCARD:%s" % convertSyntax(self.P1_Hand[0]), "DISCARD:%s" % convertSyntax(self.P1_Hand[1])]
+			else:
+				return ["CHECK", "DISCARD:%s" % convertSyntax(self.P2_Hand[0]), "DISCARD:%s" % convertSyntax(self.P2_Hand[1])]
+
+		# ELSE THIS IS A BETTING ACTION NODE
+		else:
+			# determine if there was a bet already during this round
+			prevBetAmt = abs(self.P1_inPot-self.P2_inPot)
+
+			# if there have already been 3 betting rounds, end the betting with either fold or call
+			if self.Round == "B3":
+				assert prevBetAmt > 0, "Error: previous bet amount must have been > 0 to reach B3"
+				actions = ["FOLD", "CALL"]
+
+			else: #B1 or B2
+
+				# if no bets yet: we can check, bet half-pot, bet pot, or go all-in
+				if prevBetAmt==0:
+					actions = ["CHECK", "BET:H", "BET:P", "BET:A"]
+
+				# if a bet HAS been placed during this round: we can fold, call, raise by pot, or raise by all-in amount
+				if prevBetAmt > 0:
+					actions = ["FOLD", "CALL", "RAISE:P", "RAISE:A"]
+
+				# remove any bets (besides all-in) that would make us or the opponent pot-committed
+				if (float(self.Pot) / 2) > self.P1_Bankroll*0.6 or (float(self.Pot) / 2) > self.P2_Bankroll*0.6:
+					actions.remove("BET:P")
+					if "BET:H" in actions: actions.remove("BET:H")
+
+		return actions
 
 
 	def simulateAction(self, action):
@@ -421,7 +458,47 @@ class History(object):
 		Appends the given action to the current history, advancing the game forward.
 		Returns: a History object that represents the advanced game history
 		"""
-		
+		# double check that this action is actually allowed
+		assert action in self.getLegalActions(), "Error: tried to simulate an action that is not allowed."
+
+		if action=="FOLD":
+			pass
+
+		elif action=="CHECK":
+			pass
+
+		elif action=="CALL":
+			pass
+
+		# all other actions should be parsed
+		parsedAction = action.split(":")
+
+		if parsedAction[0] == "DISCARD":
+			pass
+
+		elif parsedAction[0] == "BET":
+			pass
+
+		elif parsedAction[0] == "RAISE":
+			pass
+
+		else:
+			print "Error: submitted an action that didn't fall into any category!"
+
+
+		# determine betting range
+		prevBetAmt = abs(self.P1_inPot-self.P2_inPot)
+
+		# minBet/Raise is the same for both players
+		minBet=max(2, prevBetAmt) # min bet is at least a BB (2)
+		minRaise=self.P1_inPot+self.P2_inPot+minBet
+
+		if self.ActivePlayer==0:
+			maxBet=self.P1_Bankroll
+			maxRaise=self.P1_inPot+self.P2_inPot+self.P1_Bankroll # current street pot + P1's bankroll		
+		else:
+			maxBet=self.P2_Bankroll
+			maxRaise=self.P1_inPot+self.P2_inPot+self.P2_Bankroll # current street pot + P1's bankroll
 
 	def simulateChance(self):
 		"""
