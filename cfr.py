@@ -420,10 +420,7 @@ class History(object):
 
 		# IF WE ARE AT A DISCARD ACTION NODE
 		if self.Street == 1 or self.Street == 2 and self.Round == "D": # flop/turn, and we have the option to discard
-			if self.ActivePlayer==0:
-				return ["CHECK", "DISCARD:%s" % convertSyntax(self.P1_Hand[0]), "DISCARD:%s" % convertSyntax(self.P1_Hand[1])]
-			else:
-				return ["CHECK", "DISCARD:%s" % convertSyntax(self.P2_Hand[0]), "DISCARD:%s" % convertSyntax(self.P2_Hand[1])]
+			return ["CHECK", "DISCARD:0", "DISCARD:1"]
 
 		# ELSE THIS IS A BETTING ACTION NODE
 		else:
@@ -458,47 +455,83 @@ class History(object):
 		Appends the given action to the current history, advancing the game forward.
 		Returns: a History object that represents the advanced game history
 		"""
+		# create a copy of the current history, which will be advanced forward
+		newHistory = deepcopy(self)
+
 		# double check that this action is actually allowed
 		assert action in self.getLegalActions(), "Error: tried to simulate an action that is not allowed."
 
+		# BASIC ACTIONS
 		if action=="FOLD":
-			pass
+			newHistory.NodeType = 2 # the advanced node will be terminal
 
 		elif action=="CHECK":
-			pass
+			newHistory.ActivePlayer = (newHistory.ActivePlayer + 1) % 2  # this will alternate to the next player
+
+			# see if check was during a discard round OR betting round
+			if self.Round == "D":
+
+			else: # betting round
+				# if the player is the second to act and checks, then the betting round is over
+				if self.ActivePlayer == self.ButtonPlayer:
+					newHistory.Street += 1
+					newHistory.NodeType = 2 if newHistory.Street == 4 else 0
+					newHistory.Round = "0"
+
 
 		elif action=="CALL":
 			pass
 
-		# all other actions should be parsed
-		parsedAction = action.split(":")
-
-		if parsedAction[0] == "DISCARD":
-			pass
-
-		elif parsedAction[0] == "BET":
-			pass
-
-		elif parsedAction[0] == "RAISE":
-			pass
-
+		# PARSED ACTIONS
 		else:
-			print "Error: submitted an action that didn't fall into any category!"
+			parsedAction = action.split(":")
+			assert len(parsedAction) == 2, "Error: Parsed actions should only contain 2 items i.e BET:2 or DISCARD:Ah!"
+
+			# DISCARD
+			if parsedAction[0] == "DISCARD":
+				# replace the card at the correct index with a new one from the dealer
+				if self.ActivePlayer==0:
+					newHistory.P1_Hand[parsedAction[1]] = newHistory.Dealer.dealCard()
+				else:
+					newHistory.P2_Hand[parsedAction[1]] = newHistory.Dealer.dealCard()
+				newHistory.Round = "B1" # advance to the first betting round
+
+			# BETTING
+			else:
+				
+				# determine betting range
+				prevBetAmt = abs(self.P1_inPot-self.P2_inPot)
+
+				# minBet/Raise is the same for both players
+				minBet=max(2, prevBetAmt) # min bet is at least a BB (2)
+				minRaise=self.P1_inPot+self.P2_inPot+minBet
+				
+				if self.ActivePlayer==0:
+					maxBet=self.P1_Bankroll
+					maxRaise=self.P1_inPot+self.P2_inPot+self.P1_Bankroll # current street pot + P1's bankroll		
+				else:
+					maxBet=self.P2_Bankroll
+					maxRaise=self.P1_inPot+self.P2_inPot+self.P2_Bankroll # current street pot + P1's bankroll
+
+				if parsedAction[0] == "BET":
+					pass
 
 
-		# determine betting range
-		prevBetAmt = abs(self.P1_inPot-self.P2_inPot)
+				elif parsedAction[0] == "RAISE":
+					pass
+						
 
-		# minBet/Raise is the same for both players
-		minBet=max(2, prevBetAmt) # min bet is at least a BB (2)
-		minRaise=self.P1_inPot+self.P2_inPot+minBet
+			else:
+				print "Error: submitted an action that didn't fall into any category!"
 
-		if self.ActivePlayer==0:
-			maxBet=self.P1_Bankroll
-			maxRaise=self.P1_inPot+self.P2_inPot+self.P1_Bankroll # current street pot + P1's bankroll		
-		else:
-			maxBet=self.P2_Bankroll
-			maxRaise=self.P1_inPot+self.P2_inPot+self.P2_Bankroll # current street pot + P1's bankroll
+
+		
+		# append the action we just simulated to the history list
+		newHistory.History.append("%s:%s" % (str(self.ActivePlayer), action))
+
+		# finally, return the new history
+		return newHistory
+
 
 	def simulateChance(self):
 		"""
