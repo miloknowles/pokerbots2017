@@ -486,32 +486,42 @@ class History(object):
 					pass
 
 
-		elif action=="CALL": # a call ends the current betting round
-			# if river, calling means reaching a terminal node
-			# otherwise chance node (next deal)
-			newHistory.NodeType = 2 if self.Street == 4 else 0
+		elif action=="CALL":
+
+			if self.Street != 0: # if not preflop, a call ends the current betting round
+				newHistory.NodeType = 2 if self.Street == 4 else 0
+				newHistory.Street += 1
+
+			else: # during preflop, calling is more complicated
+				# if call is during B1, betting continues (SB called the BB)
+				if self.Round == "B1":
+					newHistory.NodeType = 1
+					
+				else: # otherwise, calling ends the betting round, so advance the street and go to a chance node
+					newHistory.Street += 1
+					newHistory.NodeType = 0
+
 
 			# this is the amount a player must add to call
 			prevBetAmt = abs(self.P1_inPot-self.P2_inPot)
 
 			if self.ActivePlayer==0:
 				assert self.P1_inPot < self.P2_inPot, "Error: P1 is calling but does not have less in the pot than P2"
-				self.P1_Bankroll -= prevBetAmt
-				self.P1_inPot += prevBetAmt
-				self.Pot += prevBetAmt
+				newHistory.P1_Bankroll -= prevBetAmt
+				newHistory.P1_inPot += prevBetAmt
+				newHistory.Pot += prevBetAmt
 
 			else:
 				assert self.P2_inPot < self.P1_inPot, "Error: P2 is calling but does not have less in the pot than P1"
-				self.P2_Bankroll -= prevBetAmt
-				self.P2_inPot += prevBetAmt
-				self.Pot += prevBetAmt
+				newHistory.P2_Bankroll -= prevBetAmt
+				newHistory.P2_inPot += prevBetAmt
+				newHistory.Pot += prevBetAmt
 			
 
+		else: # PARSED ACTIONS
 
-		# PARSED ACTIONS
-		else:
 			parsedAction = action.split(":")
-			assert len(parsedAction) == 2, "Error: Parsed actions should only contain 2 items i.e BET:2 or DISCARD:Ah!"
+			assert len(parsedAction) == 2, "Error: Parsed actions should contain exactly 2 items i.e BET:2 or DISCARD:Ah!"
 
 			# DISCARD
 			if parsedAction[0] == "DISCARD":
@@ -520,11 +530,12 @@ class History(object):
 					newHistory.P1_Hand[parsedAction[1]] = newHistory.Dealer.dealCard()
 				else:
 					newHistory.P2_Hand[parsedAction[1]] = newHistory.Dealer.dealCard()
-				newHistory.Round = "B1" # advance to the first betting round
+
+				# if the second-to-act player just discarded, go to betting round
+				newHistory.Round = "B1" if self.ActivePlayer==self.ButtonPlayer else "D"
 
 			# BETTING
 			else:
-				
 				# determine betting range
 				prevBetAmt = abs(self.P1_inPot-self.P2_inPot)
 
@@ -539,23 +550,74 @@ class History(object):
 					maxBet=self.P2_Bankroll
 					maxRaise=self.P1_inPot+self.P2_inPot+self.P2_Bankroll # current street pot + P1's bankroll
 
-				if parsedAction[0] == "BET":
-					pass
+				# convert H, P, and A into integer bet amounts
+				if parsedAction[1]=="H": # half pot bet
+					halfPot = float(self.Pot) / 2
+					if halfPot >= minBet and halfPot <= maxBet:
+						betAmount = halfPot
+					else: # choose the minBet or maxBet, depending on which is closer to the half pot
+						betAmount = minBet if (float(halfPot) / minBet <= float(maxBet) / halfPot) else maxBet
 
+				elif parsedAction[1]=="P": # full pot bet
+					fullPot = self.Pot
+					# if full pot bet is allowed, do that, otherwise put in as much as possible
+					betAmount = fullPot if (fullPot <= maxBet) else maxBet
+
+				elif parsedAction[1]=="A": # all in bet
+					betAmount = maxBet # the max bet always corresponds to going all in
+
+				else:
+					assert False, "The active player gave a bet/raise amount that was not H,P, or A"
+
+
+				if parsedAction[0] == "BET":
+					assert P1_inPot==P2_inPot, "Error: if betting, P1 and P2 should have same amount in pot before bet!"
+
+					if self.ActivePlayer==0: # P1 bets
+						newHistory.P1_Bankroll -= betAmount
+						newHistory.P1_inPot += betAmount
+						newHistory.Pot += betAmount
+
+					else: # P2 bets
+						newHistory.P2_Bankroll -= betAmount
+						newHistory.P2_inPot += betAmount
+						newHistory.Pot += betAmount
+
+					# advance to next betting round
+					newHistory.Round = "B%s" % str(int(self.Round[1])+1)
 
 				elif parsedAction[0] == "RAISE":
-					pass
-						
+					assert P1_inPot != P2_inPot, "Error: if raising, P1 and P2 should have unequal amounts in pot"
+
+					# we have to call the previous bet AND add the betAmount on top of that
+					raiseAmount = prevBetAmt + betAmount
+					if self.ActivePlayer == 0: # P1 raising
+						newHistory.P1_Bankroll -= raiseAmount
+						newHistory.P1_inPot += raiseAmount
+						newHistory.Pot += raiseAmount
+
+					else: # P2 raising
+						newHistory.P2_Bankroll -= raiseAmount
+						newHistory.P2_inPot += raiseAmount
+						newHistory.Pot += raiseAmount
+
+					# advance to next betting round
+					newHistory.Round = "B%s" % str(int(self.Round[1])+1)
 
 			else:
 				print "Error: submitted an action that didn't fall into any category!"
 
 
+		# if we entered a new street, reset the inPot values
+		if newHistory.Street > self.Street:
+			newHistory.P1_inPot = 0
+			newHistory.P2_inPot = 0
 		
 		# append the action we just simulated to the history list
 		newHistory.History.append("%s:%s" % (str(self.ActivePlayer), action))
 
-		newHistory.ActivePlayer = (newHistory.ActivePlayer + 1) % 2  # this will alternate to the next player
+		# alternate to the next player for an action
+		newHistory.ActivePlayer = (newHistory.ActivePlayer + 1) % 2
 
 		# finally, return the new history
 		return newHistory
