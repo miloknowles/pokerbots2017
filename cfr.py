@@ -464,23 +464,49 @@ class History(object):
 		# BASIC ACTIONS
 		if action=="FOLD":
 			newHistory.NodeType = 2 # the advanced node will be terminal
+			
 
 		elif action=="CHECK":
-			newHistory.ActivePlayer = (newHistory.ActivePlayer + 1) % 2  # this will alternate to the next player
-
 			# see if check was during a discard round OR betting round
 			if self.Round == "D":
+				# if the active player is the LAST to act, we move on to betting
+				# else, we remain in the discard round for the next player
+				newHistory.Round = "B1" if self.ActivePlayer==self.ButtonPlayer else "D"
 
 			else: # betting round
 				# if the player is the second to act and checks, then the betting round is over
 				if self.ActivePlayer == self.ButtonPlayer:
 					newHistory.Street += 1
-					newHistory.NodeType = 2 if newHistory.Street == 4 else 0
+					# if we're finishing the river, then we've reachd a terminal node
+					# else, next up is a chance node 
+					newHistory.NodeType = 2 if self.Street == 4 else 0
 					newHistory.Round = "0"
 
+				else: # the player was first to act, so we just go to the next player without making many changes
+					pass
 
-		elif action=="CALL":
-			pass
+
+		elif action=="CALL": # a call ends the current betting round
+			# if river, calling means reaching a terminal node
+			# otherwise chance node (next deal)
+			newHistory.NodeType = 2 if self.Street == 4 else 0
+
+			# this is the amount a player must add to call
+			prevBetAmt = abs(self.P1_inPot-self.P2_inPot)
+
+			if self.ActivePlayer==0:
+				assert self.P1_inPot < self.P2_inPot, "Error: P1 is calling but does not have less in the pot than P2"
+				self.P1_Bankroll -= prevBetAmt
+				self.P1_inPot += prevBetAmt
+				self.Pot += prevBetAmt
+
+			else:
+				assert self.P2_inPot < self.P1_inPot, "Error: P2 is calling but does not have less in the pot than P1"
+				self.P2_Bankroll -= prevBetAmt
+				self.P2_inPot += prevBetAmt
+				self.Pot += prevBetAmt
+			
+
 
 		# PARSED ACTIONS
 		else:
@@ -528,6 +554,8 @@ class History(object):
 		
 		# append the action we just simulated to the history list
 		newHistory.History.append("%s:%s" % (str(self.ActivePlayer), action))
+
+		newHistory.ActivePlayer = (newHistory.ActivePlayer + 1) % 2  # this will alternate to the next player
 
 		# finally, return the new history
 		return newHistory
