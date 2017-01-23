@@ -440,11 +440,11 @@ class History(object):
 			prevBetAmt = abs(self.P1_inPot-self.P2_inPot)
 
 			# if there have already been 3 betting rounds, end the betting with either fold or call
-			if self.Round == "B3":
+			if self.Round == "B4":
 				assert prevBetAmt > 0, "Error: previous bet amount must have been > 0 to reach B3"
 				actions = ["FOLD", "CALL"]
 
-			else: #B1 or B2
+			else: #B1, B2, B3
 
 				# if no bets yet: we can check, bet half-pot, bet pot, or go all-in
 				if prevBetAmt==0:
@@ -456,8 +456,15 @@ class History(object):
 
 				# remove any bets (besides all-in) that would make us or the opponent pot-committed
 				if (float(self.Pot) / 2) > self.P1_Bankroll*0.6 or (float(self.Pot) / 2) > self.P2_Bankroll*0.6:
-					actions.remove("BET:P")
-					if "BET:H" in actions: actions.remove("BET:H")
+					if "BET:P" in actions:
+						actions.remove("BET:P")
+					if "BET:H" in actions:
+						actions.remove("BET:H")
+					if "RAISE:P" in actions:
+						actions.remove("RAISE:P")
+					if "RAISE:H" in actions:
+						actions.remove("RAISE:H")
+
 
 		return actions
 
@@ -555,9 +562,9 @@ class History(object):
 			if parsedAction[0] == "DISCARD":
 				# replace the card at the correct index with a new one from the dealer
 				if self.ActivePlayer==0:
-					newHistory.P1_Hand[parsedAction[1]] = newHistory.Dealer.dealCard()
+					newHistory.P1_Hand[int(parsedAction[1])] = newHistory.Dealer.dealCard()
 				else:
-					newHistory.P2_Hand[parsedAction[1]] = newHistory.Dealer.dealCard()
+					newHistory.P2_Hand[int(parsedAction[1])] = newHistory.Dealer.dealCard()
 
 				# if the second-to-act player just discarded, go to betting round
 				newHistory.Round = "B1" if self.ActivePlayer==self.ButtonPlayer else "D"
@@ -569,14 +576,14 @@ class History(object):
 
 				# minBet/Raise is the same for both players
 				minBet=max(2, prevBetAmt) # min bet is at least a BB (2)
-				minRaise=self.P1_inPot+self.P2_inPot+minBet
+				#minRaise=self.P1_inPot+self.P2_inPot+minBet
 				
 				if self.ActivePlayer==0:
 					maxBet=self.P1_Bankroll
-					maxRaise=self.P1_inPot+self.P2_inPot+self.P1_Bankroll # current street pot + P1's bankroll		
+					#maxRaise=self.P1_inPot+self.P2_inPot+self.P1_Bankroll # current street pot + P1's bankroll		
 				else:
 					maxBet=self.P2_Bankroll
-					maxRaise=self.P1_inPot+self.P2_inPot+self.P2_Bankroll # current street pot + P1's bankroll
+					#maxRaise=self.P1_inPot+self.P2_inPot+self.P2_Bankroll # current street pot + P1's bankroll
 
 				# convert H, P, and A into integer bet amounts
 				if parsedAction[1]=="H": # half pot bet
@@ -621,10 +628,10 @@ class History(object):
 
 
 				elif parsedAction[0] == "RAISE":
-					assert P1_inPot != P2_inPot, "Error: if raising, P1 and P2 should have unequal amounts in pot"
+					assert self.P1_inPot != self.P2_inPot, "Error: if raising, P1 and P2 should have unequal amounts in pot"
 
 					# we have to call the previous bet AND add the betAmount on top of that
-					raiseAmount = prevBetAmt + betAmount
+					raiseAmount = min(prevBetAmt + betAmount, maxBet)
 					if self.ActivePlayer == 0: # P1 raising
 						newHistory.P1_Bankroll -= raiseAmount
 						newHistory.P1_inPot += raiseAmount
@@ -634,9 +641,6 @@ class History(object):
 						newHistory.P2_Bankroll -= raiseAmount
 						newHistory.P2_inPot += raiseAmount
 						newHistory.Pot += raiseAmount
-
-					# advance to next betting round
-					newHistory.Round = "B%s" % str(int(self.Round[1])+1)
 
 					# advance to next betting round if this was second player to act
 					if self.Street == 0: # BB last to act
@@ -654,16 +658,15 @@ class History(object):
 		if newHistory.Street > self.Street:
 			newHistory.P1_inPot = 0
 			newHistory.P2_inPot = 0
+
+			# BB should always have first action when going to a new street
+			newHistory.ActivePlayer = (self.ButtonPlayer + 1) % 2 # opposite of SB player
+
+		else: # if still in the same street, should alternate players
+			newHistory.ActivePlayer = (self.ActivePlayer + 1) % 2
 		
 		# append the action we just simulated to the history list
 		newHistory.History.append("%s:%s" % (str(self.ActivePlayer), action))
-
-		# if going from preflop to flop, BB should have first action
-		if self.Street == 0 and newHistory.Street == 1:
-			newHistory.ActivePlayer = (self.ButtonPlayer + 1) % 2 # opposite of SB player
-
-		else: # otherwise, alternate to the next player for an action
-			newHistory.ActivePlayer = (self.ActivePlayer + 1) % 2
 
 		# finally, return the new history
 		return newHistory
