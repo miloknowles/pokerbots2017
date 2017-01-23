@@ -486,16 +486,24 @@ class History(object):
 				newHistory.Round = "B1" if self.ActivePlayer==self.ButtonPlayer else "D"
 
 			else: # betting round
-				# if the player is the second to act and checks, then the betting round is over
-				if self.ActivePlayer == self.ButtonPlayer:
-					newHistory.Street += 1
-					# if we're finishing the river, then we've reachd a terminal node
-					# else, next up is a chance node 
-					newHistory.NodeType = 2 if self.Street == 4 else 0
-					newHistory.Round = "0"
+				# preflop if the bb checks, the betting round is over
+				if self.Street == 0:
+					if self.ActivePlayer != self.ButtonPlayer: # if the BB checks
+						newHistory.Street += 1
+						newHistory.NodeType = 0
+						newHistory.Round = "0"
 
-				else: # the player was first to act, so we just go to the next player without making many changes
-					pass
+				# if the player is the second to act and checks, then the betting round is over
+				else: 
+					if self.ActivePlayer == self.ButtonPlayer:
+						newHistory.Street += 1
+						# if we're finishing the river, then we've reachd a terminal node
+						# else, next up is a chance node 
+						newHistory.NodeType = 2 if self.Street == 4 else 0
+						newHistory.Round = "0"
+
+					else: # the player was first to act, so we just go to the next player without making many changes
+						pass
 
 
 		elif action=="CALL":
@@ -629,7 +637,7 @@ class History(object):
 		newHistory.History.append("%s:%s" % (str(self.ActivePlayer), action))
 
 		# alternate to the next player for an action
-		newHistory.ActivePlayer = (newHistory.ActivePlayer + 1) % 2
+		newHistory.ActivePlayer = (self.ActivePlayer + 1) % 2
 
 		# finally, return the new history
 		return newHistory
