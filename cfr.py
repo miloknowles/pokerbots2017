@@ -431,7 +431,7 @@ class History(object):
 		assert self.NodeType == 1, "Error: trying to get legal actions for a non-action node!"
 
 		# IF WE ARE AT A DISCARD ACTION NODE
-		if self.Street == 1 or self.Street == 2 and self.Round == "D": # flop/turn, and we have the option to discard
+		if ((self.Street == 1 or self.Street == 2) and self.Round == "D"): # flop/turn, and we have the option to discard
 			return ["CHECK", "DISCARD:0", "DISCARD:1"]
 
 		# ELSE THIS IS A BETTING ACTION NODE
@@ -481,9 +481,9 @@ class History(object):
 		elif action=="CHECK":
 			# see if check was during a discard round OR betting round
 			if self.Round == "D":
-				# if the active player is the LAST to act, we move on to betting
+				# if the active player is the LAST to act (BB), we move on to betting
 				# else, we remain in the discard round for the next player
-				newHistory.Round = "B1" if self.ActivePlayer==self.ButtonPlayer else "D"
+				newHistory.Round = "B1" if (self.ActivePlayer==self.ButtonPlayer) else "D"
 
 			else: # betting round
 				# preflop if the bb checks, the betting round is over
@@ -494,12 +494,12 @@ class History(object):
 						newHistory.Round = "0"
 
 				# if the player is the second to act and checks, then the betting round is over
-				else: 
+				else: # postflop
 					if self.ActivePlayer == self.ButtonPlayer:
 						newHistory.Street += 1
 						# if we're finishing the river, then we've reachd a terminal node
 						# else, next up is a chance node 
-						newHistory.NodeType = 2 if self.Street == 4 else 0
+						newHistory.NodeType = 2 if (self.Street == 3) else 0
 						newHistory.Round = "0"
 
 					else: # the player was first to act, so we just go to the next player without making many changes
@@ -509,17 +509,25 @@ class History(object):
 		elif action=="CALL":
 
 			if self.Street != 0: # if not preflop, a call ends the current betting round
-				newHistory.NodeType = 2 if self.Street == 4 else 0
+				newHistory.NodeType = 2 if self.Street == 3 else 0
 				newHistory.Street += 1
+				newHistory.Round = "0"
 
 			else: # during preflop, calling is more complicated
-				# if call is during B1, betting continues (SB called the BB)
-				if self.Round == "B1":
-					newHistory.NodeType = 1
-					
-				else: # otherwise, calling ends the betting round, so advance the street and go to a chance node
+				
+				# if SB calls AFTER B1, the betting round is over
+				if self.Round != "B1" and self.ActivePlayer==self.ButtonPlayer:
 					newHistory.Street += 1
 					newHistory.NodeType = 0
+					newHistory.Round = "0"
+				# if BB calls, the betting round is over
+				elif self.ActivePlayer!=self.ButtonPlayer:
+					newHistory.Street += 1
+					newHistory.NodeType = 0
+					newHistory.Round = "0"
+				else: # BB still has an action
+					newHistory.NodeType = 1
+
 
 
 			# this is the amount a player must add to call
@@ -591,7 +599,7 @@ class History(object):
 
 
 				if parsedAction[0] == "BET":
-					assert P1_inPot==P2_inPot, "Error: if betting, P1 and P2 should have same amount in pot before bet!"
+					assert self.P1_inPot==self.P2_inPot, "Error: if betting, P1 and P2 should have same amount in pot before bet!"
 
 					if self.ActivePlayer==0: # P1 bets
 						newHistory.P1_Bankroll -= betAmount
@@ -603,8 +611,14 @@ class History(object):
 						newHistory.P2_inPot += betAmount
 						newHistory.Pot += betAmount
 
-					# advance to next betting round
-					newHistory.Round = "B%s" % str(int(self.Round[1])+1)
+					# advance to next betting round if this was second player to act
+					if self.Street == 0: # BB last to act
+						if self.ActivePlayer!=self.ButtonPlayer:
+							newHistory.Round = "B%s" % str(int(self.Round[1])+1)
+					else: # SB last to act
+						if self.ActivePlayer==self.ButtonPlayer:
+							newHistory.Round = "B%s" % str(int(self.Round[1])+1)
+
 
 				elif parsedAction[0] == "RAISE":
 					assert P1_inPot != P2_inPot, "Error: if raising, P1 and P2 should have unequal amounts in pot"
@@ -624,6 +638,14 @@ class History(object):
 					# advance to next betting round
 					newHistory.Round = "B%s" % str(int(self.Round[1])+1)
 
+					# advance to next betting round if this was second player to act
+					if self.Street == 0: # BB last to act
+						if self.ActivePlayer!=self.ButtonPlayer:
+							newHistory.Round = "B%s" % str(int(self.Round[1])+1)
+					else: # SB last to act
+						if self.ActivePlayer==self.ButtonPlayer:
+							newHistory.Round = "B%s" % str(int(self.Round[1])+1)
+
 				else:
 					print "Error: submitted an action that didn't fall into any category!"
 
@@ -636,8 +658,12 @@ class History(object):
 		# append the action we just simulated to the history list
 		newHistory.History.append("%s:%s" % (str(self.ActivePlayer), action))
 
-		# alternate to the next player for an action
-		newHistory.ActivePlayer = (self.ActivePlayer + 1) % 2
+		# if going from preflop to flop, BB should have first action
+		if self.Street == 0 and newHistory.Street == 1:
+			newHistory.ActivePlayer = (self.ButtonPlayer + 1) % 2 # opposite of SB player
+
+		else: # otherwise, alternate to the next player for an action
+			newHistory.ActivePlayer = (self.ActivePlayer + 1) % 2
 
 		# finally, return the new history
 		return newHistory
@@ -720,7 +746,7 @@ def testHistory():
 			print "ERROR, not recognized nodetype"
 
 	print "------TERMINAL NODE REACHED------"
-	print h.printAttr()
+	h.printAttr()
 
 
 
