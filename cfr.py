@@ -436,11 +436,15 @@ class History(object):
 
 		# ELSE THIS IS A BETTING ACTION NODE
 		else:
+			# if either player is all-in, the only options are to check
+			if self.P1_Bankroll==0 or self.P2_Bankroll==0: 
+				return ["CHECK"]
+			
 			# determine if there was a bet already during this round
 			prevBetAmt = abs(self.P1_inPot-self.P2_inPot)
 
 			# if there have already been 3 betting rounds, end the betting with either fold or call
-			if self.Round == "B4":
+			elif self.Round == "B4":
 				assert prevBetAmt > 0, "Error: previous bet amount must have been > 0 to reach B3"
 				actions = ["FOLD", "CALL"]
 
