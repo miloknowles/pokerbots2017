@@ -382,7 +382,7 @@ class History(object):
 	"""
 	Gets passed down a game tree.
 	"""
-	def __init__(history, node_type, current_street, current_round, button_player, dealer, \
+	def __init__(self, history, node_type, current_street, current_round, button_player, dealer, \
 					active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board):
 		"""
 		history: a list of strings representing the history of actions so far
@@ -396,7 +396,7 @@ class History(object):
 		p1_inpot: the amount that P1 has contributed to the CURRENT betting round
 		p2_inpot: the amount that P2 has contributed to the CURRENT betting round
 		"""
-		self.History = history_list
+		self.History = history
 		self.NodeType = node_type
 		self.Street = current_street
 		self.Round = current_round
@@ -411,6 +411,18 @@ class History(object):
 		self.P1_Hand = p1_hand
 		self.P2_Hand = p2_hand
 		self.Board = board
+
+	def printAttr(self):
+		"""
+		Prints all the attributes out of the current history.
+		"""
+		print "HISTORY:", self.History
+		print "NODETYPE:%d STREET:%d ROUND:%s" % (self.NodeType, self.Street, self.Round)
+		print "ACTIVE PLAYER:%d SB:%d" % (self.ActivePlayer, self.ButtonPlayer)
+		print "POT:%d P1_INPOT:%d P2_INPOT:%d" % (self.Pot, self.P1_inPot, self.P2_inPot)
+		print "P1_BANK:%d P2_BANK:%d" % (self.P1_Bankroll, self.P2_Bankroll)
+		print "P1_HAND:%s P2_HAND:%s BOARD:%s" % (convertSyntax(self.P1_Hand), convertSyntax(self.P2_Hand), convertSyntax(self.Board))
+
 
 	def getLegalActions(self):
 		"""
@@ -552,7 +564,7 @@ class History(object):
 
 				# convert H, P, and A into integer bet amounts
 				if parsedAction[1]=="H": # half pot bet
-					halfPot = float(self.Pot) / 2
+					halfPot = int(float(self.Pot) / 2)
 					if halfPot >= minBet and halfPot <= maxBet:
 						betAmount = halfPot
 					else: # choose the minBet or maxBet, depending on which is closer to the half pot
@@ -604,8 +616,8 @@ class History(object):
 					# advance to next betting round
 					newHistory.Round = "B%s" % str(int(self.Round[1])+1)
 
-			else:
-				print "Error: submitted an action that didn't fall into any category!"
+				else:
+					print "Error: submitted an action that didn't fall into any category!"
 
 
 		# if we entered a new street, reset the inPot values
@@ -636,6 +648,20 @@ class History(object):
 			newHistory.P2_Hand = newHistory.Dealer.dealHand()
 			newHistory.Round = "B1" # betting round 1 is next
 
+			# also, put in the bb and sb
+			if self.ButtonPlayer==0:
+				newHistory.P1_Bankroll -= 1
+				newHistory.P1_inPot += 1
+				newHistory.P2_Bankroll -= 2
+				newHistory.P2_inPot += 2
+			else:
+				newHistory.P2_Bankroll -= 1
+				newHistory.P2_inPot += 1
+				newHistory.P1_Bankroll -= 2
+				newHistory.P1_inPot += 2
+			newHistory.Pot = 3
+
+
 		elif self.Street == 1:
 			if self.Round == "0": # start of street, dealer should deal flop
 				newHistory.Board = newHistory.Dealer.dealFlop()
@@ -655,9 +681,42 @@ class History(object):
 
 
 
-	
+def testHistory():
+	"""
+	(history, node_type, current_street, current_round, button_player, dealer, \
+					active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board)
+	"""
+	initialDealer = Dealer()
+	h = History([], 0, 0, 0, 0, initialDealer, 0, 0, 0, 0, 200, 200, [], [], [])
+
+	while(h.NodeType != 2): # while not terminal, simulate
+		if h.NodeType == 0:
+			h.printAttr()
+			print "-----SIMULATING CHANCE------"
+			h = h.simulateChance()
+		elif h.NodeType == 1:
+			h.printAttr()
+			actions = h.getLegalActions()
+			print "Legal Actions:", actions
+
+			givenAction=False
+			while(not givenAction):
+				action = raw_input("Choose action: ")
+				if action in actions:
+					givenAction=True
+				else:
+					print "Action not allowed. Try again."
+			print "-----SIMULATING ACTION------"
+			h = h.simulateAction(action)
+		else:
+			print "ERROR, not recognized nodetype"
+
+	print "------TERMINAL NODE REACHED------"
+	print h.printAttr()
 
 
+
+testHistory()
 
 
 
