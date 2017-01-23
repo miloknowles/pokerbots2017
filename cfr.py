@@ -16,7 +16,7 @@ def buildFullDeck():
 	Suits: [1,2,3,4] = [s,h,d,c]
 	"""
 	deck = []
-	vals = [i for i in range(2,15)]
+	vals = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
 	suits = [1,2,3,4]
 	for v in vals:
 		for s in suits:
@@ -773,9 +773,48 @@ def testHistory():
 	print "------TERMINAL NODE REACHED------"
 	h.printAttr()
 
+def testHistoryRandom():
+	"""
+	Randomly choose actions from the game engine to try to find every edge case possible
 
+	(history, node_type, current_street, current_round, button_player, dealer, \
+					active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board)
+	"""
+	num_simulations = 1000
+	sb_player = 0
 
-testHistory()
+	time0 = time.time()
+	for i in range(num_simulations):
+
+		print "############# HAND:", i, "###############"
+
+		initialDealer = Dealer()
+		h = History([], 0, 0, 0, sb_player, initialDealer, sb_player, 0, 0, 0, 200, 200, [], [], [])
+
+		while(h.NodeType != 2): # while not terminal, simulate
+			if h.NodeType == 0:
+				h.printAttr()
+				h = h.simulateChance()
+			elif h.NodeType == 1:
+				h.printAttr()
+				actions = h.getLegalActions()
+				print "Legal Actions:", actions
+
+				action = choice(actions)
+				print "Choosing action:", action
+				h = h.simulateAction(action)
+			
+			else:
+				assert False, "Not recognized node type"
+
+		print "End of hand ----------"
+		h.printAttr()
+
+		sb_player = (sb_player+1) % 2 # alternate sb players each time
+
+	time1 = time.time()
+	print "Simulated", num_simulations, "hands in", time1-time0, "secs"
+testHistoryRandom()
 
 
 
