@@ -436,15 +436,33 @@ class History(object):
 
 		# ELSE THIS IS A BETTING ACTION NODE
 		else:
-			# if either player is all-in, the only options are to check
-			if self.P1_Bankroll==0 or self.P2_Bankroll==0: 
-				return ["CHECK"]
-			
 			# determine if there was a bet already during this round
 			prevBetAmt = abs(self.P1_inPot-self.P2_inPot)
 
+			# if either player is all-in, the only options are to check
+			if self.P1_Bankroll==0 or self.P2_Bankroll==0:
+				if self.ActivePlayer==0:
+					if self.P1_Bankroll==0: # if the active player has no money, they can only check
+						return ["CHECK"]
+					else: # the other player must have no money, so they will only be able to FOLD, CALL, or CHECK, depending on the case
+						# if P1's opponent has no money, but has more in the pot, P1 can FOLD or CALL
+						if prevBetAmt > 0:
+							return ["FOLD", "CALL"]
+						else: # no prev bet, so should check
+							return ["CHECK"]
+				else: 
+					if self.P2_Bankroll==0: 
+						return ["CHECK"]
+					else: # the other player must have no money, so they will only be able to FOLD, CALL, or CHECK, depending on the case
+						# if P2's opponent has no money, but has more in the pot, P2 can FOLD or CALL
+						if prevBetAmt > 0:
+							return ["FOLD", "CALL"]
+						else: # no prev bet, so should check
+							return ["CHECK"]
+
+			
 			# if there have already been 3 betting rounds, end the betting with either fold or call
-			elif self.Round == "B4":
+			if self.Round == "B4":
 				assert prevBetAmt > 0, "Error: previous bet amount must have been > 0 to reach B3"
 				actions = ["FOLD", "CALL"]
 
