@@ -778,23 +778,20 @@ class History(object):
                 newHistory.Board = newHistory.Dealer.dealFlop()
                 newHistory.Round = "D" # discard round is next
                 newHistory.BoardStr = convertSyntax(newHistory.Board)
-                newHistory.History.append("FP:%s:H0:%s:%.3f:H1:%s:%.3f" % (newHistory.BoardStr, newHistory.P1_HandStr, getHandStrength(newHistory.P1_HandStr, ""), \
-                                                                    newHistory.P2_HandStr, getHandStrength(newHistory.P2_HandStr, "")))
+                newHistory.History.append("FP:%s:H0:%.3f:H1:%.3f" % (newHistory.BoardStr, getHandStrength(newHistory.P1_HandStr, ""), getHandStrength(newHistory.P2_HandStr, "")))
 
         elif self.Street == 2:
             if self.Round == "0": # start of street, dealer should add a card for turn
                 newHistory.Board.append(newHistory.Dealer.dealCard())
                 newHistory.Round = "D" # discard round is next
                 newHistory.BoardStr = convertSyntax(newHistory.Board)
-                newHistory.History.append("TN:%s:H0:%s:%.3f:H1:%s:%.3f" % (newHistory.BoardStr, newHistory.P1_HandStr, getHandStrength(newHistory.P1_HandStr, ""), \
-                                                                    newHistory.P2_HandStr, getHandStrength(newHistory.P2_HandStr, "")))
+                newHistory.History.append("TN:%s:H0:%.3f:H1:%.3f" % (newHistory.BoardStr, getHandStrength(newHistory.P1_HandStr, ""), getHandStrength(newHistory.P2_HandStr, "")))
 
         elif self.Street == 3: # river, add a card
             newHistory.Board.append(newHistory.Dealer.dealCard())
             newHistory.Round = "B1" # betting round 1 is next
             newHistory.BoardStr = convertSyntax(newHistory.Board)
-            newHistory.History.append("RV:%s:H0:%s:%.3f:H1:%s:%.3f" % (newHistory.BoardStr, newHistory.P1_HandStr, getHandStrength(newHistory.P1_HandStr, ""), \
-                                                                    newHistory.P2_HandStr, getHandStrength(newHistory.P2_HandStr, "")))
+            newHistory.History.append("RV:%s:H0:%.3f:H1:%.3f" % (newHistory.BoardStr, getHandStrength(newHistory.P1_HandStr, ""), getHandStrength(newHistory.P2_HandStr, "")))
 
         newHistory.NodeType = 1 # an action node always follows a chance node
         return newHistory
