@@ -1,3 +1,5 @@
+#!/usr/bin/env 
+
 import time
 from pokereval.card import Card
 from pokereval.hand_evaluator import HandEvaluator
@@ -9,6 +11,8 @@ from operator import attrgetter
 import os
 from pbots_calc import calc, Results
 from copy import deepcopy
+
+
 
 def buildFullDeck():
 	"""
@@ -22,6 +26,10 @@ def buildFullDeck():
 		for s in suits:
 			deck.append(Card(v,s))
 	return deck
+
+# DEFINE THINGS #
+FULL_DECK = buildFullDeck()
+# END DEFINITIONS #
 
 
 class Dealer(object):
@@ -113,7 +121,6 @@ def convertSyntax(cards):
 		return cardstr
 	else:
 		return cards.RANK_TO_STRING[cards.rank]+cards.SUIT_TO_STRING[cards.suit]
-
 
 
 def determineBestDiscard(hand, board, min_improvement=0.05, iters=100):
@@ -386,20 +393,6 @@ def convertHtoI(history):
 	# TODO
 	raise NotImplementedError
 
-# DEFINE THINGS #
-FULL_DECK = buildFullDeck()
-CUMULATIVE_REGRETS = {}
-CUMULATIVE_STRATEGY = {}
-EPSILON = 0.05
-TAU = 1000
-BETA = 10e6
-HAND_STRENGTH_ITERS = 1000
-BB=2
-SB=1
-STARTING_STACK=200
-# END DEFINITIONS #
-
-
 
 class History(object):
 	"""
@@ -537,6 +530,9 @@ class History(object):
 		# double check that this action is actually allowed
 		assert action in self.getLegalActions(), "Error: tried to simulate an action that is not allowed."
 
+		# this flag is used to add the new hand to the history if a discard happens
+		shouldAppendNewHand = False
+
 		# BASIC ACTIONS
 		if action=="FOLD":
 			newHistory.NodeType = 2 # the advanced node will be terminal
@@ -617,10 +613,11 @@ class History(object):
 
 			# DISCARD
 			if parsedAction[0] == "DISCARD":
+				shouldAppendNewHand = True
 				# replace the card at the correct index with a new one from the dealer
-				if self.ActivePlayer==0:
+				if self.ActivePlayer==0: # if P1 discards
 					newHistory.P1_Hand[int(parsedAction[1])] = newHistory.Dealer.dealCard()
-				else:
+				else: # if P2 discards
 					newHistory.P2_Hand[int(parsedAction[1])] = newHistory.Dealer.dealCard()
 
 				# if the second-to-act player just discarded, go to betting round
@@ -725,6 +722,14 @@ class History(object):
 		# append the action we just simulated to the history list
 		newHistory.History.append("%s:%s" % (str(self.ActivePlayer), action))
 
+		# if we discarded, append the new hand to the game history
+		if shouldAppendNewHand==True:
+			if self.ActivePlayer==0: # if P1 discards
+				newHistory.History.append("0:H0:%s" % convertSyntax(newHistory.P1_Hand))
+			else: # if P2 discards
+				newHistory.History.append("1:H1:%s" % convertSyntax(newHistory.P2_Hand))
+
+
 		# finally, return the new history
 		return newHistory
 
@@ -741,6 +746,7 @@ class History(object):
 			newHistory.P1_Hand = newHistory.Dealer.dealHand()
 			newHistory.P2_Hand = newHistory.Dealer.dealHand()
 			newHistory.Round = "B1" # betting round 1 is next
+			newHistory.History.append("H0:%s:H1:%s" % (convertSyntax(newHistory.P1_Hand), convertSyntax(newHistory.P2_Hand)))
 
 			# also, put in the bb and sb
 			if self.ButtonPlayer==0:
@@ -760,15 +766,18 @@ class History(object):
 			if self.Round == "0": # start of street, dealer should deal flop
 				newHistory.Board = newHistory.Dealer.dealFlop()
 				newHistory.Round = "D" # discard round is next
+				newHistory.History.append("FP:%s" % convertSyntax(newHistory.Board))
 
 		elif self.Street == 2:
 			if self.Round == "0": # start of street, dealer should add a card for turn
 				newHistory.Board.append(newHistory.Dealer.dealCard())
 				newHistory.Round = "D" # discard round is next
+				newHistory.History.append("TN:%s" % convertSyntax(newHistory.Board))
 
 		elif self.Street == 3: # river, add a card
 			newHistory.Board.append(newHistory.Dealer.dealCard())
 			newHistory.Round = "B1" # betting round 1 is next
+			newHistory.History.append("RV:%s" % convertSyntax(newHistory.Board))
 
 		newHistory.NodeType = 1 # an action node always follows a chance node
 		return newHistory
@@ -820,7 +829,6 @@ class History(object):
 		else:
 			assert False, "Error: reached a terminal node for a reason we didn't account for!"
 
-
 def testHistory():
 	"""
 	(history, node_type, current_street, current_round, button_player, dealer, \
@@ -855,76 +863,4 @@ def testHistory():
 	h.printAttr()
 
 testHistory()
-
-def testHistoryRandom():
-	"""
-	Randomly choose actions from the game engine to try to find every edge case possible
-
-	(history, node_type, current_street, current_round, button_player, dealer, \
-					active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board)
-	"""
-	num_simulations = 100000
-	sb_player = 0
-
-	time0 = time.time()
-	for i in range(num_simulations):
-
-		print "############# HAND:", i, "###############"
-
-		initialDealer = Dealer()
-		h = History([], 0, 0, 0, sb_player, initialDealer, sb_player, 0, 0, 0, 200, 200, [], [], [])
-
-		while(h.NodeType != 2): # while not terminal, simulate
-			if h.NodeType == 0:
-				h.printAttr()
-				h = h.simulateChance()
-			elif h.NodeType == 1:
-				h.printAttr()
-				actions = h.getLegalActions()
-				print "Legal Actions:", actions
-
-				action = choice(actions)
-				print "Choosing action:", action
-				h = h.simulateAction(action)
-			
-			else:
-				assert False, "Not recognized node type"
-
-		print "End of hand ----------"
-		h.printAttr()
-
-		sb_player = (sb_player+1) % 2 # alternate sb players each time
-
-	time1 = time.time()
-	print "Simulated", num_simulations, "hands in", time1-time0, "secs"
-
-
-def testDetermineWinner():
-	"""
-	Experimentally determined that about 4% of hands end in a tie.
-	"""
-	tie_ctr = 0
-	iters = 10000
-	for i in range(iters):
-		d = Dealer()
-		p1_hand = d.dealHand()
-		p2_hand = d.dealHand()
-
-		board = d.dealFlop()
-		board.append(d.dealCard())
-		board.append(d.dealCard())
-
-		winner = determineWinner(p1_hand, p2_hand, board)
-		print "P1: ", p1_hand, "P2: ", p2_hand, "Board: ", board
-
-		if winner == 3:
-			tie_ctr += 1
-			print "TIE"
-		else:
-			print "Winner: ", winner
-
-		print " -------- "
-
-	print "%f percent of hands resulted in ties" % (float(tie_ctr) / iters)
-
 
