@@ -71,8 +71,9 @@ def getHandStrength(hand, board, iters=1000):
     With iters=2000: 95% of data within 2.2% of actual
     With iters=4000: 95% of data within 1.7% of actual
     """
-    if type(hand) == str and type(board) == str:
-        res = calc("%s:xx" % hand, board, "", iters)
+    if ((type(hand) == str) and (type(board) == str)):
+        #print hand, board
+        res = calc(hand+":xx", board, "", iters)
 
     else:
         assert len(board) <= 5, "Error: board must have 3-5 cards"
@@ -625,8 +626,12 @@ class History(object):
                 # replace the card at the correct index with a new one from the dealer
                 if self.ActivePlayer==0: # if P1 discards
                     newHistory.P1_Hand[int(parsedAction[1])] = newHistory.Dealer.dealCard()
+                    # update HandStr for P1
+                    newHistory.P1_HandStr = convertSyntax(newHistory.P1_Hand)
                 else: # if P2 discards
                     newHistory.P2_Hand[int(parsedAction[1])] = newHistory.Dealer.dealCard()
+                    #update HandStr for P2
+                    newHistory.P2_HandStr = convertSyntax(newHistory.P2_Hand)
 
                 # if the second-to-act player just discarded, go to betting round
                 newHistory.Round = "B1" if self.ActivePlayer==self.ButtonPlayer else "D"
@@ -733,9 +738,11 @@ class History(object):
         # if we discarded, append the new hand to the game history
         if shouldAppendNewHand==True:
             if self.ActivePlayer==0: # if P1 discards
-                newHistory.History.append("0:H0:%s" % convertSyntax(newHistory.P1_Hand))
+                assert ((type(newHistory.P1_HandStr) == str) and (type(newHistory.P1_HandStr) == str)), "Error: either P1 hand or P2 hand do not have handstrings in str format"
+                assert (type(newHistory.BoardStr) == str), "Error: type of boardstr is not str!"
+                newHistory.History.append("H0:%s:%.3f" % (newHistory.P1_HandStr, getHandStrength(newHistory.P1_HandStr, newHistory.BoardStr)))
             else: # if P2 discards
-                newHistory.History.append("1:H1:%s" % convertSyntax(newHistory.P2_Hand))
+                newHistory.History.append("H1:%s:%.3f" % (newHistory.P2_HandStr, getHandStrength(newHistory.P2_HandStr, newHistory.BoardStr)))
 
 
         # finally, return the new history
@@ -843,38 +850,5 @@ class History(object):
         else:
             assert False, "Error: reached a terminal node for a reason we didn't account for!"
 
-def testHistory():
-    """
-    (history, node_type, current_street, current_round, button_player, dealer, \
-                    active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board)
-    """
-    initialDealer = Dealer()
-    h = History([], 0, 0, 0, 0, initialDealer, 0, 0, 0, 0, 200, 200, [], [], [])
 
-    while(h.NodeType != 2): # while not terminal, simulate
-        if h.NodeType == 0:
-            h.printAttr()
-            print "-----SIMULATING CHANCE------"
-            h = h.simulateChance()
-        elif h.NodeType == 1:
-            h.printAttr()
-            actions = h.getLegalActions()
-            print "Legal Actions:", actions
-
-            givenAction=False
-            while(not givenAction):
-                action = raw_input("Choose action: ")
-                if action in actions:
-                    givenAction=True
-                else:
-                    print "Action not allowed. Try again."
-            print "-----SIMULATING ACTION------"
-            h = h.simulateAction(action)
-        else:
-            print "ERROR, not recognized nodetype"
-
-    print "------TERMINAL NODE REACHED------"
-    h.printAttr()
-
-testHistory()
 
