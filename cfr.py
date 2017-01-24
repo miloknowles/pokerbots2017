@@ -75,6 +75,23 @@ def getHandStrength(hand, board, iters=1000):
 	return res.ev[0] # return the EV of our hand
 
 
+def determineWinner(p1_hand, p2_hand, board):
+	"""
+	Given a board with 5 cards, and two hands, determines the winner on the river.
+	"""
+	assert len(board)==5, "Error: cannot determine winner on a board with less than 5 cards"
+	handstr = "%s:%s" % (convertSyntax(p1_hand), convertSyntax(p2_hand))
+	boardstr = convertSyntax(board)
+
+	res = calc(handstr, boardstr, "", 1)
+
+	assert (res.ev[0]==1 or res.ev[1]==1), "Error: in determineWinner, one EV should be zero and the other should be 1."
+	if res.ev[0]==1: # p1 wins
+		return 0
+	else: # p2 wins
+		return 1
+
+
 def convertSyntax(cards):
 	"""
 	Converts a list of Card objects to correct syntax for pbots_calc
@@ -738,6 +755,26 @@ class History(object):
 		newHistory.NodeType = 1 # an action node always follows a chance node
 		return newHistory
 
+	def getTerminalOutcome(self):
+		"""
+		Returns the payout for each player at a terminal node:
+		Returns: (P1_payout, P2_payout), always in that order
+		"""
+		assert self.NodeType == 2, "Error: trying to get the outcome of a non-terminal node"
+
+		# if the node is terminal because of a fold
+		lastAction = self.history[-1].split(":")
+		if lastAction[1] == "FOLD":
+			foldPlayer = lastAction[0]
+			winPlayer = (foldPlayer + 1) % 2
+			assert foldPlayer != winPlayer, "Error: fold player cannot be winning player!"
+
+			# the pot, minus the player's contribution to it
+			# if P2 folds, P2 is the winning player, vice versa
+			winPlayerUtility = (self.P1_Bankroll-200+self.Pot) if (foldPlayer == 1) else (self.P2_Bankroll-200+self.Pot)
+			losePlayerUtility = -1 * winPlayerUtility
+
+
 
 
 def testHistory():
@@ -780,7 +817,7 @@ def testHistoryRandom():
 	(history, node_type, current_street, current_round, button_player, dealer, \
 					active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board)
 	"""
-	num_simulations = 1000
+	num_simulations = 100000
 	sb_player = 0
 
 	time0 = time.time()
@@ -814,10 +851,24 @@ def testHistoryRandom():
 
 	time1 = time.time()
 	print "Simulated", num_simulations, "hands in", time1-time0, "secs"
-testHistoryRandom()
 
 
+def testDetermineWinner():
+
+	for i in range(10):
+		d = Dealer()
+		p1_hand = d.dealHand()
+		p2_hand = d.dealHand()
+
+		board = d.dealFlop()
+		board.append(d.dealCard())
+		board.append(d.dealCard())
+
+		winner = determineWinner(p1_hand, p2_hand, board)
+		print "P1: ", p1_hand, "P2: ", p2_hand, "Board: ", board
+		print "Winner: ", winner
+
+		print " -------- "
 
 
-
-
+testDetermineWinner()
