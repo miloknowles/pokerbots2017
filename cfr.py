@@ -78,6 +78,9 @@ def getHandStrength(hand, board, iters=1000):
 def determineWinner(p1_hand, p2_hand, board):
 	"""
 	Given a board with 5 cards, and two hands, determines the winner on the river.
+	0: Player 1 wins
+	1: Player 2 wins
+	3: Players tie
 	"""
 	assert len(board)==5, "Error: cannot determine winner on a board with less than 5 cards"
 	handstr = "%s:%s" % (convertSyntax(p1_hand), convertSyntax(p2_hand))
@@ -85,11 +88,14 @@ def determineWinner(p1_hand, p2_hand, board):
 
 	res = calc(handstr, boardstr, "", 1)
 
-	assert (res.ev[0]==1 or res.ev[1]==1), "Error: in determineWinner, one EV should be zero and the other should be 1."
-	if res.ev[0]==1: # p1 wins
+	if abs(res.ev[0]-1.0) < 0.01:
 		return 0
-	else: # p2 wins
+	elif abs(res.ev[1]-1.0) < 0.01:
 		return 1
+	else:
+		# print " ----------- Tie?--------------"
+		# print "P1:%f P2: %f" % (res.ev[0], res.ev[1])
+		return 3 # tie player
 
 
 def convertSyntax(cards):
@@ -433,12 +439,24 @@ class History(object):
 		"""
 		Prints all the attributes out of the current history.
 		"""
-		print "HISTORY:", self.History
-		print "NODETYPE:%d STREET:%d ROUND:%s" % (self.NodeType, self.Street, self.Round)
-		print "ACTIVE PLAYER:%d SB:%d" % (self.ActivePlayer, self.ButtonPlayer)
-		print "POT:%d P1_INPOT:%d P2_INPOT:%d" % (self.Pot, self.P1_inPot, self.P2_inPot)
-		print "P1_BANK:%d P2_BANK:%d" % (self.P1_Bankroll, self.P2_Bankroll)
-		print "P1_HAND:%s P2_HAND:%s BOARD:%s" % (convertSyntax(self.P1_Hand), convertSyntax(self.P2_Hand), convertSyntax(self.Board))
+		if self.NodeType == 2:
+			print "---TERMINAL---"
+			p1_util, p2_util = self.getTerminalUtilities()
+			print "P1 UTIL:", p1_util, "P2 UTIL:", p2_util
+			print "HISTORY:", self.History
+			print "NODETYPE:%d STREET:%d ROUND:%s" % (self.NodeType, self.Street, self.Round)
+			print "ACTIVE PLAYER:%d SB:%d" % (self.ActivePlayer, self.ButtonPlayer)
+			print "POT:%d P1_INPOT:%d P2_INPOT:%d" % (self.Pot, self.P1_inPot, self.P2_inPot)
+			print "P1_BANK:%d P2_BANK:%d" % (self.P1_Bankroll, self.P2_Bankroll)
+			print "P1_HAND:%s P2_HAND:%s BOARD:%s" % (convertSyntax(self.P1_Hand), convertSyntax(self.P2_Hand), convertSyntax(self.Board))
+
+		else:
+			print "HISTORY:", self.History
+			print "NODETYPE:%d STREET:%d ROUND:%s" % (self.NodeType, self.Street, self.Round)
+			print "ACTIVE PLAYER:%d SB:%d" % (self.ActivePlayer, self.ButtonPlayer)
+			print "POT:%d P1_INPOT:%d P2_INPOT:%d" % (self.Pot, self.P1_inPot, self.P2_inPot)
+			print "P1_BANK:%d P2_BANK:%d" % (self.P1_Bankroll, self.P2_Bankroll)
+			print "P1_HAND:%s P2_HAND:%s BOARD:%s" % (convertSyntax(self.P1_Hand), convertSyntax(self.P2_Hand), convertSyntax(self.Board))
 
 
 	def getLegalActions(self):
@@ -755,7 +773,7 @@ class History(object):
 		newHistory.NodeType = 1 # an action node always follows a chance node
 		return newHistory
 
-	def getTerminalOutcome(self):
+	def getTerminalUtilities(self):
 		"""
 		Returns the payout for each player at a terminal node:
 		Returns: (P1_payout, P2_payout), always in that order
@@ -763,18 +781,44 @@ class History(object):
 		assert self.NodeType == 2, "Error: trying to get the outcome of a non-terminal node"
 
 		# if the node is terminal because of a fold
-		lastAction = self.history[-1].split(":")
+		lastAction = self.History[-1].split(":")
 		if lastAction[1] == "FOLD":
-			foldPlayer = lastAction[0]
+			foldPlayer = int(lastAction[0])
 			winPlayer = (foldPlayer + 1) % 2
 			assert foldPlayer != winPlayer, "Error: fold player cannot be winning player!"
+			assert (self.P1_Bankroll != self.P2_Bankroll), "Error: if terminal node came from a fold, players should have unequal bankrolls"
 
 			# the pot, minus the player's contribution to it
 			# if P2 folds, P2 is the winning player, vice versa
 			winPlayerUtility = (self.P1_Bankroll-200+self.Pot) if (foldPlayer == 1) else (self.P2_Bankroll-200+self.Pot)
 			losePlayerUtility = -1 * winPlayerUtility
+			if winPlayer==0: #if P1 won
+				return (winPlayerUtility, losePlayerUtility)
+			else:
+				return (losePlayerUtility, winPlayerUtility)
 
+		# if the node is terminal because we played out to the river
+		elif self.Street == 4: # if we ended river, we'd have incremented the street from the 3 to 4
+			assert len(self.Board)==5, "Error: terminal river node should have 5 cards on the board"
+			assert self.P1_Bankroll==self.P2_Bankroll, "Error: if we played to the end of the river, bankrolls should be equal"
 
+			# determine the winner of the hand
+			winner = determineWinner(self.P1_Hand, self.P2_Hand, self.Board)
+			potUtility = float(self.Pot)/2
+			if winner == 0: # P1 won
+				return (potUtility, -potUtility)
+
+			elif winner == 1: # P2 won
+				return (-potUtility, potUtility)
+
+			elif winner == 3: # tie
+				return (0, 0)
+
+			else:
+				assert False, "Error: winner was not 0, 1, or 3"
+
+		else:
+			assert False, "Error: reached a terminal node for a reason we didn't account for!"
 
 
 def testHistory():
@@ -809,6 +853,8 @@ def testHistory():
 
 	print "------TERMINAL NODE REACHED------"
 	h.printAttr()
+
+testHistory()
 
 def testHistoryRandom():
 	"""
@@ -854,8 +900,12 @@ def testHistoryRandom():
 
 
 def testDetermineWinner():
-
-	for i in range(10):
+	"""
+	Experimentally determined that about 4% of hands end in a tie.
+	"""
+	tie_ctr = 0
+	iters = 10000
+	for i in range(iters):
 		d = Dealer()
 		p1_hand = d.dealHand()
 		p2_hand = d.dealHand()
@@ -866,9 +916,15 @@ def testDetermineWinner():
 
 		winner = determineWinner(p1_hand, p2_hand, board)
 		print "P1: ", p1_hand, "P2: ", p2_hand, "Board: ", board
-		print "Winner: ", winner
+
+		if winner == 3:
+			tie_ctr += 1
+			print "TIE"
+		else:
+			print "Winner: ", winner
 
 		print " -------- "
 
+	print "%f percent of hands resulted in ties" % (float(tie_ctr) / iters)
 
-testDetermineWinner()
+
