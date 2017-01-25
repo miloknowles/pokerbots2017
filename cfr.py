@@ -527,10 +527,6 @@ def convertHtoI(history, player):
     return infoset_str
 
 
-
-    
-
-
 class History(object):
     """
     Gets passed down a game tree.
@@ -1008,7 +1004,7 @@ def testHistory():
                     print "Action not allowed. Try again."
             print "-----SIMULATING ACTION------"
             h = h.simulateAction(action)
-            infoset = convertHtoI(h,0)
+            infoset = convertHtoI(h,1)
             print "Information Set:", infoset
         else:
             print "ERROR, not recognized nodetype"
@@ -1018,4 +1014,51 @@ def testHistory():
 
 testHistory()
 
+def testHistoryRandom():
+    """
+    Randomly choose actions from the game engine to try to find every edge case possible
 
+    (history, node_type, current_street, current_round, button_player, dealer, \
+                    active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board)
+    """
+    num_simulations = 1000
+    sb_player = 0
+
+    time0 = time.time()
+    for i in range(num_simulations):
+
+        if i % 10 == 0:
+            print i
+        #print "############# HAND:", i, "###############"
+
+        initialDealer = Dealer()
+        h = History([], 0, 0, 0, sb_player, initialDealer, sb_player, 0, 0, 0, 200, 200, [], [], [])
+
+        while(h.NodeType != 2): # while not terminal, simulate
+            if h.NodeType == 0:
+                #h.printAttr()
+                h = h.simulateChance()
+            elif h.NodeType == 1:
+                #h.printAttr()
+                actions = h.getLegalActions()
+                #print "Legal Actions:", actions
+
+                action = choice(actions)
+                #print "Choosing action:", action
+                h = h.simulateAction(action)
+
+                infoset = convertHtoI(h, 1)
+                print infoset
+            
+            else:
+                assert False, "Not recognized node type"
+
+        #print "End of hand ----------"
+        #h.printAttr()
+
+        sb_player = (sb_player+1) % 2 # alternate sb players each time
+
+    time1 = time.time()
+    print "Simulated", num_simulations, "hands in", time1-time0, "secs"
+
+#testHistoryRandom()
