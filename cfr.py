@@ -392,12 +392,81 @@ def updateCumulativeStrategy(I, strategy, weight):
     assert(False)
 
 
-def convertHtoI(history):
+def convertHtoI(history, player):
     """
     Uses predefined abstraction rules to convert a sequency (history) into an information set.
+    Note: player determines whose point of view the history is represented from (0 or 1)
+
+    ['H0:KcQh:0.609:H1:Ad9s:0.580', '0:CALL', '1:BET:H', '0:CALL', 'FP:7s6c3s:H0:0.625:H1:0.586', 
+    '1:DISCARD:0', 'H1:9c9s:0.745', '0:DISCARD:1', 'H0:Kc5c:0.498', '1:BET:P', '0:RAISE:P', 
+    '1:CALL', 'TN:7s6c3sQs:H0:0.552:H1:0.710', '1:CHECK', '0:DISCARD:0', 'H0:3d5c:0.432', '1:CHECK', 
+    '0:CHECK', 'RV:7s6c3sQsJc:H0:0.362:H1:0.727', '1:CHECK', '0:BET:A', '1:FOLD']
     """
-    # TODO
-    raise NotImplementedError
+    seq = history.History # a list of actions
+
+    # always starts with a hand
+    infoset_str = "%s" 
+
+    for s in seq:
+        s_parsed = s.split(":")
+
+        # inital preflop hands
+        if s_parsed[0] == "H0":
+
+            # if p1
+            if player==0:
+                hand = "H%d" % int(s_parsed[2]*5) # scales hand to an int 0,1,2,3,4
+                infoset_str+=hand
+
+            # if p2
+            elif player==1:
+                hand = "H%d" % int(s_parsed[5]*5) # scales hand to an int 0,1,2,3,4
+                infoset_str+=hand
+
+        elif int(s_parsed[0])==player: # if the player associated with this action is us, add *
+            infoset_str+="*"
+
+        # now shorted different action strings
+        if s_parsed[1]=='CALL':
+            infoset_str+="CL"
+
+        elif s_parsed[1]=="CHECK":
+            infoset_str+="CK"
+
+        elif s_parsed[1]=="BET":
+            if s_parsed[2]=="H":
+                infoset_str+="BH"
+
+            elif s_parsed[2]=="P":
+                infoset_str+="BP"
+
+            elif s_parsed[2]=="A":
+                infoset_str+="BA"
+
+        elif s_parsed[1]=="RAISE":
+            if s_parsed[2]=="H":
+                infoset_str+="RH"
+
+            elif s_parsed[2]=="P":
+                infoset_str+="RP"
+
+            elif s_parsed[2]=="A":
+                infoset_str+="RA"
+
+        elif s_parsed[1]=="DISCARD":
+
+        else:
+            assert False, "Error: tried to convert H to I and reached unknown term"
+
+
+
+
+
+        infoset_str+="." # separate from the next thing
+
+
+
+    
 
 
 class History(object):
@@ -850,5 +919,39 @@ class History(object):
         else:
             assert False, "Error: reached a terminal node for a reason we didn't account for!"
 
+def testHistory():
+    """
+    (history, node_type, current_street, current_round, button_player, dealer, \
+                    active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board)
+    """
+    initialDealer = Dealer()
+    h = History([], 0, 0, 0, 0, initialDealer, 0, 0, 0, 0, 200, 200, [], [], [])
+
+    while(h.NodeType != 2): # while not terminal, simulate
+        if h.NodeType == 0:
+            h.printAttr()
+            print "-----SIMULATING CHANCE------"
+            h = h.simulateChance()
+        elif h.NodeType == 1:
+            h.printAttr()
+            actions = h.getLegalActions()
+            print "Legal Actions:", actions
+
+            givenAction=False
+            while(not givenAction):
+                action = raw_input("Choose action: ")
+                if action in actions:
+                    givenAction=True
+                else:
+                    print "Action not allowed. Try again."
+            print "-----SIMULATING ACTION------"
+            h = h.simulateAction(action)
+        else:
+            print "ERROR, not recognized nodetype"
+
+    print "------TERMINAL NODE REACHED------"
+    h.printAttr()
+
+testHistory()
 
 
