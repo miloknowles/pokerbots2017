@@ -405,19 +405,11 @@ def convertHtoI(history, player):
     seq = history.History # a list of actions
 
     # always starts with a hand
-    infoset_str = "%s" 
-
-    discardstr = ""
-    P1_DiscardedFlop = False
-    P2_DiscardedFlop = False
-
-    P1_DiscardedTurn = False
-    P2_DiscardedTurn = False
+    infoset_str = "" 
 
     Current_Player_HS = None
 
     inDiscardSection = False
-    actionsLeftInDiscardSection = 2
     discardSectionActions = []
 
     i=0
@@ -429,21 +421,21 @@ def convertHtoI(history, player):
 
             # if p1
             if player==0:
-                hand = "H%d" % min(int(s_parsed[2]*5), 4) # scales hand to an int 0,1,2,3,4
+                hand = "H%d" % min(int(float(s_parsed[2])*5), 4) # scales hand to an int 0,1,2,3,4
                 infoset_str+=hand
 
             # if p2
             elif player==1:
-                hand = "H%d" % min(int(s_parsed[5]*5), 4) # scales hand to an int 0,1,2,3,4
+                hand = "H%d" % min(int(float(s_parsed[5])*5), 4) # scales hand to an int 0,1,2,3,4
                 infoset_str+=hand
 
         # if flop or turn, we don't want to add anything yet
         elif s_parsed[0]== "FP" or s_parsed[0]=="TN":
             if s_parsed[0]== "FP":
-                Current_Player_HS = ("H%d" % min(int(s_parsed[3]*5), 4)) if player==0 else ("H%d" % min(int(s_parsed[5]*5), 4))
+                Current_Player_HS = ("H%d" % min(int(float(s_parsed[3])*5), 4)) if player==0 else ("H%d" % min(int(float(s_parsed[5])*5), 4))
 
             elif s_parsed[0]=="TN":
-                Current_Player_HS = ("H%d" % min(int(s_parsed[3]*5), 4)) if player==0 else ("H%d" % min(int(s_parsed[5]*5), 4))
+                Current_Player_HS = ("H%d" % min(int(float(s_parsed[3])*5), 4)) if player==0 else ("H%d" % min(int(float(s_parsed[5])*5), 4))
 
             # set this flag so we start to append discard actions after the flop or turn has happened
             inDiscardSection=True
@@ -453,12 +445,12 @@ def convertHtoI(history, player):
 
             # if p1
             if player==0:
-                hand = "H%d" % min(int(s_parsed[3]*5), 4) # scales hand to an int 0,1,2,3,4
+                hand = "H%d" % min(int(float(s_parsed[3])*5), 4) # scales hand to an int 0,1,2,3,4
                 infoset_str+=hand
 
             # if p2
             elif player==1:
-                hand = "H%d" % min(int(s_parsed[5]*5), 4) # scales hand to an int 0,1,2,3,4
+                hand = "H%d" % min(int(float(s_parsed[5])*5), 4) # scales hand to an int 0,1,2,3,4
                 infoset_str+=hand
 
 
@@ -474,19 +466,19 @@ def convertHtoI(history, player):
                     s_parsed = seq[i].split(":") # new parsed action
 
                     if (s_parsed[0]=="H0" and player==0) or (s_parsed[0]=="H1" and player==1): # if the new hand is relevant to this player
-                        Current_Player_HS = "H%d" % min(int(s_parsed[2]*5), 4) # scales hand to an int 0,1,2,3,4
+                        Current_Player_HS = "H%d" % min(int(float(s_parsed[2])*5), 4) # scales hand to an int 0,1,2,3,4
 
                     else:
                         pass #ignore the hand, not relevant to the current player
 
                 elif s_parsed[1]=="CHECK":
-                    discardSectionActions.insert(0, "*CK") if s_parsed[0]==player else discardSectionActions.append("CK")
+                    discardSectionActions.insert(0, "*CK") if int(s_parsed[0])==player else discardSectionActions.append("CK")
 
-                    if len(discardSectionActions) > 1: # this must be the 2nd player to check, so we are no longer in a discard section
 
-                        infoset_str+="%s.%s.%s" % (discardSectionActions[0], discardSectionActions[1], Current_Player_HS)
-                        inDiscardSection=False
-
+                if len(discardSectionActions) == 2: # we have all of the discard actions, so leave the discard section and add the discard string to the infoset
+                    infoset_str+="%s.%s.%s" % (discardSectionActions[0], discardSectionActions[1], Current_Player_HS)
+                    discardSectionActions=[]
+                    inDiscardSection=False
             else:
 
                 if int(s_parsed[0])==player: # if the player associated with this action is us, add *
@@ -519,8 +511,10 @@ def convertHtoI(history, player):
                     elif s_parsed[2]=="A":
                         infoset_str+="RA"
 
-                else:
-                    assert False, "Error: tried to convert H to I and reached unknown term"
+                elif s_parsed[1]=="FOLD":
+                    pass # don't do anything for folds, just avoid error
+
+                else: assert False, "Error: tried to convert H to I and reached unknown term"
 
 
 
@@ -529,6 +523,8 @@ def convertHtoI(history, player):
 
         #increment
         i+=1
+
+    return infoset_str
 
 
 
@@ -1012,6 +1008,8 @@ def testHistory():
                     print "Action not allowed. Try again."
             print "-----SIMULATING ACTION------"
             h = h.simulateAction(action)
+            infoset = convertHtoI(h,0)
+            print "Information Set:", infoset
         else:
             print "ERROR, not recognized nodetype"
 
