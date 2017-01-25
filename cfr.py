@@ -407,6 +407,20 @@ def convertHtoI(history, player):
     # always starts with a hand
     infoset_str = "%s" 
 
+    discardstr = ""
+    P1_DiscardedFlop = False
+    P2_DiscardedFlop = False
+
+    P1_DiscardedTurn = False
+    P2_DiscardedTurn = False
+
+    Player_HS_Flop = None
+    Player_HS_Turn = None
+
+    inDiscardSection = False
+    actionsLeftInDiscardSection = 2
+    discardSectionActions = []
+
     for s in seq:
         s_parsed = s.split(":")
 
@@ -415,54 +429,94 @@ def convertHtoI(history, player):
 
             # if p1
             if player==0:
-                hand = "H%d" % int(s_parsed[2]*5) # scales hand to an int 0,1,2,3,4
+                hand = "H%d" % min(int(s_parsed[2]*5), 4) # scales hand to an int 0,1,2,3,4
                 infoset_str+=hand
 
             # if p2
             elif player==1:
-                hand = "H%d" % int(s_parsed[5]*5) # scales hand to an int 0,1,2,3,4
+                hand = "H%d" % min(int(s_parsed[5]*5), 4) # scales hand to an int 0,1,2,3,4
                 infoset_str+=hand
 
-        elif int(s_parsed[0])==player: # if the player associated with this action is us, add *
-            infoset_str+="*"
+        # if flop or turn, we don't want to add anything yet
+        elif s_parsed[0]== "FP" or s_parsed[0]=="TN":
+            if s_parsed[0]== "FP":
+                Player_HS_Flop = ("H%d" % min(int(s_parsed[3]*5), 4)) if player==0 else ("H%d" % min(int(s_parsed[5]*5), 4))
 
-        # now shorted different action strings
-        if s_parsed[1]=='CALL':
-            infoset_str+="CL"
+            elif s_parsed[0]=="TN":
+                Player_HS_Turn = ("H%d" % min(int(s_parsed[3]*5), 4)) if player==0 else ("H%d" % min(int(s_parsed[5]*5), 4))
 
-        elif s_parsed[1]=="CHECK":
-            infoset_str+="CK"
+            # set this flag so we start to append discard actions after the flop or turn has happened
+            inDiscardSection=True
 
-        elif s_parsed[1]=="BET":
-            if s_parsed[2]=="H":
-                infoset_str+="BH"
+        # if its the river
+        elif s_parsed[0]=="RV":
 
-            elif s_parsed[2]=="P":
-                infoset_str+="BP"
+            # if p1
+            if player==0:
+                hand = "H%d" % min(int(s_parsed[3]*5), 4) # scales hand to an int 0,1,2,3,4
+                infoset_str+=hand
 
-            elif s_parsed[2]=="A":
-                infoset_str+="BA"
-
-        elif s_parsed[1]=="RAISE":
-            if s_parsed[2]=="H":
-                infoset_str+="RH"
-
-            elif s_parsed[2]=="P":
-                infoset_str+="RP"
-
-            elif s_parsed[2]=="A":
-                infoset_str+="RA"
-
-        elif s_parsed[1]=="DISCARD":
-
-        else:
-            assert False, "Error: tried to convert H to I and reached unknown term"
+            # if p2
+            elif player==1:
+                hand = "H%d" % min(int(s_parsed[5]*5), 4) # scales hand to an int 0,1,2,3,4
+                infoset_str+=hand
 
 
+        else: # this action has a player associated with it
+
+            if inDiscardSection==True: # we are going to collect discard related things
+
+                if s_parsed[1]=="DISCARD":
+                    discardstr = "*D" if s_parsed[0]==player else "D"
+                    discardSectionActions.append(discardstr)
+
+                elif s_parsed[1]=="CHECK":
+                    discardSectionActions.append("CK")
+
+                elif s_parsed[]
 
 
 
-        infoset_str+="." # separate from the next thing
+            else:
+
+                if int(s_parsed[0])==player: # if the player associated with this action is us, add *
+                    infoset_str+="*"
+
+                # now shorted different action strings
+                if s_parsed[1]=='CALL':
+                    infoset_str+="CL"
+
+                elif s_parsed[1]=="CHECK":
+                    infoset_str+="CK"
+
+                elif s_parsed[1]=="BET":
+                    if s_parsed[2]=="H":
+                        infoset_str+="BH"
+
+                    elif s_parsed[2]=="P":
+                        infoset_str+="BP"
+
+                    elif s_parsed[2]=="A":
+                        infoset_str+="BA"
+
+                elif s_parsed[1]=="RAISE":
+                    if s_parsed[2]=="H":
+                        infoset_str+="RH"
+
+                    elif s_parsed[2]=="P":
+                        infoset_str+="RP"
+
+                    elif s_parsed[2]=="A":
+                        infoset_str+="RA"
+
+                else:
+                    assert False, "Error: tried to convert H to I and reached unknown term"
+
+
+
+
+        if not inDiscardSection:
+            infoset_str+="." # separate from the next thing
 
 
 
