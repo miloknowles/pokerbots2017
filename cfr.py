@@ -414,18 +414,18 @@ def convertHtoI(history, player):
     P1_DiscardedTurn = False
     P2_DiscardedTurn = False
 
-    Player_HS_Flop = None
-    Player_HS_Turn = None
+    Current_Player_HS = None
 
     inDiscardSection = False
     actionsLeftInDiscardSection = 2
     discardSectionActions = []
 
-    for s in seq:
-        s_parsed = s.split(":")
+    i=0
+    while i < len(seq):
+        s_parsed = seq[i].split(":")
 
         # inital preflop hands
-        if s_parsed[0] == "H0":
+        if i==0 and s_parsed[0] == "H0":
 
             # if p1
             if player==0:
@@ -440,10 +440,10 @@ def convertHtoI(history, player):
         # if flop or turn, we don't want to add anything yet
         elif s_parsed[0]== "FP" or s_parsed[0]=="TN":
             if s_parsed[0]== "FP":
-                Player_HS_Flop = ("H%d" % min(int(s_parsed[3]*5), 4)) if player==0 else ("H%d" % min(int(s_parsed[5]*5), 4))
+                Current_Player_HS = ("H%d" % min(int(s_parsed[3]*5), 4)) if player==0 else ("H%d" % min(int(s_parsed[5]*5), 4))
 
             elif s_parsed[0]=="TN":
-                Player_HS_Turn = ("H%d" % min(int(s_parsed[3]*5), 4)) if player==0 else ("H%d" % min(int(s_parsed[5]*5), 4))
+                Current_Player_HS = ("H%d" % min(int(s_parsed[3]*5), 4)) if player==0 else ("H%d" % min(int(s_parsed[5]*5), 4))
 
             # set this flag so we start to append discard actions after the flop or turn has happened
             inDiscardSection=True
@@ -467,15 +467,25 @@ def convertHtoI(history, player):
             if inDiscardSection==True: # we are going to collect discard related things
 
                 if s_parsed[1]=="DISCARD":
-                    discardstr = "*D" if s_parsed[0]==player else "D"
-                    discardSectionActions.append(discardstr)
+                    discardSectionActions.insert(0, "*D") if s_parsed[0]==player else discardSectionActions.append("D")
+
+                    # now get the player's new HS from the next i
+                    i+=1
+                    s_parsed = seq[i].split(":") # new parsed action
+
+                    if (s_parsed[0]=="H0" and player==0) or (s_parsed[0]=="H1" and player==1): # if the new hand is relevant to this player
+                        Current_Player_HS = "H%d" % min(int(s_parsed[2]*5), 4) # scales hand to an int 0,1,2,3,4
+
+                    else:
+                        pass #ignore the hand, not relevant to the current player
 
                 elif s_parsed[1]=="CHECK":
-                    discardSectionActions.append("CK")
+                    discardSectionActions.insert(0, "*CK") if s_parsed[0]==player else discardSectionActions.append("CK")
 
-                elif s_parsed[]
+                    if len(discardSectionActions) > 1: # this must be the 2nd player to check, so we are no longer in a discard section
 
-
+                        infoset_str+="%s.%s.%s" % (discardSectionActions[0], discardSectionActions[1], Current_Player_HS)
+                        inDiscardSection=False
 
             else:
 
@@ -514,9 +524,11 @@ def convertHtoI(history, player):
 
 
 
-
         if not inDiscardSection:
             infoset_str+="." # separate from the next thing
+
+        #increment
+        i+=1
 
 
 
