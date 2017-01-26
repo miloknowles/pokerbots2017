@@ -216,7 +216,7 @@ def determineBestCardToKeep(hand, board, iters=1000, highcard_weight=0.03):
     # now we have 2 "neutral" comparison cards
     cmpCard1Str = convertSyntax(cmpCard1)
     cmpCard2Str = convertSyntax(cmpCard2)
-    print "Cmp Cards:", cmpCard1Str, cmpCard2Str
+    #print "Cmp Cards:", cmpCard1Str, cmpCard2Str
 
     # play [C_1, C1*] against [C_2, C2*]
     res1 = calc("%s%s:%s%s" % (originalHandStr[0:2], cmpCard1Str, originalHandStr[2:4], cmpCard2Str), boardStr, "", iters)
@@ -227,8 +227,8 @@ def determineBestCardToKeep(hand, board, iters=1000, highcard_weight=0.03):
     C1_scores = [res1.ev[0], res2.ev[0]] # the EVs for hands where we KEPT C1
     C2_scores = [res1.ev[1], res2.ev[1]] # the EVs for hands where we KEPT C2
 
-    print C1_scores
-    print C2_scores
+    #print C1_scores
+    #print C2_scores
 
     avgC1Score = mean(C1_scores) + highcard_weight * (hand[0].rank-hand[1].rank)
     avgC2Score = mean(C2_scores) + highcard_weight * (hand[1].rank-hand[0].rank)
@@ -254,7 +254,7 @@ def determineBestDiscardFast(hand, board, min_improvement=0.02, iters=100):
 
     # if we were to keep a card, determine which one is best
     keepCard = determineBestCardToKeep(hand, board)
-    print "Playoff thinks we should discard:", 1-keepCard
+    #print "Playoff thinks we should discard:", 1-keepCard
 
     boardStr = convertSyntax(board)
     originalHandEV = calc("%s:xx" % convertSyntax(hand), boardStr, "", 1000).ev[0]
@@ -639,88 +639,87 @@ class History(object):
             assert len(parsedAction) == 2, "Error: Parsed actions should contain exactly 2 items i.e B:2 or D:Ah!"
 
             # BETTING
+            # determine betting range
+            prevBetAmt = abs(self.P1_inPot-self.P2_inPot)
+
+            # minBet/Raise is the same for both players
+            minBet=max(2, prevBetAmt) # min bet is at least a BB (2)
+            #minRaise=self.P1_inPot+self.P2_inPot+minBet
+            
+            if self.ActivePlayer==0:
+                maxBet=self.P1_Bankroll
+                #maxRaise=self.P1_inPot+self.P2_inPot+self.P1_Bankroll # current street pot + P1's bankroll     
             else:
-                # determine betting range
-                prevBetAmt = abs(self.P1_inPot-self.P2_inPot)
+                maxBet=self.P2_Bankroll
+                #maxRaise=self.P1_inPot+self.P2_inPot+self.P2_Bankroll # current street pot + P1's bankroll
 
-                # minBet/Raise is the same for both players
-                minBet=max(2, prevBetAmt) # min bet is at least a BB (2)
-                #minRaise=self.P1_inPot+self.P2_inPot+minBet
-                
-                if self.ActivePlayer==0:
-                    maxBet=self.P1_Bankroll
-                    #maxRaise=self.P1_inPot+self.P2_inPot+self.P1_Bankroll # current street pot + P1's bankroll     
-                else:
-                    maxBet=self.P2_Bankroll
-                    #maxRaise=self.P1_inPot+self.P2_inPot+self.P2_Bankroll # current street pot + P1's bankroll
+            # convert H, P, and A into integer bet amounts
+            if parsedAction[1]=="H": # half pot bet
+                halfPot = int(float(self.Pot) / 2)
+                if halfPot >= minBet and halfPot <= maxBet:
+                    betAmount = halfPot
+                else: # choose the minBet or maxBet, depending on which is closer to the half pot
+                    betAmount = minBet if (float(halfPot) / minBet <= float(maxBet) / halfPot) else maxBet
 
-                # convert H, P, and A into integer bet amounts
-                if parsedAction[1]=="H": # half pot bet
-                    halfPot = int(float(self.Pot) / 2)
-                    if halfPot >= minBet and halfPot <= maxBet:
-                        betAmount = halfPot
-                    else: # choose the minBet or maxBet, depending on which is closer to the half pot
-                        betAmount = minBet if (float(halfPot) / minBet <= float(maxBet) / halfPot) else maxBet
+            elif parsedAction[1]=="P": # full pot bet
+                fullPot = self.Pot
+                # if full pot bet is allowed, do that, otherwise put in as much as possible
+                betAmount = fullPot if (fullPot <= maxBet) else maxBet
 
-                elif parsedAction[1]=="P": # full pot bet
-                    fullPot = self.Pot
-                    # if full pot bet is allowed, do that, otherwise put in as much as possible
-                    betAmount = fullPot if (fullPot <= maxBet) else maxBet
+            elif parsedAction[1]=="A": # all in bet
+                betAmount = maxBet # the max bet always corresponds to going all in
 
-                elif parsedAction[1]=="A": # all in bet
-                    betAmount = maxBet # the max bet always corresponds to going all in
-
-                else:
-                    assert False, "The active player gave a bet/raise amount that was not H,P, or A"
+            else:
+                assert False, "The active player gave a bet/raise amount that was not H,P, or A"
 
 
-                if parsedAction[0] == "B":
-                    assert self.P1_inPot==self.P2_inPot, "Error: if betting, P1 and P2 should have same amount in pot before bet!"
+            if parsedAction[0] == "B":
+                assert self.P1_inPot==self.P2_inPot, "Error: if betting, P1 and P2 should have same amount in pot before bet!"
 
-                    if self.ActivePlayer==0: # P1 bets
-                        newHistory.P1_Bankroll -= betAmount
-                        newHistory.P1_inPot += betAmount
-                        newHistory.Pot += betAmount
+                if self.ActivePlayer==0: # P1 bets
+                    newHistory.P1_Bankroll -= betAmount
+                    newHistory.P1_inPot += betAmount
+                    newHistory.Pot += betAmount
 
-                    else: # P2 bets
-                        newHistory.P2_Bankroll -= betAmount
-                        newHistory.P2_inPot += betAmount
-                        newHistory.Pot += betAmount
+                else: # P2 bets
+                    newHistory.P2_Bankroll -= betAmount
+                    newHistory.P2_inPot += betAmount
+                    newHistory.Pot += betAmount
 
-                    # advance to next betting round if this was second player to act
-                    if self.Street == 0: # BB last to act
-                        if self.ActivePlayer!=self.ButtonPlayer:
-                            newHistory.Round = "B%s" % str(int(self.Round[1])+1)
-                    else: # SB last to act
-                        if self.ActivePlayer==self.ButtonPlayer:
-                            newHistory.Round = "B%s" % str(int(self.Round[1])+1)
+                # advance to next betting round if this was second player to act
+                if self.Street == 0: # BB last to act
+                    if self.ActivePlayer!=self.ButtonPlayer:
+                        newHistory.Round = "B%s" % str(int(self.Round[1])+1)
+                else: # SB last to act
+                    if self.ActivePlayer==self.ButtonPlayer:
+                        newHistory.Round = "B%s" % str(int(self.Round[1])+1)
 
 
-                elif parsedAction[0] == "R":
-                    assert self.P1_inPot != self.P2_inPot, "Error: if raising, P1 and P2 should have unequal amounts in pot"
+            elif parsedAction[0] == "R":
+                assert self.P1_inPot != self.P2_inPot, "Error: if raising, P1 and P2 should have unequal amounts in pot"
 
-                    # we have to call the previous bet AND add the betAmount on top of that
-                    raiseAmount = min(prevBetAmt + betAmount, maxBet)
-                    if self.ActivePlayer == 0: # P1 raising
-                        newHistory.P1_Bankroll -= raiseAmount
-                        newHistory.P1_inPot += raiseAmount
-                        newHistory.Pot += raiseAmount
+                # we have to call the previous bet AND add the betAmount on top of that
+                raiseAmount = min(prevBetAmt + betAmount, maxBet)
+                if self.ActivePlayer == 0: # P1 raising
+                    newHistory.P1_Bankroll -= raiseAmount
+                    newHistory.P1_inPot += raiseAmount
+                    newHistory.Pot += raiseAmount
 
-                    else: # P2 raising
-                        newHistory.P2_Bankroll -= raiseAmount
-                        newHistory.P2_inPot += raiseAmount
-                        newHistory.Pot += raiseAmount
+                else: # P2 raising
+                    newHistory.P2_Bankroll -= raiseAmount
+                    newHistory.P2_inPot += raiseAmount
+                    newHistory.Pot += raiseAmount
 
-                    # advance to next betting round if this was second player to act
-                    if self.Street == 0: # BB last to act
-                        if self.ActivePlayer!=self.ButtonPlayer:
-                            newHistory.Round = "B%s" % str(int(self.Round[1])+1)
-                    else: # SB last to act
-                        if self.ActivePlayer==self.ButtonPlayer:
-                            newHistory.Round = "B%s" % str(int(self.Round[1])+1)
+                # advance to next betting round if this was second player to act
+                if self.Street == 0: # BB last to act
+                    if self.ActivePlayer!=self.ButtonPlayer:
+                        newHistory.Round = "B%s" % str(int(self.Round[1])+1)
+                else: # SB last to act
+                    if self.ActivePlayer==self.ButtonPlayer:
+                        newHistory.Round = "B%s" % str(int(self.Round[1])+1)
 
-                else:
-                    print "Error: submitted an action that didn't fall into any category!"
+            else:
+                print "Error: submitted an action that didn't fall into any category!"
 
 
         # if we entered a new street, reset the inPot values
@@ -843,7 +842,6 @@ class History(object):
             if P2_shouldDiscard:
                 newHistory.History.append("H1:%s:%.3f" % (newHistory.P2_HandStr, getHandStrength(newHistory.P2_HandStr, newHistory.BoardStr)))
 
-
         elif self.Street == 3: # river, add a card
             newHistory.Board.append(newHistory.Dealer.dealCard())
             newHistory.Round = "B1" # betting round 1 is next
@@ -927,6 +925,7 @@ def testHistory():
                     print "Action not allowed. Try again."
             print "-----SIMULATING ACTION------"
             h = h.simulateAction(action)
+            print convertHtoI(h, 0)
         else:
             print "ERROR, not recognized nodetype"
 
