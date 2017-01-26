@@ -2,6 +2,7 @@
 import time
 from cfr import *
 from random import random
+import json
 
 # DEFINE PARAMETERS AND TABLES #
 CUMULATIVE_REGRETS = {} # dictionary of dictionaries
@@ -12,12 +13,12 @@ BETA = 10
 HAND_STRENGTH_ITERS = 1000
 
 def writeCumulativeRegretsToFiles():
-	# TODO
-	pass
+	with open('cumulativeRegrets.json', 'w') as f:
+		json.dump(CUMULATIVE_REGRETS, f, indent=1)
 
 def writeCumulativeStrategyToFiles():
-	# TODO 
-	pass
+	with open('cumulativeStrategy.json', 'w') as f:
+		json.dump(CUMULATIVE_STRATEGY, f, indent=1)
 
 
 def WalkTree(h, i, q):
@@ -48,14 +49,24 @@ def WalkTree(h, i, q):
 
 			# now sample an opponent action based on on the current regret matched strategy
 			legalActions = h.getLegalActions()
+
+			# replace annoying colons from the history
+			for i in range(len(legalActions)):
+				legalActions[i]=legalActions[i].replace(":","")
+				legalActions.replace(":","")
+
 			oppAction = chooseAction(sigma)
 			newH = h.simulateAction(oppAction)
 			return WalkTree(newH, i, q)
 
 
-
 		elif h.ActivePlayer==i: # if it's our action
 			legalActions = h.getLegalActions()
+
+			# replace annoying colons from the history
+			for i in range(len(legalActions)):
+				legalActions[i]=legalActions[i].replace(":","")
+				legalActions.replace(":","")
 
 			# get the cumulative strategy for our current infoset
 			s = getCumulativeStrategy(I) # s = {action1:1.232 action2:17.384, action3:3.129 etc}
@@ -90,24 +101,8 @@ def WalkTree(h, i, q):
 
 			return sigmaEV
 
-
 		else:
 			assert False, "Error: ActivePlayer was neither player."
-
-
-# def shouldSample(s, a):
-# 	"""
-# 	s (dict): the cumulative strategy for a specific information set
-# 	a (str, key in s): the specific action which we will/will not sample
-# 	"""
-# 	averageStrategySum = 0
-# 	for a in s.keys():
-# 		averageStrategySum+=s[a]
-
-# 	# all actions get sampled with probability at least epsilon
-# 	rho = max(EPSILON, float(s[a]) / averageStrategySum)
-
-# 	return True if random() < rho else False
 
 
 def updateCumulativeRegrets(I, regrets, weight):
