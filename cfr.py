@@ -925,7 +925,7 @@ def testHistoryRandom():
     (history, node_type, current_street, current_round, button_player, dealer, \
                     active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board)
     """
-    num_simulations = 1000
+    num_simulations = 100
     sb_player = 0
 
     time0 = time.time()
@@ -951,9 +951,10 @@ def testHistoryRandom():
                 #print "Choosing action:", action
                 h = h.simulateAction(action)
 
-                p = choice([1,2])
-                print convertHtoI(h, p)
-            
+                if h.NodeType == 1:
+                    p = choice([0,1])
+                    print convertHtoI(h, p)
+                
             else:
                 assert False, "Not recognized node type"
 
