@@ -45,7 +45,7 @@ def WalkTree(h, i, q):
         # replace annoying colons from the history (my fault)
         legalActions = h.getLegalActions()
         for j in range(len(legalActions)):
-            legalActions[i]=legalActions[j].replace(":","")
+            legalActions[j]=legalActions[j].replace(":","")
 
         # get the current regret matched strategy (normalize cumulative regrets)
         sigma = getCurrentRegretMatchedStrategy(I, legalActions)
@@ -83,6 +83,7 @@ def WalkTree(h, i, q):
             # sum up the items in s so that we can normalize them
             cumulativeStrategySum = 0
             actions = s.keys()
+            print "Actions:", actions
             for a in actions:
                 actionValues[a] = 0 #set the value of all actions to zero initially
                 cumulativeStrategySum+=s[a]
