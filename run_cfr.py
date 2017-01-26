@@ -1,4 +1,5 @@
 #!/usr/bin/env
+
 import time
 from cfr import *
 from random import random
@@ -11,6 +12,8 @@ EPSILON = 0.05
 TAU = 1000
 BETA = 10
 HAND_STRENGTH_ITERS = 1000
+# END DEFS #
+
 
 def writeCumulativeRegretsToFiles():
 	with open('cumulativeRegrets.json', 'w') as f:
@@ -19,7 +22,6 @@ def writeCumulativeRegretsToFiles():
 def writeCumulativeStrategyToFiles():
 	with open('cumulativeStrategy.json', 'w') as f:
 		json.dump(CUMULATIVE_STRATEGY, f, indent=1)
-
 
 def WalkTree(h, i, q):
 	"""
@@ -35,14 +37,18 @@ def WalkTree(h, i, q):
 		newH = h.simulateChance()
 		return WalkTree(newH, i, q)
 
-	# get the current regret matched strategy
-	I = convertHtoI(h)
+
+	# get the information set for the current history and the player whose perspective we are using
+	I = convertHtoI(h, i)
+
+	# get the current regret matched strategy (normalize cumulative regrets)
 	sigma = getCurrentRegretMatchedStrategy(I)
 
 	else: # this must be an action node
 		assert h.NodeType == 1, "Error: expected an action node!"
 
-		if h.ActivePlayer != i: # if it's an opponent action, sample from current strategy
+		# if it's an opponent action, sample from current regret matched strategy
+		if h.ActivePlayer != i:
 
 			# first, update the cumulative strategy
 			updateCumulativeStrategy(I, sigma, q)
@@ -50,26 +56,30 @@ def WalkTree(h, i, q):
 			# now sample an opponent action based on on the current regret matched strategy
 			legalActions = h.getLegalActions()
 
-			# replace annoying colons from the history
+			# replace annoying colons from the history (my fault)
 			for i in range(len(legalActions)):
 				legalActions[i]=legalActions[i].replace(":","")
-				legalActions.replace(":","")
 
 			oppAction = chooseAction(sigma)
+
+			assert (oppAction in legalActions), "Error: in walkTree, opp chose an action from sigma that is not allowed by history!"
+
 			newH = h.simulateAction(oppAction)
 			return WalkTree(newH, i, q)
 
+		# if it's our action, use average strategy sampling to choose which actions to explore
+		else:
 
-		elif h.ActivePlayer==i: # if it's our action
+			assert h.ActivePlayer==i, "Error: expected the active player to be the SAME as the expected player, got different."
+
 			legalActions = h.getLegalActions()
 
 			# replace annoying colons from the history
 			for i in range(len(legalActions)):
 				legalActions[i]=legalActions[i].replace(":","")
-				legalActions.replace(":","")
 
 			# get the cumulative strategy for our current infoset
-			s = getCumulativeStrategy(I) # s = {action1:1.232 action2:17.384, action3:3.129 etc}
+			s = getCumulativeStrategy(I) # ex. s = {action1:1.232 action2:17.384, action3:3.129 etc}
 
 			# this will store the counterfactual value of each action
 			actionValues = {}
@@ -81,13 +91,16 @@ def WalkTree(h, i, q):
 				values[a] = 0 #set the value of all actions to zero initially
 				cumulativeStrategySum+=s[a]
 
-			# go through each action and decide 
+			# go through each action, normalize and decide whether to sample
 			for a in actions:
+				# rho is the probability that an action is sampled
 				# all actions get sampled with probability at least epsilon
 				rho = max(EPSILON, float(s[a]) / cumulativeStrategySum)
 
 				if random() < rho:
 					newH = h.simulateAction(a)
+					# determine the EV of taking action a by walking down that branch of the tree
+					# q*min(1,rho) is the reach probability of the next node
 					actionValues[a] = WalkTree(newH, i, q*min(1,rho))
 
 			# determine the EV of the current regret-matched strategy (sigma)
@@ -95,50 +108,36 @@ def WalkTree(h, i, q):
 			for a in actions:
 				sigmaEV += sigma[a] * actionValues[a]
 
-			# finally, update the cumulative regrets
+			# UPDATE CUMULATIVE REGRETS
 			for a in actions:
+				# if the action had value greater than the EV of the current strategy, then we 'regret' not taking it!
 				CUMULATIVE_REGRETS[I][a] += (values[a] - sigmaEV)
 
+			# finally, return the EV of the current regret-matched strategy for the current infoset
 			return sigmaEV
 
-		else:
-			assert False, "Error: ActivePlayer was neither player."
-
-
-def updateCumulativeRegrets(I, regrets, weight):
-    """
-    Updates the cumulative regret table for information set I by adding new regrets.
-    I (string): the information set we're working with
-    regrets: a list of regrets for each action at the current information set
-    """
-    if I in CUMULATIVE_REGRETS:
-        assert len(CUMULATIVE_REGRETS[I]) == len(regrets), "ERROR: Tried to update cumulative regrets with wrong number of regrets."
-
-        # add the new set of regrets on to the cumulative regrets
-        for a in range(len(regrets)):
-            CUMULATIVE_REGRETS[I][a] += regrets[a]
-    else:
-        print "Information set ", I, " not found in cumulative regrets. Adding first regrets."
-        CUMULATIVE_REGRETS[I] = regrets
-
-    #TODO: need to weight regret update by some probability
-    assert(False)
-
-
-def getCumulativeStrategy(I):
+def getCumulativeStrategy(I, legalActions):
     """
     I (string): the information set that we want to look up the cumulative strategy for
 
     Gets cumulative strategy for information set I if it exists, else returns 0.
     """
     if I in CUMULATIVE_STRATEGY:
-        return CUMULATIVE_STRATEGY[I]
+    	s = CUMULATIVE_STRATEGY[I]
+    	assert len(legalActions)==len(s), "Error: number of actions in cumulative strategy lookup != that of legalActions!"
+        return s
     else:
-        print "Infoset ", I, " not in CUMULATIVE_STRATEGY, returning None" 
-        return None
+        print "Infoset ", I, " not in CUMULATIVE_STRATEGY, adding to dict, returning zeroes"
+        s = {}
+        for a in legalActions:
+        	s[a] = 0
+
+        # initialize a new entry in the cumulative strategy, with all zeroes
+        CUMULATIVE_STRATEGY[I] = s
+        return s
 
 
-def updateCumulativeStrategy(I, action_dict, weight):
+def updateCumulativeStrategy(I, action_dict, q):
     """
     Updates the cumulative strategy table for information set I by adding on latest strategy profile.
     I (string): the information set we're working with
@@ -149,25 +148,32 @@ def updateCumulativeStrategy(I, action_dict, weight):
 
         # add the new set of strategy probabilities on to the cumulative strategy
         for a in action_dict.keys():
-            CUMULATIVE_STRATEGY[I][a] += action_dict[a]
+            CUMULATIVE_STRATEGY[I][a] += float(action_dict[a]) / q
     else:
         print "Information set ", I, " not found in cumulative strategy. Adding first strategy profile."
-        CUMULATIVE_STRATEGY[I] = action_dict
+        for a in action_dict.keys():
+            CUMULATIVE_STRATEGY[I][a] = float(action_dict[a]) / q
 
-    #TODO: need to weight strategy update by some probability
-    assert(False)
 
-def getCumulativeRegrets(I):
+def getCumulativeRegrets(I, legalActions):
 """
 I (string): the information set that we want to look up the cumulative regrets for
 
-Gets cumulative regrets for information set I if they exist, else returns 0.
+Gets cumulative regrets for information set I if they exist, else creates new entry of all zeroes.
 """
 	if I in CUMULATIVE_REGRETS:
-	    return CUMULATIVE_REGRETS[I]
+		R = CUMULATIVE_REGRETS[I]
+		assert len(legalActions)==len(R), "Error: num. actions in cumulative regrets differs from num. legalActions!"
+	    return R
 	else:
-	    print "Infoset ", I, " not in CUMULATIVE_REGRETS, returning None" 
-	    return None
+	    print "Infoset ", I, " not in CUMULATIVE_REGRETS, creating entry with all zeroes" 
+
+	    R = {}
+	    for a in legalActions:
+	    	R[a]=0
+
+	    CUMULATIVE_REGRETS[I]=R
+	    return R
 
 
 def getCurrentRegretMatchedStrategy(I, legalActions):
@@ -178,21 +184,23 @@ def getCurrentRegretMatchedStrategy(I, legalActions):
     If we haven't hit this information set before, strategy will be evenly distributed across all legal actions.
     Otherwise, do regret matching on cumulative regrets for this information set.
     """
-    cumulativeRegrets = getCumulativeRegrets(I) # a dictionary with action:regret pairs
+    cumulativeRegrets = getCumulativeRegrets(I, legalActions) # a dictionary with action:regret pairs
 
-    if cumulativeRegrets == None: #have not hit this infoset yet: choose randomly from actions
+    # sum up all of the entries
+    # Note: if regrets are less than zero, just add zero on
+    rsum = 0
+    for r in cumulativeRegrets.itervalues():
+    	rsum += r if r >= 0 else 0
+
+    if rsum == 0: # this means we haven't hit this Infoset before, so assign a uniform strategy
     	for a in legalActions:
     		strategy[a] = 1.0 / len(legalActions)
 
     else: # do regret matching
 
-        # check that we have the same number of legal actions as actions stored in cumulative regret tables
-        assert len(cumulativeRegrets)==len(legalActions), "Number of actions stored in cum. regret tables does not match num. of legal actions for I!"
-
-        # regret matching: normalize regrets
-        rsum = float(sum(cumulativeRegrets.itervalues()))
         for a in legalActions:
-        	strategy[a] = cumulativeRegrets[a] / rsum
+        	# note: if negative regrets for an action, it is chosen with probability 0
+        	strategy[a] = (cumulativeRegrets[a] / float(rsum)) if cumulativeRegrets[a]>0 else 0
 
     return strategy
 
@@ -212,4 +220,55 @@ def chooseAction(action_dict):
         if random_float <= cutoff:
             return a
 
+def runCFR():
+	"""
+	# DEFINE PARAMETERS AND TABLES #
+	CUMULATIVE_REGRETS = {} # dictionary of dictionaries
+	CUMULATIVE_STRATEGY = {} # dictionary of dictionaries
+	EPSILON = 0.05
+	TAU = 1000
+	BETA = 10
+	HAND_STRENGTH_ITERS = 1000
+	# END DEFS #
 
+	History Params: (history, node_type, current_street, current_round, button_player, dealer, \
+                    active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board)
+	"""
+	beginCFRTime = time.time()
+
+	sbPlayer = 0
+	treeWalkCounter = 0
+	while continueCFR == True:
+
+		try:
+			initialDealer = Dealer()
+			startHistory = History([], 0, 0, 0, sbPlayer, initialDealer, sbPlayer, 0, 0, 0, 200, 200, [], [], [])
+		
+			WalkTree(startHistory, 0, 1.0) # always go from P1 perspective, but alternate SB player every time
+			treeWalkCounter += 1
+
+			# alternate to the other sb player
+			sbPlayer = (sbPlayer+1) % 2
+
+			print "Tree Walk #:", treeWalkCounter
+			print "Entries in CR:", len(CUMULATIVE_REGRETS)
+			print "Entries in CS:", len(CUMULATIVE_STRATEGY)
+
+			# every 100 walks, save to json file
+			if treeWalkCounter % 100 == 0:
+				writeCumulativeStrategyToFiles()
+				writeCumulativeRegretsToFiles()
+
+		except: # if there is an error, write everything to files
+			writeCumulativeStrategyToFiles()
+			writeCumulativeRegretsToFiles()
+
+
+	endCFRTime = time.time()
+	print "------------- ENDED CFR --------------"
+	print "RAN CFR FOR:", endCFRTime-beginCFRTime, "secs"
+
+
+
+if __name__ == '__main__':
+	runCFR()
