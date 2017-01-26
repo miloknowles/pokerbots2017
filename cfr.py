@@ -13,7 +13,6 @@ from pbots_calc import calc, Results
 from copy import deepcopy
 
 
-
 def buildFullDeck():
     """
     Vals: 2-14 = 2-A
