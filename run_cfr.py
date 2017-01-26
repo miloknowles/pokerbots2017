@@ -83,7 +83,7 @@ def WalkTree(h, i, q):
             # sum up the items in s so that we can normalize them
             cumulativeStrategySum = 0
             actions = s.keys()
-            print "Actions:", actions
+            #print "Actions:", actions
             for a in actions:
                 actionValues[a] = 0 #set the value of all actions to zero initially
                 cumulativeStrategySum+=s[a]
@@ -129,7 +129,7 @@ def getCumulativeStrategy(I, legalActions):
         assert len(legalActions)==len(s), "Error: number of actions in cumulative strategy lookup != that of legalActions!"
         return s
     else:
-        print "Infoset ", I, " not in CUMULATIVE_STRATEGY, adding to dict, returning zeroes"
+        #print "Infoset ", I, " not in CUMULATIVE_STRATEGY, adding to dict, returning zeroes"
         s = {}
         for a in legalActions:
             s[a] = 0
@@ -152,7 +152,7 @@ def updateCumulativeStrategy(I, action_dict, q):
         for a in action_dict.keys():
             CUMULATIVE_STRATEGY[I][a] += float(action_dict[a]) / q
     else:
-        print "Information set ", I, " not found in cumulative strategy. Adding first strategy profile."
+        #print "Information set ", I, " not found in cumulative strategy. Adding first strategy profile."
 
         s = {}
         for a in action_dict.keys():
@@ -171,7 +171,7 @@ def getCumulativeRegrets(I, legalActions):
         assert len(legalActions)==len(R), "Error: num. actions in cumulative regrets differs from num. legalActions!"
         return R
     else:
-        print "Infoset ", I, " not in CUMULATIVE_REGRETS, creating entry with all zeroes" 
+        #print "Infoset ", I, " not in CUMULATIVE_REGRETS, creating entry with all zeroes" 
 
         R = {}
         for a in legalActions:
@@ -258,12 +258,13 @@ def runCFR():
         # alternate to the other sb player
         sbPlayer = (sbPlayer+1) % 2
 
-        print "Tree Walk #:", treeWalkCounter
+        print "$$$ TREE WALK #:", treeWalkCounter, "$$$"
         print "Entries in CR:", len(CUMULATIVE_REGRETS)
         print "Entries in CS:", len(CUMULATIVE_STRATEGY)
 
         # every 100 walks, save to json file
-        if treeWalkCounter % 100 == 0:
+        if treeWalkCounter % 10 == 0:
+            print "### WRITING TO LOGS ###"
             writeCumulativeStrategyToFiles()
             writeCumulativeRegretsToFiles()
 
