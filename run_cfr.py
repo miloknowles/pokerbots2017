@@ -5,16 +5,6 @@ from cfr import *
 from random import random
 import json
 
-# DEFINE PARAMETERS AND TABLES #
-CUMULATIVE_REGRETS = {} # dictionary of dictionaries
-CUMULATIVE_STRATEGY = {} # dictionary of dictionaries
-EPSILON = 0.05
-TAU = 1000
-BETA = 100
-HAND_STRENGTH_ITERS = 1000
-# END DEFS #
-
-
 def writeCumulativeRegretsToFiles():
     with open('cumulativeRegrets.json', 'w') as f:
         json.dump(CUMULATIVE_REGRETS, f, indent=1)
@@ -50,13 +40,13 @@ def WalkTree(h, i, q):
         # get the current regret matched strategy (normalize cumulative regrets)
         sigma = getCurrentRegretMatchedStrategy(I, legalActions)
 
+        # first, update the cumulative strategy
+        updateCumulativeStrategy(I, sigma, q)
+
         assert h.NodeType == 1, "Error: expected an action node!"
 
         # if it's an opponent action, sample from current regret matched strategy
         if h.ActivePlayer != i:
-
-            # first, update the cumulative strategy
-            updateCumulativeStrategy(I, sigma, q)
 
             # now sample an opponent action based on on the current regret matched strategy
             oppAction = chooseAction(sigma)
@@ -104,6 +94,8 @@ def WalkTree(h, i, q):
                     # determine the EV of taking action a by walking down that branch of the tree
                     # q*min(1,rho) is the reach probability of the next node
                     actionValues[a] = WalkTree(newH, i, q*min(1,rho))
+
+            #print "CF Value of Actions:", actionValues
 
             # determine the EV of the current regret-matched strategy (sigma)
             sigmaEV = 0
@@ -167,6 +159,8 @@ def getCumulativeRegrets(I, legalActions):
     Gets cumulative regrets for information set I if they exist, else creates new entry of all zeroes.
     """
     if I in CUMULATIVE_REGRETS:
+        global ISETS_REVISITED
+        ISETS_REVISITED += 1
         R = CUMULATIVE_REGRETS[I]
         assert len(legalActions)==len(R), "Error: num. actions in cumulative regrets differs from num. legalActions!"
         return R
@@ -228,18 +222,28 @@ def chooseAction(action_dict):
 
 def runCFR():
     """
-    # DEFINE PARAMETERS AND TABLES #
-    CUMULATIVE_REGRETS = {} # dictionary of dictionaries
-    CUMULATIVE_STRATEGY = {} # dictionary of dictionaries
-    EPSILON = 0.05
-    TAU = 1000
-    BETA = 10
-    HAND_STRENGTH_ITERS = 1000
-    # END DEFS #
-
     History Params: (history, node_type, current_street, current_round, button_player, dealer, \
                     active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board)
     """
+    # DEFINE PARAMETERS AND TABLES #
+    global CUMULATIVE_REGRETS, CUMULATIVE_STRATEGY, EPSILON, BETA, HAND_STRENGTH_ITERS, ISETS_REVISITED
+    CUMULATIVE_REGRETS = {} # dictionary of dictionaries
+    CUMULATIVE_STRATEGY = {} # dictionary of dictionaries
+
+    # load existing json files if they exist
+    with open('cumulativeRegrets.json') as crFile:    
+        CUMULATIVE_REGRETS = json.load(crFile)
+
+    with open('cumulativeStrategy.json') as csFile:    
+        CUMULATIVE_REGRETS = json.load(csFile)
+
+    EPSILON = 0.1
+    #TAU = 1000
+    BETA = 10
+    HAND_STRENGTH_ITERS = 1000
+    ISETS_REVISITED = 0
+    # END DEFS #
+
     beginCFRTime = time.time()
 
     # stuff for the cfr loop to use
@@ -261,9 +265,11 @@ def runCFR():
         print "$$$ TREE WALK #:", treeWalkCounter, "$$$"
         print "Entries in CR:", len(CUMULATIVE_REGRETS)
         print "Entries in CS:", len(CUMULATIVE_STRATEGY)
+        print "Infosets Revisited:", ISETS_REVISITED
+        print "*** RUNTIME: %s ***" % str(time.time() - beginCFRTime)
 
         # every 100 walks, save to json file
-        if treeWalkCounter % 10 == 0:
+        if treeWalkCounter % 100 == 0:
             print "### WRITING TO LOGS ###"
             writeCumulativeStrategyToFiles()
             writeCumulativeRegretsToFiles()
