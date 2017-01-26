@@ -290,10 +290,10 @@ def convertHtoI(history, player):
     Uses predefined abstraction rules to convert a sequency (history) into an information set.
     Note: player determines whose point of view the history is represented from (0 or 1)
 
-    ['H0:KcQh:0.609:H1:Ad9s:0.580', '0:CALL', '1:BET:H', '0:CALL', 'FP:7s6c3s:H0:0.625:H1:0.586', 
-    '1:DISCARD:0', 'H1:9c9s:0.745', '0:DISCARD:1', 'H0:Kc5c:0.498', '1:BET:P', '0:RAISE:P', 
-    '1:CALL', 'TN:7s6c3sQs:H0:0.552:H1:0.710', '1:CHECK', '0:DISCARD:0', 'H0:3d5c:0.432', '1:CHECK', 
-    '0:CHECK', 'RV:7s6c3sQsJc:H0:0.362:H1:0.727', '1:CHECK', '0:BET:A', '1:FOLD']
+    ['H0:KcQh:0.609:H1:Ad9s:0.580', '0:CL', '1:B:H', '0:CL', 'FP:7s6c3s:H0:0.625:H1:0.586', 
+    '1:D:0', 'H1:9c9s:0.745', '0:D:1', 'H0:Kc5c:0.498', '1:B:P', '0:R:P', 
+    '1:CL', 'TN:7s6c3sQs:H0:0.552:H1:0.710', '1:CK', '0:D:0', 'H0:3d5c:0.432', '1:CK', 
+    '0:CK', 'RV:7s6c3sQsJc:H0:0.362:H1:0.727', '1:CK', '0:B:A', '1:F']
     """
     seq = history.History # a list of actions
 
@@ -351,7 +351,7 @@ def convertHtoI(history, player):
 
             if inDiscardSection==True: # we are going to collect discard related things
 
-                if s_parsed[1]=="DISCARD":
+                if s_parsed[1]=="D":
                     discardSectionActions.insert(0, "*D") if s_parsed[0]==player else discardSectionActions.append("D")
 
                     # now get the player's new HS from the next i
@@ -364,7 +364,7 @@ def convertHtoI(history, player):
                     else:
                         pass #ignore the hand, not relevant to the current player
 
-                elif s_parsed[1]=="CHECK":
+                elif s_parsed[1]=="CK":
                     discardSectionActions.insert(0, "*CK") if int(s_parsed[0])==player else discardSectionActions.append("CK")
 
 
@@ -378,13 +378,13 @@ def convertHtoI(history, player):
                     infoset_str+="*"
 
                 # now shorted different action strings
-                if s_parsed[1]=='CALL':
+                if s_parsed[1]=='CL':
                     infoset_str+="CL"
 
-                elif s_parsed[1]=="CHECK":
+                elif s_parsed[1]=="CK":
                     infoset_str+="CK"
 
-                elif s_parsed[1]=="BET":
+                elif s_parsed[1]=="B":
                     if s_parsed[2]=="H":
                         infoset_str+="BH"
 
@@ -394,7 +394,7 @@ def convertHtoI(history, player):
                     elif s_parsed[2]=="A":
                         infoset_str+="BA"
 
-                elif s_parsed[1]=="RAISE":
+                elif s_parsed[1]=="R":
                     if s_parsed[2]=="H":
                         infoset_str+="RH"
 
@@ -404,7 +404,7 @@ def convertHtoI(history, player):
                     elif s_parsed[2]=="A":
                         infoset_str+="RA"
 
-                elif s_parsed[1]=="FOLD":
+                elif s_parsed[1]=="F":
                     pass # don't do anything for folds, just avoid error
 
                 else: assert False, "Error: tried to convert H to I and reached unknown term"
@@ -487,9 +487,9 @@ class History(object):
         """
         assert self.NodeType == 1, "Error: trying to get legal actions for a non-action node!"
 
-        # IF WE ARE AT A DISCARD ACTION NODE
+        # IF WE ARE AT A D ACTION NODE
         if ((self.Street == 1 or self.Street == 2) and self.Round == "D"): # flop/turn, and we have the option to discard
-            return ["CHECK", "DISCARD:0", "DISCARD:1"]
+            return ["CK", "D:0", "D:1"]
 
         # ELSE THIS IS A BETTING ACTION NODE
         else:
@@ -500,49 +500,49 @@ class History(object):
             if self.P1_Bankroll==0 or self.P2_Bankroll==0:
                 if self.ActivePlayer==0:
                     if self.P1_Bankroll==0: # if the active player has no money, they can only check
-                        return ["CHECK"]
-                    else: # the other player must have no money, so they will only be able to FOLD, CALL, or CHECK, depending on the case
-                        # if P1's opponent has no money, but has more in the pot, P1 can FOLD or CALL
+                        return ["CK"]
+                    else: # the other player must have no money, so they will only be able to F, CL, or CK, depending on the case
+                        # if P1's opponent has no money, but has more in the pot, P1 can F or CL
                         if prevBetAmt > 0:
-                            return ["FOLD", "CALL"]
+                            return ["F", "CL"]
                         else: # no prev bet, so should check
-                            return ["CHECK"]
+                            return ["CK"]
                 else: 
                     if self.P2_Bankroll==0: 
-                        return ["CHECK"]
-                    else: # the other player must have no money, so they will only be able to FOLD, CALL, or CHECK, depending on the case
-                        # if P2's opponent has no money, but has more in the pot, P2 can FOLD or CALL
+                        return ["CK"]
+                    else: # the other player must have no money, so they will only be able to F, CL, or CK, depending on the case
+                        # if P2's opponent has no money, but has more in the pot, P2 can F or CL
                         if prevBetAmt > 0:
-                            return ["FOLD", "CALL"]
+                            return ["F", "CL"]
                         else: # no prev bet, so should check
-                            return ["CHECK"]
+                            return ["CK"]
 
             
             # if there have already been 3 betting rounds, end the betting with either fold or call
             if self.Round == "B4":
                 assert prevBetAmt > 0, "Error: previous bet amount must have been > 0 to reach B3"
-                actions = ["FOLD", "CALL"]
+                actions = ["F", "CL"]
 
             else: #B1, B2, B3
 
                 # if no bets yet: we can check, bet half-pot, bet pot, or go all-in
                 if prevBetAmt==0:
-                    actions = ["CHECK", "BET:H", "BET:P", "BET:A"]
+                    actions = ["CK", "B:H", "B:P", "B:A"]
 
                 # if a bet HAS been placed during this round: we can fold, call, raise by pot, or raise by all-in amount
                 if prevBetAmt > 0:
-                    actions = ["FOLD", "CALL", "RAISE:P", "RAISE:A"]
+                    actions = ["F", "CL", "R:P", "R:A"]
 
                 # remove any bets (besides all-in) that would make us or the opponent pot-committed
                 if (float(self.Pot) / 2) > self.P1_Bankroll*0.6 or (float(self.Pot) / 2) > self.P2_Bankroll*0.6:
-                    if "BET:P" in actions:
-                        actions.remove("BET:P")
-                    if "BET:H" in actions:
-                        actions.remove("BET:H")
-                    if "RAISE:P" in actions:
-                        actions.remove("RAISE:P")
-                    if "RAISE:H" in actions:
-                        actions.remove("RAISE:H")
+                    if "B:P" in actions:
+                        actions.remove("B:P")
+                    if "B:H" in actions:
+                        actions.remove("B:H")
+                    if "R:P" in actions:
+                        actions.remove("R:P")
+                    if "R:H" in actions:
+                        actions.remove("R:H")
 
 
         return actions
@@ -563,11 +563,11 @@ class History(object):
         shouldAppendNewHand = False
 
         # BASIC ACTIONS
-        if action=="FOLD":
+        if action=="F":
             newHistory.NodeType = 2 # the advanced node will be terminal
             
 
-        elif action=="CHECK":
+        elif action=="CK":
             # see if check was during a discard round OR betting round
             if self.Round == "D":
                 # if the active player is the LAST to act (BB), we move on to betting
@@ -595,7 +595,7 @@ class History(object):
                         pass
 
 
-        elif action=="CALL":
+        elif action=="CL":
 
             if self.Street != 0: # if not preflop, a call ends the current betting round
                 newHistory.NodeType = 2 if self.Street == 3 else 0
@@ -638,10 +638,10 @@ class History(object):
         else: # PARSED ACTIONS
 
             parsedAction = action.split(":")
-            assert len(parsedAction) == 2, "Error: Parsed actions should contain exactly 2 items i.e BET:2 or DISCARD:Ah!"
+            assert len(parsedAction) == 2, "Error: Parsed actions should contain exactly 2 items i.e B:2 or D:Ah!"
 
-            # DISCARD
-            if parsedAction[0] == "DISCARD":
+            # D
+            if parsedAction[0] == "D":
                 shouldAppendNewHand = True
                 # replace the card at the correct index with a new one from the dealer
                 if self.ActivePlayer==0: # if P1 discards
@@ -692,7 +692,7 @@ class History(object):
                     assert False, "The active player gave a bet/raise amount that was not H,P, or A"
 
 
-                if parsedAction[0] == "BET":
+                if parsedAction[0] == "B":
                     assert self.P1_inPot==self.P2_inPot, "Error: if betting, P1 and P2 should have same amount in pot before bet!"
 
                     if self.ActivePlayer==0: # P1 bets
@@ -714,7 +714,7 @@ class History(object):
                             newHistory.Round = "B%s" % str(int(self.Round[1])+1)
 
 
-                elif parsedAction[0] == "RAISE":
+                elif parsedAction[0] == "R":
                     assert self.P1_inPot != self.P2_inPot, "Error: if raising, P1 and P2 should have unequal amounts in pot"
 
                     # we have to call the previous bet AND add the betAmount on top of that
@@ -832,7 +832,7 @@ class History(object):
 
         # if the node is terminal because of a fold
         lastAction = self.History[-1].split(":")
-        if lastAction[1] == "FOLD":
+        if lastAction[1] == "F":
             foldPlayer = int(lastAction[0])
             winPlayer = (foldPlayer + 1) % 2
             assert foldPlayer != winPlayer, "Error: fold player cannot be winning player!"
@@ -870,3 +870,38 @@ class History(object):
         else:
             assert False, "Error: reached a terminal node for a reason we didn't account for!"
 
+
+def testHistory():
+    """
+    (history, node_type, current_street, current_round, button_player, dealer, \
+                    active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board)
+    """
+    initialDealer = Dealer()
+    h = History([], 0, 0, 0, 0, initialDealer, 0, 0, 0, 0, 200, 200, [], [], [])
+
+    while(h.NodeType != 2): # while not terminal, simulate
+        if h.NodeType == 0:
+            h.printAttr()
+            print "-----SIMULATING CHANCE------"
+            h = h.simulateChance()
+        elif h.NodeType == 1:
+            h.printAttr()
+            actions = h.getLegalActions()
+            print "Legal Actions:", actions
+
+            givenAction=False
+            while(not givenAction):
+                action = raw_input("Choose action: ")
+                if action in actions:
+                    givenAction=True
+                else:
+                    print "Action not allowed. Try again."
+            print "-----SIMULATING ACTION------"
+            h = h.simulateAction(action)
+        else:
+            print "ERROR, not recognized nodetype"
+
+    print "------TERMINAL NODE REACHED------"
+    h.printAttr()
+
+testHistory()
