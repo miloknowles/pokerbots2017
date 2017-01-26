@@ -241,7 +241,7 @@ def determineBestCardToKeep(hand, board, iters=1000, highcard_weight=0.03):
     return keepCard
 
 
-def determineBestDiscardFast(hand, board, min_improvement=0.05, iters=100):
+def determineBestDiscardFast(hand, board, min_improvement=0.02, iters=100):
     """
     min_improvement: the EV % that swapping must increase our hand by in order to go for the swap
 
@@ -488,62 +488,60 @@ class History(object):
         assert self.NodeType == 1, "Error: trying to get legal actions for a non-action node!"
 
         # IF WE ARE AT A D ACTION NODE
-        if ((self.Street == 1 or self.Street == 2) and self.Round == "D"): # flop/turn, and we have the option to discard
-            return ["CK", "D:0", "D:1"]
+        # if ((self.Street == 1 or self.Street == 2) and self.Round == "D"): # flop/turn, and we have the option to discard
+        #     return ["CK", "D"]
 
         # ELSE THIS IS A BETTING ACTION NODE
-        else:
-            # determine if there was a bet already during this round
-            prevBetAmt = abs(self.P1_inPot-self.P2_inPot)
+        # determine if there was a bet already during this round
+        prevBetAmt = abs(self.P1_inPot-self.P2_inPot)
 
-            # if either player is all-in, the only options are to check
-            if self.P1_Bankroll==0 or self.P2_Bankroll==0:
-                if self.ActivePlayer==0:
-                    if self.P1_Bankroll==0: # if the active player has no money, they can only check
+        # if either player is all-in, the only options are to check
+        if self.P1_Bankroll==0 or self.P2_Bankroll==0:
+            if self.ActivePlayer==0:
+                if self.P1_Bankroll==0: # if the active player has no money, they can only check
+                    return ["CK"]
+                else: # the other player must have no money, so they will only be able to F, CL, or CK, depending on the case
+                    # if P1's opponent has no money, but has more in the pot, P1 can F or CL
+                    if prevBetAmt > 0:
+                        return ["F", "CL"]
+                    else: # no prev bet, so should check
                         return ["CK"]
-                    else: # the other player must have no money, so they will only be able to F, CL, or CK, depending on the case
-                        # if P1's opponent has no money, but has more in the pot, P1 can F or CL
-                        if prevBetAmt > 0:
-                            return ["F", "CL"]
-                        else: # no prev bet, so should check
-                            return ["CK"]
-                else: 
-                    if self.P2_Bankroll==0: 
+            else: 
+                if self.P2_Bankroll==0: 
+                    return ["CK"]
+                else: # the other player must have no money, so they will only be able to F, CL, or CK, depending on the case
+                    # if P2's opponent has no money, but has more in the pot, P2 can F or CL
+                    if prevBetAmt > 0:
+                        return ["F", "CL"]
+                    else: # no prev bet, so should check
                         return ["CK"]
-                    else: # the other player must have no money, so they will only be able to F, CL, or CK, depending on the case
-                        # if P2's opponent has no money, but has more in the pot, P2 can F or CL
-                        if prevBetAmt > 0:
-                            return ["F", "CL"]
-                        else: # no prev bet, so should check
-                            return ["CK"]
 
-            
-            # if there have already been 3 betting rounds, end the betting with either fold or call
-            if self.Round == "B4":
-                assert prevBetAmt > 0, "Error: previous bet amount must have been > 0 to reach B3"
-                actions = ["F", "CL"]
+        
+        # if there have already been 3 betting rounds, end the betting with either fold or call
+        if self.Round == "B4":
+            assert prevBetAmt > 0, "Error: previous bet amount must have been > 0 to reach B3"
+            actions = ["F", "CL"]
 
-            else: #B1, B2, B3
+        else: #B1, B2, B3
 
-                # if no bets yet: we can check, bet half-pot, bet pot, or go all-in
-                if prevBetAmt==0:
-                    actions = ["CK", "B:H", "B:P", "B:A"]
+            # if no bets yet: we can check, bet half-pot, bet pot, or go all-in
+            if prevBetAmt==0:
+                actions = ["CK", "B:H", "B:P", "B:A"]
 
-                # if a bet HAS been placed during this round: we can fold, call, raise by pot, or raise by all-in amount
-                if prevBetAmt > 0:
-                    actions = ["F", "CL", "R:P", "R:A"]
+            # if a bet HAS been placed during this round: we can fold, call, raise by pot, or raise by all-in amount
+            if prevBetAmt > 0:
+                actions = ["F", "CL", "R:P", "R:A"]
 
-                # remove any bets (besides all-in) that would make us or the opponent pot-committed
-                if (float(self.Pot) / 2) > self.P1_Bankroll*0.6 or (float(self.Pot) / 2) > self.P2_Bankroll*0.6:
-                    if "B:P" in actions:
-                        actions.remove("B:P")
-                    if "B:H" in actions:
-                        actions.remove("B:H")
-                    if "R:P" in actions:
-                        actions.remove("R:P")
-                    if "R:H" in actions:
-                        actions.remove("R:H")
-
+            # remove any bets (besides all-in) that would make us or the opponent pot-committed
+            if (float(self.Pot) / 2) > self.P1_Bankroll*0.6 or (float(self.Pot) / 2) > self.P2_Bankroll*0.6:
+                if "B:P" in actions:
+                    actions.remove("B:P")
+                if "B:H" in actions:
+                    actions.remove("B:H")
+                if "R:P" in actions:
+                    actions.remove("R:P")
+                if "R:H" in actions:
+                    actions.remove("R:H")
 
         return actions
 
@@ -557,7 +555,7 @@ class History(object):
         newHistory = deepcopy(self)
 
         # double check that this action is actually allowed
-        assert action in self.getLegalActions(), "Error: tried to simulate an action that is not allowed."
+        # assert action in self.getLegalActions(), "Error: tried to simulate an action that is not allowed."
 
         # this flag is used to add the new hand to the history if a discard happens
         shouldAppendNewHand = False
@@ -568,31 +566,31 @@ class History(object):
             
 
         elif action=="CK":
-            # see if check was during a discard round OR betting round
-            if self.Round == "D":
-                # if the active player is the LAST to act (BB), we move on to betting
-                # else, we remain in the discard round for the next player
-                newHistory.Round = "B1" if (self.ActivePlayer==self.ButtonPlayer) else "D"
+            # # see if check was during a discard round OR betting round
+            # if self.Round == "D":
+            #     # if the active player is the LAST to act (BB), we move on to betting
+            #     # else, we remain in the discard round for the next player
+            #     newHistory.Round = "B1" if (self.ActivePlayer==self.ButtonPlayer) else "D"
 
-            else: # betting round
-                # preflop if the bb checks, the betting round is over
-                if self.Street == 0:
-                    if self.ActivePlayer != self.ButtonPlayer: # if the BB checks
-                        newHistory.Street += 1
-                        newHistory.NodeType = 0
-                        newHistory.Round = "0"
+            # betting round
+            # preflop if the bb checks, the betting round is over
+            if self.Street == 0:
+                if self.ActivePlayer != self.ButtonPlayer: # if the BB checks
+                    newHistory.Street += 1
+                    newHistory.NodeType = 0
+                    newHistory.Round = "0"
 
-                # if the player is the second to act and checks, then the betting round is over
-                else: # postflop
-                    if self.ActivePlayer == self.ButtonPlayer:
-                        newHistory.Street += 1
-                        # if we're finishing the river, then we've reachd a terminal node
-                        # else, next up is a chance node 
-                        newHistory.NodeType = 2 if (self.Street == 3) else 0
-                        newHistory.Round = "0"
+            # if the player is the second to act and checks, then the betting round is over
+            else: # postflop
+                if self.ActivePlayer == self.ButtonPlayer:
+                    newHistory.Street += 1
+                    # if we're finishing the river, then we've reachd a terminal node
+                    # else, next up is a chance node 
+                    newHistory.NodeType = 2 if (self.Street == 3) else 0
+                    newHistory.Round = "0"
 
-                    else: # the player was first to act, so we just go to the next player without making many changes
-                        pass
+                else: # the player was first to act, so we just go to the next player without making many changes
+                    pass
 
 
         elif action=="CL":
@@ -639,22 +637,6 @@ class History(object):
 
             parsedAction = action.split(":")
             assert len(parsedAction) == 2, "Error: Parsed actions should contain exactly 2 items i.e B:2 or D:Ah!"
-
-            # D
-            if parsedAction[0] == "D":
-                shouldAppendNewHand = True
-                # replace the card at the correct index with a new one from the dealer
-                if self.ActivePlayer==0: # if P1 discards
-                    newHistory.P1_Hand[int(parsedAction[1])] = newHistory.Dealer.dealCard()
-                    # update HandStr for P1
-                    newHistory.P1_HandStr = convertSyntax(newHistory.P1_Hand)
-                else: # if P2 discards
-                    newHistory.P2_Hand[int(parsedAction[1])] = newHistory.Dealer.dealCard()
-                    #update HandStr for P2
-                    newHistory.P2_HandStr = convertSyntax(newHistory.P2_Hand)
-
-                # if the second-to-act player just discarded, go to betting round
-                newHistory.Round = "B1" if self.ActivePlayer==self.ButtonPlayer else "D"
 
             # BETTING
             else:
@@ -756,13 +738,13 @@ class History(object):
         newHistory.History.append("%s:%s" % (str(self.ActivePlayer), action))
 
         # if we discarded, append the new hand to the game history
-        if shouldAppendNewHand==True:
-            if self.ActivePlayer==0: # if P1 discards
-                assert ((type(newHistory.P1_HandStr) == str) and (type(newHistory.P1_HandStr) == str)), "Error: either P1 hand or P2 hand do not have handstrings in str format"
-                assert (type(newHistory.BoardStr) == str), "Error: type of boardstr is not str!"
-                newHistory.History.append("H0:%s:%.3f" % (newHistory.P1_HandStr, getHandStrength(newHistory.P1_HandStr, newHistory.BoardStr)))
-            else: # if P2 discards
-                newHistory.History.append("H1:%s:%.3f" % (newHistory.P2_HandStr, getHandStrength(newHistory.P2_HandStr, newHistory.BoardStr)))
+        # if shouldAppendNewHand==True:
+        #     if self.ActivePlayer==0: # if P1 discards
+        #         assert ((type(newHistory.P1_HandStr) == str) and (type(newHistory.P1_HandStr) == str)), "Error: either P1 hand or P2 hand do not have handstrings in str format"
+        #         assert (type(newHistory.BoardStr) == str), "Error: type of boardstr is not str!"
+        #         newHistory.History.append("H0:%s:%.3f" % (newHistory.P1_HandStr, getHandStrength(newHistory.P1_HandStr, newHistory.BoardStr)))
+        #     else: # if P2 discards
+        #         newHistory.History.append("H1:%s:%.3f" % (newHistory.P2_HandStr, getHandStrength(newHistory.P2_HandStr, newHistory.BoardStr)))
 
 
         # finally, return the new history
@@ -799,20 +781,68 @@ class History(object):
                 newHistory.P1_inPot += 2
             newHistory.Pot = 3
 
-
+        # also simulate discarding here
         elif self.Street == 1:
             if self.Round == "0": # start of street, dealer should deal flop
                 newHistory.Board = newHistory.Dealer.dealFlop()
-                newHistory.Round = "D" # discard round is next
+                newHistory.Round = "B1" # going to betting round next
                 newHistory.BoardStr = convertSyntax(newHistory.Board)
                 newHistory.History.append("FP:%s:H0:%.3f:H1:%.3f" % (newHistory.BoardStr, getHandStrength(newHistory.P1_HandStr, ""), getHandStrength(newHistory.P2_HandStr, "")))
 
+            # TODO: also decide whether to discard, and do that
+            P1_shouldDiscard, P1_discardIndex, P1_swapEV, P1_originalEV = determineBestDiscardFast(self.P1_Hand, self.Board, min_improvement=0.02, iters=100)
+            P2_shouldDiscard, P2_discardIndex, P2_swapEV, P2_originalEV = determineBestDiscardFast(self.P2_Hand, self.Board, min_improvement=0.02, iters=100)
+
+            # if its best to discard for either player, simulate that chance event
+            if P1_shouldDiscard:
+                newHistory.P1_Hand[P1_discardIndex] = newHistory.Dealer.dealCard()
+                newHistory.P1_HandStr = convertSyntax(newHistory.P1_Hand)
+            if P2_shouldDiscard:
+                newHistory.P2_Hand[P2_discardIndex] = newHistory.Dealer.dealCard()
+                newHistory.P2_HandStr = convertSyntax(newHistory.P2_Hand)
+
+            # append whether or not the player / opponent discarded
+            newHistory.History.append("0:D") if P1_shouldDiscard else newHistory.History.append("0:CK")
+            newHistory.History.append("1:D") if P2_shouldDiscard else newHistory.History.append("1:CK")
+
+            # append new hands if either player chose to discard
+            if P1_shouldDiscard:
+                newHistory.History.append("H0:%s:%.3f" % (newHistory.P1_HandStr, getHandStrength(newHistory.P1_HandStr, newHistory.BoardStr)))
+            if P2_shouldDiscard:
+                newHistory.History.append("H1:%s:%.3f" % (newHistory.P2_HandStr, getHandStrength(newHistory.P2_HandStr, newHistory.BoardStr)))
+
+
+        # also simulate discarding here
         elif self.Street == 2:
             if self.Round == "0": # start of street, dealer should add a card for turn
                 newHistory.Board.append(newHistory.Dealer.dealCard())
-                newHistory.Round = "D" # discard round is next
+                newHistory.Round = "B1" # betting round next
                 newHistory.BoardStr = convertSyntax(newHistory.Board)
                 newHistory.History.append("TN:%s:H0:%.3f:H1:%.3f" % (newHistory.BoardStr, getHandStrength(newHistory.P1_HandStr, ""), getHandStrength(newHistory.P2_HandStr, "")))
+
+            
+            # TODO: also decide whether to discard, and do that
+            P1_shouldDiscard, P1_discardIndex, P1_swapEV, P1_originalEV = determineBestDiscardFast(self.P1_Hand, self.Board, min_improvement=0.02, iters=100)
+            P2_shouldDiscard, P2_discardIndex, P2_swapEV, P2_originalEV = determineBestDiscardFast(self.P2_Hand, self.Board, min_improvement=0.02, iters=100)
+
+            # if its best to discard for either player, simulate that chance event
+            if P1_shouldDiscard:
+                newHistory.P1_Hand[P1_discardIndex] = newHistory.Dealer.dealCard()
+                newHistory.P1_HandStr = convertSyntax(newHistory.P1_Hand)
+            if P2_shouldDiscard:
+                newHistory.P2_Hand[P2_discardIndex] = newHistory.Dealer.dealCard()
+                newHistory.P2_HandStr = convertSyntax(newHistory.P2_Hand)
+
+            # append whether or not the player / opponent discarded
+            newHistory.History.append("0:D") if P1_shouldDiscard else newHistory.History.append("0:CK")
+            newHistory.History.append("1:D") if P2_shouldDiscard else newHistory.History.append("1:CK")
+
+            # append new hands if either player chose to discard
+            if P1_shouldDiscard:
+                newHistory.History.append("H0:%s:%.3f" % (newHistory.P1_HandStr, getHandStrength(newHistory.P1_HandStr, newHistory.BoardStr)))
+            if P2_shouldDiscard:
+                newHistory.History.append("H1:%s:%.3f" % (newHistory.P2_HandStr, getHandStrength(newHistory.P2_HandStr, newHistory.BoardStr)))
+
 
         elif self.Street == 3: # river, add a card
             newHistory.Board.append(newHistory.Dealer.dealCard())
@@ -870,7 +900,6 @@ class History(object):
         else:
             assert False, "Error: reached a terminal node for a reason we didn't account for!"
 
-
 def testHistory():
     """
     (history, node_type, current_street, current_round, button_player, dealer, \
@@ -905,3 +934,4 @@ def testHistory():
     h.printAttr()
 
 testHistory()
+
