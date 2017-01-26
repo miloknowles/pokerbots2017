@@ -309,18 +309,31 @@ def convertHtoI(history, player):
     while i < len(seq):
         s_parsed = seq[i].split(":")
 
-        # inital preflop hands
-        if i==0 and s_parsed[0] == "H0":
+        # if this is a hand info packet
+        if s_parsed[0] == "H0" or s_parsed == "H1":
 
-            # if p1
-            if player==0:
-                hand = "H%d" % min(int(float(s_parsed[2])*5), 4) # scales hand to an int 0,1,2,3,4
-                infoset_str+=hand
+            if i==0: # on the preflop
+                # if p1
+                if player==0:
+                    hand = "H%d" % min(int(float(s_parsed[2])*5), 4) # scales hand to an int 0,1,2,3,4
+                    infoset_str+=hand
 
-            # if p2
-            elif player==1:
-                hand = "H%d" % min(int(float(s_parsed[5])*5), 4) # scales hand to an int 0,1,2,3,4
-                infoset_str+=hand
+                # if p2
+                elif player==1:
+                    hand = "H%d" % min(int(float(s_parsed[5])*5), 4) # scales hand to an int 0,1,2,3,4
+                    infoset_str+=hand
+
+            else: # turn or river
+                # if p1
+                if player==0:
+                    hand = "H%d" % min(int(float(s_parsed[2])*5), 4) # scales hand to an int 0,1,2,3,4
+                    infoset_str+=hand
+
+                # if p2
+                elif player==1:
+                    hand = "H%d" % min(int(float(s_parsed[2])*5), 4) # scales hand to an int 0,1,2,3,4
+                    infoset_str+=hand
+
 
         # if flop or turn, we don't want to add anything yet
         elif s_parsed[0]== "FP" or s_parsed[0]=="TN":
@@ -801,14 +814,15 @@ class History(object):
                 newHistory.P2_HandStr = convertSyntax(newHistory.P2_Hand)
 
             # append whether or not the player / opponent discarded
-            newHistory.History.append("0:D") if P1_shouldDiscard else newHistory.History.append("0:CK")
-            newHistory.History.append("1:D") if P2_shouldDiscard else newHistory.History.append("1:CK")
-
-            # append new hands if either player chose to discard
             if P1_shouldDiscard:
+                newHistory.History.append("0:D")
                 newHistory.History.append("H0:%s:%.3f" % (newHistory.P1_HandStr, getHandStrength(newHistory.P1_HandStr, newHistory.BoardStr)))
+            else: newHistory.History.append("0:CK")
+
             if P2_shouldDiscard:
+                newHistory.History.append("1:D")
                 newHistory.History.append("H1:%s:%.3f" % (newHistory.P2_HandStr, getHandStrength(newHistory.P2_HandStr, newHistory.BoardStr)))
+            else: newHistory.History.append("1:CK")
 
 
         # also simulate discarding here
@@ -833,14 +847,15 @@ class History(object):
                 newHistory.P2_HandStr = convertSyntax(newHistory.P2_Hand)
 
             # append whether or not the player / opponent discarded
-            newHistory.History.append("0:D") if P1_shouldDiscard else newHistory.History.append("0:CK")
-            newHistory.History.append("1:D") if P2_shouldDiscard else newHistory.History.append("1:CK")
-
-            # append new hands if either player chose to discard
             if P1_shouldDiscard:
+                newHistory.History.append("0:D")
                 newHistory.History.append("H0:%s:%.3f" % (newHistory.P1_HandStr, getHandStrength(newHistory.P1_HandStr, newHistory.BoardStr)))
+            else: newHistory.History.append("0:CK")
+
             if P2_shouldDiscard:
+                newHistory.History.append("1:D")
                 newHistory.History.append("H1:%s:%.3f" % (newHistory.P2_HandStr, getHandStrength(newHistory.P2_HandStr, newHistory.BoardStr)))
+            else: newHistory.History.append("1:CK")
 
         elif self.Street == 3: # river, add a card
             newHistory.Board.append(newHistory.Dealer.dealCard())
@@ -898,39 +913,53 @@ class History(object):
         else:
             assert False, "Error: reached a terminal node for a reason we didn't account for!"
 
-def testHistory():
+
+def testHistoryRandom():
     """
+    Randomly choose actions from the game engine to try to find every edge case possible
+
     (history, node_type, current_street, current_round, button_player, dealer, \
                     active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board)
     """
-    initialDealer = Dealer()
-    h = History([], 0, 0, 0, 0, initialDealer, 0, 0, 0, 0, 200, 200, [], [], [])
+    num_simulations = 1000
+    sb_player = 0
 
-    while(h.NodeType != 2): # while not terminal, simulate
-        if h.NodeType == 0:
-            h.printAttr()
-            print "-----SIMULATING CHANCE------"
-            h = h.simulateChance()
-        elif h.NodeType == 1:
-            h.printAttr()
-            actions = h.getLegalActions()
-            print "Legal Actions:", actions
+    time0 = time.time()
+    for i in range(num_simulations):
 
-            givenAction=False
-            while(not givenAction):
-                action = raw_input("Choose action: ")
-                if action in actions:
-                    givenAction=True
-                else:
-                    print "Action not allowed. Try again."
-            print "-----SIMULATING ACTION------"
-            h = h.simulateAction(action)
-            print convertHtoI(h, 0)
-        else:
-            print "ERROR, not recognized nodetype"
+        if i % 10 == 0:
+            print i
+        #print "############# HAND:", i, "###############"
 
-    print "------TERMINAL NODE REACHED------"
-    h.printAttr()
+        initialDealer = Dealer()
+        h = History([], 0, 0, 0, sb_player, initialDealer, sb_player, 0, 0, 0, 200, 200, [], [], [])
 
-testHistory()
+        while(h.NodeType != 2): # while not terminal, simulate
+            if h.NodeType == 0:
+                h.printAttr()
+                h = h.simulateChance()
+            elif h.NodeType == 1:
+                h.printAttr()
+                actions = h.getLegalActions()
+                #print "Legal Actions:", actions
+
+                action = choice(actions)
+                #print "Choosing action:", action
+                h = h.simulateAction(action)
+
+                p = choice([1,2])
+                print convertHtoI(h, p)
+            
+            else:
+                assert False, "Not recognized node type"
+
+        #print "End of hand ----------"
+        #h.printAttr()
+
+        sb_player = (sb_player+1) % 2 # alternate sb players each time
+
+    time1 = time.time()
+    print "Simulated", num_simulations, "hands in", time1-time0, "secs"
+
+testHistoryRandom()
 
