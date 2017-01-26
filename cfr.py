@@ -307,6 +307,7 @@ def convertHtoI(history, player):
 
     i=0
     while i < len(seq):
+        shouldNotAddDot = False
         s_parsed = seq[i].split(":")
 
         # if this is a hand info packet
@@ -322,6 +323,9 @@ def convertHtoI(history, player):
                 elif player==1:
                     hand = "H%d" % min(int(float(s_parsed[5])*5), 4) # scales hand to an int 0,1,2,3,4
                     infoset_str+=hand
+
+                else:
+                    shouldNotAddDot = True
 
             else: # turn or river
                 # if p1
@@ -418,13 +422,13 @@ def convertHtoI(history, player):
                         infoset_str+="RA"
 
                 elif s_parsed[1]=="F":
-                    pass # don't do anything for folds, just avoid error
+                    shouldNotAddDot = True
 
                 else: assert False, "Error: tried to convert H to I and reached unknown term"
 
 
 
-        if not inDiscardSection:
+        if not inDiscardSection and (not shouldNotAddDot):
             infoset_str+="." # separate from the next thing
 
         #increment
@@ -936,10 +940,10 @@ def testHistoryRandom():
 
         while(h.NodeType != 2): # while not terminal, simulate
             if h.NodeType == 0:
-                h.printAttr()
+                #h.printAttr()
                 h = h.simulateChance()
             elif h.NodeType == 1:
-                h.printAttr()
+                #h.printAttr()
                 actions = h.getLegalActions()
                 #print "Legal Actions:", actions
 
