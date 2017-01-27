@@ -316,12 +316,12 @@ def convertHtoI(history, player):
             if i==0: # on the preflop
                 # if p1
                 if player==0:
-                    hand = "H%d" % min(int(float(s_parsed[2])*5), 4) # scales hand to an int 0,1,2,3,4
+                    hand = "H%d" % min(int(float(s_parsed[2])*4), 3) # scales hand to an int 0,1,2,3,4
                     infoset_str+=hand
 
                 # if p2
                 elif player==1:
-                    hand = "H%d" % min(int(float(s_parsed[5])*5), 4) # scales hand to an int 0,1,2,3,4
+                    hand = "H%d" % min(int(float(s_parsed[5])*4), 3) # scales hand to an int 0,1,2,3,4
                     infoset_str+=hand
 
                 else:
@@ -330,22 +330,22 @@ def convertHtoI(history, player):
             else: # turn or river
                 # if p1
                 if player==0:
-                    hand = "H%d" % min(int(float(s_parsed[2])*5), 4) # scales hand to an int 0,1,2,3,4
+                    hand = "H%d" % min(int(float(s_parsed[2])*4), 3) # scales hand to an int 0,1,2,3,4
                     infoset_str+=hand
 
                 # if p2
                 elif player==1:
-                    hand = "H%d" % min(int(float(s_parsed[2])*5), 4) # scales hand to an int 0,1,2,3,4
+                    hand = "H%d" % min(int(float(s_parsed[2])*4), 3) # scales hand to an int 0,1,2,3,4
                     infoset_str+=hand
 
 
         # if flop or turn, we don't want to add anything yet
         elif s_parsed[0]== "FP" or s_parsed[0]=="TN":
             if s_parsed[0]== "FP":
-                Current_Player_HS = ("H%d" % min(int(float(s_parsed[3])*5), 4)) if player==0 else ("H%d" % min(int(float(s_parsed[5])*5), 4))
+                Current_Player_HS = ("H%d" % min(int(float(s_parsed[3])*4), 3)) if player==0 else ("H%d" % min(int(float(s_parsed[5])*4), 3))
 
             elif s_parsed[0]=="TN":
-                Current_Player_HS = ("H%d" % min(int(float(s_parsed[3])*5), 4)) if player==0 else ("H%d" % min(int(float(s_parsed[5])*5), 4))
+                Current_Player_HS = ("H%d" % min(int(float(s_parsed[3])*4), 3)) if player==0 else ("H%d" % min(int(float(s_parsed[5])*4), 3))
 
             # set this flag so we start to append discard actions after the flop or turn has happened
             inDiscardSection=True
@@ -355,77 +355,77 @@ def convertHtoI(history, player):
 
             # if p1
             if player==0:
-                hand = "H%d" % min(int(float(s_parsed[3])*5), 4) # scales hand to an int 0,1,2,3,4
+                hand = "H%d" % min(int(float(s_parsed[3])*4), 3) # scales hand to an int 0,1,2,3,4
                 infoset_str+=hand
 
             # if p2
             elif player==1:
-                hand = "H%d" % min(int(float(s_parsed[5])*5), 4) # scales hand to an int 0,1,2,3,4
+                hand = "H%d" % min(int(float(s_parsed[5])*4), 3) # scales hand to an int 0,1,2,3,4
                 infoset_str+=hand
 
 
         else: # this action has a player associated with it
 
-            if inDiscardSection==True: # we are going to collect discard related things
+            # if inDiscardSection==True: # we are going to collect discard related things
 
-                if s_parsed[1]=="D":
-                    discardSectionActions.insert(0, "*D") if s_parsed[0]==player else discardSectionActions.append("D")
+            #     if s_parsed[1]=="D":
+            #         discardSectionActions.insert(0, "*D") if s_parsed[0]==player else discardSectionActions.append("D")
 
-                    # now get the player's new HS from the next i
-                    i+=1
-                    s_parsed = seq[i].split(":") # new parsed action
+            #         # now get the player's new HS from the next i
+            #         i+=1
+            #         s_parsed = seq[i].split(":") # new parsed action
 
-                    if (s_parsed[0]=="H0" and player==0) or (s_parsed[0]=="H1" and player==1): # if the new hand is relevant to this player
-                        Current_Player_HS = "H%d" % min(int(float(s_parsed[2])*5), 4) # scales hand to an int 0,1,2,3,4
+            #         if (s_parsed[0]=="H0" and player==0) or (s_parsed[0]=="H1" and player==1): # if the new hand is relevant to this player
+            #             Current_Player_HS = "H%d" % min(int(float(s_parsed[2])*4), 3) # scales hand to an int 0,1,2,3,4
 
-                    else:
-                        pass #ignore the hand, not relevant to the current player
+            #         else:
+            #             pass #ignore the hand, not relevant to the current player
 
-                elif s_parsed[1]=="CK":
-                    discardSectionActions.insert(0, "*CK") if int(s_parsed[0])==player else discardSectionActions.append("CK")
+            #     elif s_parsed[1]=="CK":
+            #         discardSectionActions.insert(0, "*CK") if int(s_parsed[0])==player else discardSectionActions.append("CK")
 
 
-                if len(discardSectionActions) == 2: # we have all of the discard actions, so leave the discard section and add the discard string to the infoset
-                    infoset_str+="%s.%s.%s" % (discardSectionActions[0], discardSectionActions[1], Current_Player_HS)
-                    discardSectionActions=[]
-                    inDiscardSection=False
-            else:
+            #     if len(discardSectionActions) == 2: # we have all of the discard actions, so leave the discard section and add the discard string to the infoset
+            #         #infoset_str+="%s.%s.%s" % (discardSectionActions[0], discardSectionActions[1], Current_Player_HS)
+            #         discardSectionActions=[]
+            #         inDiscardSection=False
+            if int(s_parsed[0])==player: # if the player associated with this action is us, add *
+                infoset_str+="*"
 
-                if int(s_parsed[0])==player: # if the player associated with this action is us, add *
-                    infoset_str+="*"
+            # now shorted different action strings
+            if s_parsed[1]=='CL':
+                infoset_str+="CL"
 
-                # now shorted different action strings
-                if s_parsed[1]=='CL':
-                    infoset_str+="CL"
+            elif s_parsed[1]=="CK":
+                infoset_str+="CK"
 
-                elif s_parsed[1]=="CK":
-                    infoset_str+="CK"
+            elif s_parsed[1]=="B":
+                if s_parsed[2]=="H":
+                    infoset_str+="BH"
 
-                elif s_parsed[1]=="B":
-                    if s_parsed[2]=="H":
-                        infoset_str+="BH"
+                elif s_parsed[2]=="P":
+                    infoset_str+="BP"
 
-                    elif s_parsed[2]=="P":
-                        infoset_str+="BP"
+                elif s_parsed[2]=="A":
+                    infoset_str+="BA"
 
-                    elif s_parsed[2]=="A":
-                        infoset_str+="BA"
+            elif s_parsed[1]=="R":
+                if s_parsed[2]=="H":
+                    infoset_str+="RH"
 
-                elif s_parsed[1]=="R":
-                    if s_parsed[2]=="H":
-                        infoset_str+="RH"
+                elif s_parsed[2]=="P":
+                    infoset_str+="RP"
 
-                    elif s_parsed[2]=="P":
-                        infoset_str+="RP"
+                elif s_parsed[2]=="A":
+                    infoset_str+="RA"
 
-                    elif s_parsed[2]=="A":
-                        infoset_str+="RA"
+            elif s_parsed[1]=="F":
+                shouldNotAddDot = True
 
-                elif s_parsed[1]=="F":
-                    shouldNotAddDot = True
-
-                else: assert False, "Error: tried to convert H to I and reached unknown term"
-
+            elif s_parsed[1]=="D":
+                pass
+            
+            else: assert False, "Error: tried to convert H to I and reached unknown term"
 
 
         if not inDiscardSection and (not shouldNotAddDot):
@@ -752,17 +752,6 @@ class History(object):
         # append the action we just simulated to the history list
         newHistory.History.append("%s:%s" % (str(self.ActivePlayer), action))
 
-        # if we discarded, append the new hand to the game history
-        # if shouldAppendNewHand==True:
-        #     if self.ActivePlayer==0: # if P1 discards
-        #         assert ((type(newHistory.P1_HandStr) == str) and (type(newHistory.P1_HandStr) == str)), "Error: either P1 hand or P2 hand do not have handstrings in str format"
-        #         assert (type(newHistory.BoardStr) == str), "Error: type of boardstr is not str!"
-        #         newHistory.History.append("H0:%s:%.3f" % (newHistory.P1_HandStr, getHandStrength(newHistory.P1_HandStr, newHistory.BoardStr)))
-        #     else: # if P2 discards
-        #         newHistory.History.append("H1:%s:%.3f" % (newHistory.P2_HandStr, getHandStrength(newHistory.P2_HandStr, newHistory.BoardStr)))
-
-
-        # finally, return the new history
         return newHistory
 
 
@@ -916,40 +905,40 @@ class History(object):
         else:
             assert False, "Error: reached a terminal node for a reason we didn't account for!"
 
-# def testHistoryWithHConvert():
-#     """
-#     (history, node_type, current_street, current_round, button_player, dealer, \
-#                     active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board)
-#     """
-#     initialDealer = Dealer()
-#     h = History([], 0, 0, 0, 0, initialDealer, 0, 0, 0, 0, 200, 200, [], [], [])
+def testHistoryWithHConvert():
+    """
+    (history, node_type, current_street, current_round, button_player, dealer, \
+                    active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board)
+    """
+    initialDealer = Dealer()
+    h = History([], 0, 0, 0, 0, initialDealer, 0, 0, 0, 0, 200, 200, [], [], [])
 
-#     while(h.NodeType != 2): # while not terminal, simulate
-#         if h.NodeType == 0:
-#             h.printAttr()
-#             print "-----SIMULATING CHANCE------"
-#             h = h.simulateChance()
-#         elif h.NodeType == 1:
-#             h.printAttr()
-#             actions = h.getLegalActions()
-#             print "Legal Actions:", actions
+    while(h.NodeType != 2): # while not terminal, simulate
+        if h.NodeType == 0:
+            h.printAttr()
+            print "-----SIMULATING CHANCE------"
+            h = h.simulateChance()
+        elif h.NodeType == 1:
+            h.printAttr()
+            actions = h.getLegalActions()
+            print "Legal Actions:", actions
 
-#             givenAction=False
-#             while(not givenAction):
-#                 action = raw_input("Choose action: ")
-#                 if action in actions:
-#                     givenAction=True
-#                 else:
-#                     print "Action not allowed. Try again."
-#             print "-----SIMULATING ACTION------"
-#             h = h.simulateAction(action)
-#             print convertHtoI(h, 0)
-#         else:
-#             print "ERROR, not recognized nodetype"
+            givenAction=False
+            while(not givenAction):
+                action = raw_input("Choose action: ")
+                if action in actions:
+                    givenAction=True
+                else:
+                    print "Action not allowed. Try again."
+            print "-----SIMULATING ACTION------"
+            h = h.simulateAction(action)
+            print convertHtoI(h, 0)
+        else:
+            print "ERROR, not recognized nodetype"
 
-#     print "------TERMINAL NODE REACHED------"
-#     h.printAttr()
+    print "------TERMINAL NODE REACHED------"
+    h.printAttr()
 
-# testHistoryWithHConvert()
+testHistoryWithHConvert()
 
 
