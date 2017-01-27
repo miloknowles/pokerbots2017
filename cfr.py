@@ -768,6 +768,7 @@ class History(object):
             newHistory.History.append("H0:%s:%.3f:H1:%s:%.3f" % (newHistory.P1_HandStr, getHandStrength(newHistory.P1_HandStr, ""), \
                                                             newHistory.P2_HandStr, getHandStrength(newHistory.P2_HandStr, "")))
 
+
             # also, put in the bb and sb
             if self.ButtonPlayer==0:
                 newHistory.P1_Bankroll -= 1
