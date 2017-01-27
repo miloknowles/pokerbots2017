@@ -633,7 +633,6 @@ class History(object):
                     newHistory.NodeType = 1
 
 
-
             # this is the amount a player must add to call
             prevBetAmt = abs(self.P1_inPot-self.P2_inPot)
 
@@ -653,7 +652,7 @@ class History(object):
         else: # PARSED ACTIONS
 
             parsedAction = action.split(":")
-            assert len(parsedAction) == 2, "Error: Parsed actions should contain exactly 2 items i.e B:2 or D:Ah!"
+            assert len(parsedAction) == 2, "Error: Parsed actions should contain exactly 2 items: %s from %s !" % (parsedAction, action)
 
             # BETTING
             # determine betting range
@@ -916,4 +915,41 @@ class History(object):
 
         else:
             assert False, "Error: reached a terminal node for a reason we didn't account for!"
+
+# def testHistoryWithHConvert():
+#     """
+#     (history, node_type, current_street, current_round, button_player, dealer, \
+#                     active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board)
+#     """
+#     initialDealer = Dealer()
+#     h = History([], 0, 0, 0, 0, initialDealer, 0, 0, 0, 0, 200, 200, [], [], [])
+
+#     while(h.NodeType != 2): # while not terminal, simulate
+#         if h.NodeType == 0:
+#             h.printAttr()
+#             print "-----SIMULATING CHANCE------"
+#             h = h.simulateChance()
+#         elif h.NodeType == 1:
+#             h.printAttr()
+#             actions = h.getLegalActions()
+#             print "Legal Actions:", actions
+
+#             givenAction=False
+#             while(not givenAction):
+#                 action = raw_input("Choose action: ")
+#                 if action in actions:
+#                     givenAction=True
+#                 else:
+#                     print "Action not allowed. Try again."
+#             print "-----SIMULATING ACTION------"
+#             h = h.simulateAction(action)
+#             print convertHtoI(h, 0)
+#         else:
+#             print "ERROR, not recognized nodetype"
+
+#     print "------TERMINAL NODE REACHED------"
+#     h.printAttr()
+
+# testHistoryWithHConvert()
+
 

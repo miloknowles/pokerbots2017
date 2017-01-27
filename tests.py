@@ -1,11 +1,12 @@
+#!/usr/bin/env 
+
 """
 Validation and efficiency tests for many of the functions in cfr.py
+Note: it is best to use these tests by copying them into cfr.py first, then running them.
 """
 
 def testHandStrengthFunctions():
-	"""
 
-	"""
 	diffs = []
 	for i in range(10):
 		print "Iteration", i
@@ -354,6 +355,41 @@ def testHistory():
 	print "------TERMINAL NODE REACHED------"
 	h.printAttr()
 
+def testHistoryWithHConvert():
+    """
+    (history, node_type, current_street, current_round, button_player, dealer, \
+                    active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board)
+    """
+    initialDealer = Dealer()
+    h = History([], 0, 0, 0, 0, initialDealer, 0, 0, 0, 0, 200, 200, [], [], [])
+
+    while(h.NodeType != 2): # while not terminal, simulate
+        if h.NodeType == 0:
+            h.printAttr()
+            print "-----SIMULATING CHANCE------"
+            h = h.simulateChance()
+        elif h.NodeType == 1:
+            h.printAttr()
+            actions = h.getLegalActions()
+            print "Legal Actions:", actions
+
+            givenAction=False
+            while(not givenAction):
+                action = raw_input("Choose action: ")
+                if action in actions:
+                    givenAction=True
+                else:
+                    print "Action not allowed. Try again."
+            print "-----SIMULATING ACTION------"
+            h = h.simulateAction(action)
+            print convertHtoI(h, 0)
+        else:
+            print "ERROR, not recognized nodetype"
+
+    print "------TERMINAL NODE REACHED------"
+    h.printAttr()
+
+#testHistory()
 
 def testHistoryRandom():
 	"""
@@ -399,6 +435,56 @@ def testHistoryRandom():
 	time1 = time.time()
 	print "Simulated", num_simulations, "hands in", time1-time0, "secs"
 
+
+def testHistoryRandomWithConvert():
+    """
+    Randomly choose actions from the game engine to try to find every edge case possible
+
+    (history, node_type, current_street, current_round, button_player, dealer, \
+                    active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board)
+    """
+    num_simulations = 100
+    sb_player = 0
+
+    time0 = time.time()
+    for i in range(num_simulations):
+
+        if i % 10 == 0:
+            print i
+        #print "############# HAND:", i, "###############"
+
+        initialDealer = Dealer()
+        h = History([], 0, 0, 0, sb_player, initialDealer, sb_player, 0, 0, 0, 200, 200, [], [], [])
+
+        while(h.NodeType != 2): # while not terminal, simulate
+            if h.NodeType == 0:
+                #h.printAttr()
+                h = h.simulateChance()
+            elif h.NodeType == 1:
+                #h.printAttr()
+                actions = h.getLegalActions()
+                #print "Legal Actions:", actions
+
+                action = choice(actions)
+                #print "Choosing action:", action
+                h = h.simulateAction(action)
+
+                if h.NodeType == 1:
+                    p = choice([0,1])
+                    print convertHtoI(h, p)
+                
+            else:
+                assert False, "Not recognized node type"
+
+        #print "End of hand ----------"
+        #h.printAttr()
+
+        sb_player = (sb_player+1) % 2 # alternate sb players each time
+
+    time1 = time.time()
+    print "Simulated", num_simulations, "hands in", time1-time0, "secs"
+
+testHistoryRandom()
 
 # def determineBestCardToKeep(hand, board, iters=1000):
 # 	"""

@@ -286,7 +286,8 @@ def runCFR():
         sbPlayer = (sbPlayer+1) % 2
 
 
-        if time.time() - lastEntryCountAppend > 1000: # if it's been 1000 secs, append the entry count
+        if time.time() - lastEntryCountAppend > 300: # if it's been 1000 secs, append the entry count
+            lastEntryCountAppend = time.time()
             ENTRIES_CTR_LIST.append(len(CUMULATIVE_REGRETS))
             with open('entries_vs_time.txt', 'w') as f:
                 f.write(str(ENTRIES_CTR_LIST))
