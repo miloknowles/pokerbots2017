@@ -765,8 +765,8 @@ class History(object):
             newHistory.Round = "B1" # betting round 1 is next
             newHistory.P1_HandStr = convertSyntax(newHistory.P1_Hand)
             newHistory.P2_HandStr = convertSyntax(newHistory.P2_Hand)
-            newHistory.History.append("H0:%s:%.3f:H1:%s:%.3f" % (newHistory.P1_HandStr, getHandStrength(newHistory.P1_HandStr, ""), \
-                                                            newHistory.P2_HandStr, getHandStrength(newHistory.P2_HandStr, "")))
+            newHistory.History.append("H0:%s:%.3f:H1:%s:%.3f" % (newHistory.P1_HandStr, 0.1, \
+                                                            newHistory.P2_HandStr, 0.1))
 
 
             # also, put in the bb and sb
@@ -788,11 +788,11 @@ class History(object):
                 newHistory.Board = newHistory.Dealer.dealFlop()
                 newHistory.Round = "B1" # going to betting round next
                 newHistory.BoardStr = convertSyntax(newHistory.Board)
-                newHistory.History.append("FP:%s:H0:%.3f:H1:%.3f" % (newHistory.BoardStr, getHandStrength(newHistory.P1_HandStr, ""), getHandStrength(newHistory.P2_HandStr, "")))
+                newHistory.History.append("FP:%s:H0:%.3f:H1:%.3f" % (newHistory.BoardStr, 0.1, 0.1))
 
             # TODO: also decide whether to discard, and do that
-            P1_shouldDiscard, P1_discardIndex, P1_swapEV, P1_originalEV = determineBestDiscardFast(self.P1_Hand, self.Board, min_improvement=0.02, iters=100)
-            P2_shouldDiscard, P2_discardIndex, P2_swapEV, P2_originalEV = determineBestDiscardFast(self.P2_Hand, self.Board, min_improvement=0.02, iters=100)
+            P1_shouldDiscard, P1_discardIndex, P1_swapEV, P1_originalEV = False, 0, 0.1, 0.1
+            P2_shouldDiscard, P2_discardIndex, P2_swapEV, P2_originalEV = False, 0, 0.1, 0.1
 
             # if its best to discard for either player, simulate that chance event
             if P1_shouldDiscard:
@@ -805,12 +805,12 @@ class History(object):
             # append whether or not the player / opponent discarded
             if P1_shouldDiscard:
                 newHistory.History.append("0:D")
-                newHistory.History.append("H0:%s:%.3f" % (newHistory.P1_HandStr, getHandStrength(newHistory.P1_HandStr, newHistory.BoardStr)))
+                newHistory.History.append("H0:%s:%.3f" % (newHistory.P1_HandStr, 0.1))
             else: newHistory.History.append("0:CK")
 
             if P2_shouldDiscard:
                 newHistory.History.append("1:D")
-                newHistory.History.append("H1:%s:%.3f" % (newHistory.P2_HandStr, getHandStrength(newHistory.P2_HandStr, newHistory.BoardStr)))
+                newHistory.History.append("H1:%s:%.3f" % (newHistory.P2_HandStr, 0.1))
             else: newHistory.History.append("1:CK")
 
 
@@ -820,12 +820,12 @@ class History(object):
                 newHistory.Board.append(newHistory.Dealer.dealCard())
                 newHistory.Round = "B1" # betting round next
                 newHistory.BoardStr = convertSyntax(newHistory.Board)
-                newHistory.History.append("TN:%s:H0:%.3f:H1:%.3f" % (newHistory.BoardStr, getHandStrength(newHistory.P1_HandStr, ""), getHandStrength(newHistory.P2_HandStr, "")))
+                newHistory.History.append("TN:%s:H0:%.3f:H1:%.3f" % (newHistory.BoardStr, 0.1, 0.1))
 
             
             # TODO: also decide whether to discard, and do that
-            P1_shouldDiscard, P1_discardIndex, P1_swapEV, P1_originalEV = determineBestDiscardFast(self.P1_Hand, self.Board, min_improvement=0.02, iters=100)
-            P2_shouldDiscard, P2_discardIndex, P2_swapEV, P2_originalEV = determineBestDiscardFast(self.P2_Hand, self.Board, min_improvement=0.02, iters=100)
+            P1_shouldDiscard, P1_discardIndex, P1_swapEV, P1_originalEV = False, 0, 0.1, 0.1
+            P2_shouldDiscard, P2_discardIndex, P2_swapEV, P2_originalEV = False, 0, 0.1, 0.1
 
             # if its best to discard for either player, simulate that chance event
             if P1_shouldDiscard:
@@ -838,19 +838,19 @@ class History(object):
             # append whether or not the player / opponent discarded
             if P1_shouldDiscard:
                 newHistory.History.append("0:D")
-                newHistory.History.append("H0:%s:%.3f" % (newHistory.P1_HandStr, getHandStrength(newHistory.P1_HandStr, newHistory.BoardStr)))
+                newHistory.History.append("H0:%s:%.3f" % (newHistory.P1_HandStr, 0.1))
             else: newHistory.History.append("0:CK")
 
             if P2_shouldDiscard:
                 newHistory.History.append("1:D")
-                newHistory.History.append("H1:%s:%.3f" % (newHistory.P2_HandStr, getHandStrength(newHistory.P2_HandStr, newHistory.BoardStr)))
+                newHistory.History.append("H1:%s:%.3f" % (newHistory.P2_HandStr, 0.1))
             else: newHistory.History.append("1:CK")
 
         elif self.Street == 3: # river, add a card
             newHistory.Board.append(newHistory.Dealer.dealCard())
             newHistory.Round = "B1" # betting round 1 is next
             newHistory.BoardStr = convertSyntax(newHistory.Board)
-            newHistory.History.append("RV:%s:H0:%.3f:H1:%.3f" % (newHistory.BoardStr, getHandStrength(newHistory.P1_HandStr, ""), getHandStrength(newHistory.P2_HandStr, "")))
+            newHistory.History.append("RV:%s:H0:%.3f:H1:%.3f" % (newHistory.BoardStr, 0.1, 0.1))
 
         newHistory.NodeType = 1 # an action node always follows a chance node
         return newHistory
@@ -903,11 +903,18 @@ class History(object):
             assert False, "Error: reached a terminal node for a reason we didn't account for!"
 
 
+TERMINALS_REACHED = 0
 
+# add up the total number of actions seen, divide by total action nodes to get branching factor
+TOTAL_ACTIONS = 0
+TOTAL_ACTION_NODES = 0
 
 def countAllBettingHistories(h):
-    
     if h.NodeType==2:
+    	global TERMINALS_REACHED
+    	TERMINALS_REACHED+=1
+    	if TERMINALS_REACHED % 1000 == 0:
+    		print TERMINALS_REACHED
         return 1
     elif h.NodeType==0:
         newH = h.simulateChance()
@@ -915,20 +922,28 @@ def countAllBettingHistories(h):
     else:
         numBettingHistories = 0
         actions = h.getLegalActions()
-        print actions
+        global TOTAL_ACTIONS, TOTAL_ACTION_NODES
+        TOTAL_ACTIONS += len(actions)
+        TOTAL_ACTION_NODES += 1
+        #print actions
         for a in actions:
             newH = h.simulateAction(a)
             numBettingHistories += countAllBettingHistories(newH)
         return numBettingHistories
 
 def countBettingHistoriesInRound():
+	# NOTE: got rid of discarding to save time, and got rid of hand strength calculations
     initialDealer = Dealer()
     h = History([], 0, 0, 0, 0, initialDealer, 0, 0, 0, 0, 200, 200, [], [], [])
     h_start_betting = h.simulateChance()
     h_start_betting.printAttr()
     total = countAllBettingHistories(h_start_betting)
 
-    print "Total:", total
+    global TOTAL_ACTION_NODES, TOTAL_ACTIONS
+    print "Total Terminal Histories:", total
+    print "Total actions:", TOTAL_ACTIONS
+    print "Total Action Nodes:", TOTAL_ACTION_NODES
+    print "Branching factor:", float(TOTAL_ACTIONS) / TOTAL_ACTION_NODES
 
 countBettingHistoriesInRound()
 
