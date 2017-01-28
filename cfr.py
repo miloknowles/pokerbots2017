@@ -327,7 +327,7 @@ def convertHtoI(history, player):
             if player==0: # we need to update our player's hand
                 if currentSection==1: # flop, 4 buckets
                     hand = "H%d" % min(int(float(s_parsed[2])*4), 3) # scales hand to an int 0,1,2,3
-                elif currentSection==2 # turn, 3 buckets
+                elif currentSection==2: # turn, 3 buckets
                     hand = "H%d" % min(int(float(s_parsed[2])*3), 2) # scales hand to an int 0,1,2,3
 
                 Current_Player_HS=hand
