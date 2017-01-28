@@ -299,12 +299,12 @@ def convertHtoI(history, player):
 
     # always starts with a hand
     infoset_str = "" 
-
     Current_Player_HS = None
-
     inDiscardSection = False
     numDiscards = 0
     numDiscardActions = 0
+
+    currentSection = 0
 
     i=0
     while i < len(seq):
@@ -313,10 +313,10 @@ def convertHtoI(history, player):
 
         if i==0 and s_parsed[0]=="H0": # PREFLOP
             if player==0: # we definitely have our player's hand somewhere in this preflop packet
-                hand = "H%d" % min(int(float(s_parsed[2])*4), 3) # scales hand to an int 0,1,2,3,4
+                hand = "H%d" % min(int(float(s_parsed[2])*3), 2) # scales hand to an int 0,1,2,
                 infoset_str+=hand
             elif player==1:
-                hand = "H%d" % min(int(float(s_parsed[5])*4), 3) # scales hand to an int 0,1,2,3,4
+                hand = "H%d" % min(int(float(s_parsed[5])*3), 2) # scales hand to an int 0,1,2,
                 infoset_str+=hand
             else:
                 assert False, "Error: didn't find our player's hand in a preflop newhand packet"
@@ -325,37 +325,43 @@ def convertHtoI(history, player):
         elif s_parsed[0] == "H0":
             numDiscardActions+=1
             if player==0: # we need to update our player's hand
-                hand = "H%d" % min(int(float(s_parsed[2])*4), 3) # scales hand to an int 0,1,2,3,4
+                if currentSection==1: # flop, 4 buckets
+                    hand = "H%d" % min(int(float(s_parsed[2])*4), 3) # scales hand to an int 0,1,2,3
+                elif currentSection==2 # turn, 3 buckets
+                    hand = "H%d" % min(int(float(s_parsed[2])*3), 2) # scales hand to an int 0,1,2,3
+
                 Current_Player_HS=hand
 
         elif s_parsed[0] == "H1":
             numDiscardActions+=1
             if player==1:
-                hand = "H%d" % min(int(float(s_parsed[2])*4), 3) # scales hand to an int 0,1,2,3,4
+                hand = "H%d" % min(int(float(s_parsed[2])*4), 3) # scales hand to an int 0,1,2,3
                 Current_Player_HS=hand
 
         # if flop or turn, we don't want to add anything yet
         elif s_parsed[0]== "FP" or s_parsed[0]=="TN":
-            if s_parsed[0]== "FP":
+            if s_parsed[0]== "FP": # use 4 hand buckets on flop
+                currentSection=1
                 Current_Player_HS = ("H%d" % min(int(float(s_parsed[3])*4), 3)) if player==0 else ("H%d" % min(int(float(s_parsed[5])*4), 3))
 
-            elif s_parsed[0]=="TN":
-                Current_Player_HS = ("H%d" % min(int(float(s_parsed[3])*4), 3)) if player==0 else ("H%d" % min(int(float(s_parsed[5])*4), 3))
+            elif s_parsed[0]=="TN": # use 3 hand buckets on turn
+                currentSection=2
+                Current_Player_HS = ("H%d" % min(int(float(s_parsed[3])*3), 2)) if player==0 else ("H%d" % min(int(float(s_parsed[5])*3), 2))
 
             # set this flag so we start to append discard actions after the flop or turn has happened
             inDiscardSection=True
 
         # if its the river
-        elif s_parsed[0]=="RV":
-
+        elif s_parsed[0]=="RV": # use 4 hand buckets on river
+            currentSection=3
             # if p1
             if player==0:
-                hand = "H%d" % min(int(float(s_parsed[3])*4), 3) # scales hand to an int 0,1,2,3,4
+                hand = "H%d" % min(int(float(s_parsed[3])*4), 3) # scales hand to an int 0,1,2,3
                 infoset_str+=hand
 
             # if p2
             elif player==1:
-                hand = "H%d" % min(int(float(s_parsed[5])*4), 3) # scales hand to an int 0,1,2,3,4
+                hand = "H%d" % min(int(float(s_parsed[5])*4), 3) # scales hand to an int 0,1,2,3
                 infoset_str+=hand
 
 
