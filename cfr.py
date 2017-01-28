@@ -531,7 +531,7 @@ class History(object):
 
         
         # if there have already been 3 betting rounds, end the betting with either fold or call
-        if self.Round == "B4":
+        if self.Round == "B3":
             assert prevBetAmt > 0, "Error: previous bet amount must have been > 0 to reach B3"
             actions = ["F", "CL"]
 
