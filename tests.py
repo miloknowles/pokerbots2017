@@ -484,7 +484,7 @@ def testHistoryRandomWithConvert():
     time1 = time.time()
     print "Simulated", num_simulations, "hands in", time1-time0, "secs"
 
-testHistoryRandom()
+testHistoryRandomWithConvert()
 
 # def determineBestCardToKeep(hand, board, iters=1000):
 # 	"""
