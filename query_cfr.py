@@ -11,26 +11,26 @@ with open('./jsons/currentStrategy/cumulativeStrategy.json') as csFile:
 
 
 def getStrategy(I):
-	"""
-	If information set I is in the trained strategy, return it (normalized)
-	If not, return None
-	"""
-	if I in CUMULATIVE_STRATEGY:
-		s = CUMULATIVE_STRATEGY[I]
+    """
+    If information set I is in the trained strategy, return it (normalized)
+    If not, return None
+    """
+    if I in CUMULATIVE_STRATEGY:
+        s = CUMULATIVE_STRATEGY[I]
 
-		s_sum = 0
-		for a in s.itervalues():
-			s_sum+=a
+        s_sum = 0
+        for a in s.itervalues():
+            s_sum+=a
 
-		s_norm = {}
-		for k in s.keys():
-			s_norm[k] = float(s[k]) / s_sum
+        s_norm = {}
+        for k in s.keys():
+            s_norm[k] = float(s[k]) / s_sum
 
-		return s_norm
+        return s_norm
 
-	else:
-		print "Info. set not found in cumulative strategy, returning None"
-		return None
+    else:
+        print "Info. set not found in cumulative strategy, returning None"
+        return None
 
 
 def chooseAction(action_dict):
@@ -49,10 +49,13 @@ def chooseAction(action_dict):
             return a
 
 def chooseActionRandom(legal_actions):
-	"""
-	Chooses at random from a list of legal_actions
-	"""
-	return choice(legal_actions)
+    """
+    Chooses at random from a list of legal_actions
+    """
+    return choice(legal_actions)
+
+def printGameState(h):
+    print "H0: %s H1: %s B: %s" % (h.P1_HandStr, h.P2_HandStr, h.BoardStr)
 
 def testHistoryAgainstCurrentStrategy():
     """
@@ -64,37 +67,46 @@ def testHistoryAgainstCurrentStrategy():
     while(h.NodeType != 2): # while not terminal, simulate
         if h.NodeType == 0:
             #h.printAttr()
-            print "-----SIMULATING CHANCE------"
+            print "------SIMULATING CHANCE------"
             h = h.simulateChance()
 
         elif h.NodeType == 1:
 
-        	h.printAttr()
-        	actions = h.getLegalActions()
-        	print "Legal Actions:", actions
+            #h.printAttr()
+            actions = h.getLegalActions()
+            print "Legal Actions:", actions
 
-        	# if it's an opponent move
-        	if h.ActivePlayer == 1:
-        		I_opp = convertHtoI(h, 1)
-        		s = getStrategy(I_opp)
-        		print "Opponent Strategy:", s
-        		opp_action = chooseActionRandom(actions) if s==None else chooseAction(s)
-        		
-        		h.simulateAction(opp_action)
+            # if it's an opponent move
+            if h.ActivePlayer == 1:
+                I_opp = convertHtoI(h, 1)
+                s = getStrategy(I_opp)
+                print "Opponent Strategy:", s
+                opp_action = chooseActionRandom(actions) if s==None else chooseAction(s)
 
-        	else: # our move, so ask for an action
+                # add the colon back to oppAction so that helper functions can parse (my fault again)
+                if opp_action[0]=='B' or opp_action[0]=='R':
+                    opp_action = "%s:%s" % (opp_action[0],opp_action[1])
 
-	            givenAction=False
+                print "Opp. action:", opp_action
+                h = h.simulateAction(opp_action)
 
-	            while(not givenAction):
-	                action = raw_input("Choose action: ")
-	                if action in actions:
-	                    givenAction=True
-	                else:
-	                    print "Action not allowed. Try again."
+                print "------SIMULATING OPP ACTION"
 
-	            print "-----SIMULATING ACTION------"
-	            h = h.simulateAction(action)
+            else: # our move, so ask for an action
+                I_player = convertHtoI(h, 0)
+                printGameState(h)
+                print I_player
+                givenAction=False
+
+                while(not givenAction):
+                    action = raw_input("Choose action: ")
+                    if action in actions:
+                        givenAction=True
+                    else:
+                        print "Action not allowed. Try again."
+
+                print "-----SIMULATING PLAYER ACTION------"
+                h = h.simulateAction(action)
 
         else:
             print "ERROR, not recognized nodetype"
