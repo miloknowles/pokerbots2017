@@ -911,53 +911,171 @@ class History(object):
         else:
             assert False, "Error: reached a terminal node for a reason we didn't account for!"
 
-# def testHistoryRandomWithConvert():
-#     """
-#     Randomly choose actions from the game engine to try to find every edge case possible
 
-#     (history, node_type, current_street, current_round, button_player, dealer, \
-#                     active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board)
-#     """
-#     num_simulations = 1000
-#     sb_player = 0
+class LightweightHistory(object):
+    """
+    A history object that peforms action simulations. Leaves chance events and terminal utilities to the game engine.
+    """
+    def __init__(self, history, node_type, current_street, current_round, button_player, dealer, \
+                    active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board):
+        """
+        history: a list of strings representing the history of actions so far
+        node_type: (0,1,2)for chance, action, or terminal
+        current_street: (0,1,2,3) for preflop, flop, turn, or river
+        current_round: a string representing the round within the current street (B1=betting1, D=discard, etc)
+        button_player: (0,1) the player who has the button (has the SB, acts first before flop, second after flop)
+        dealer: a Dealer object, which will contain the deck at the current moment in history
+        active_player: the player whose move it is (0,1)
 
-#     time0 = time.time()
-#     for i in range(num_simulations):
+        p1_inpot: the amount that P1 has contributed to the CURRENT betting round
+        p2_inpot: the amount that P2 has contributed to the CURRENT betting round
+        """
+        self.History = history
+        self.NodeType = node_type
+        self.Street = current_street
+        self.Round = current_round
+        self.ButtonPlayer = button_player
+        self.Dealer = dealer
+        self.ActivePlayer = active_player
+        self.Pot = pot
+        self.P1_inPot = p1_inpot
+        self.P2_inPot = p2_inpot
+        self.P1_Bankroll = bank_1
+        self.P2_Bankroll = bank_2
+        self.P1_Hand = p1_hand
+        self.P2_Hand = p2_hand
+        self.Board = board
+        self.P1_HandStr = None
+        self.P2_HandStr = None
+        self.BoardStr = None
 
-#         if i % 10 == 0:
-#             print i
-#         #print "############# HAND:", i, "###############"
+    def printAttr(self):
+        """
+        Prints all the attributes out of the current history.
+        """
+        if self.NodeType == 2:
+            print "---TERMINAL---"
+            p1_util, p2_util = self.getTerminalUtilities()
+            print "P1 UTIL:", p1_util, "P2 UTIL:", p2_util
+            print "HISTORY:", self.History
+            print "NODETYPE:%d STREET:%d ROUND:%s" % (self.NodeType, self.Street, self.Round)
+            print "ACTIVE PLAYER:%d SB:%d" % (self.ActivePlayer, self.ButtonPlayer)
+            print "POT:%d P1_INPOT:%d P2_INPOT:%d" % (self.Pot, self.P1_inPot, self.P2_inPot)
+            print "P1_BANK:%d P2_BANK:%d" % (self.P1_Bankroll, self.P2_Bankroll)
+            print "P1_HAND:%s P2_HAND:%s BOARD:%s" % (convertSyntax(self.P1_Hand), convertSyntax(self.P2_Hand), convertSyntax(self.Board))
 
-#         initialDealer = Dealer()
-#         h = History([], 0, 0, 0, sb_player, initialDealer, sb_player, 0, 0, 0, 200, 200, [], [], [])
+        else:
+            print "HISTORY:", self.History
+            print "NODETYPE:%d STREET:%d ROUND:%s" % (self.NodeType, self.Street, self.Round)
+            print "ACTIVE PLAYER:%d SB:%d" % (self.ActivePlayer, self.ButtonPlayer)
+            print "POT:%d P1_INPOT:%d P2_INPOT:%d" % (self.Pot, self.P1_inPot, self.P2_inPot)
+            print "P1_BANK:%d P2_BANK:%d" % (self.P1_Bankroll, self.P2_Bankroll)
+            print "P1_HAND:%s P2_HAND:%s BOARD:%s" % (convertSyntax(self.P1_Hand), convertSyntax(self.P2_Hand), convertSyntax(self.Board))
 
-#         while(h.NodeType != 2): # while not terminal, simulate
-#             if h.NodeType == 0:
-#                 #h.printAttr()
-#                 h = h.simulateChance()
-#             elif h.NodeType == 1:
-#                 #h.printAttr()
-#                 actions = h.getLegalActions()
-#                 #print "Legal Actions:", actions
+    def updateHandDiscard(self, player=0, new_card, hand_index):
+        """
+        Updates the player's hand and the handstr.
+        player: the player (0 or 1) whose hand we are updating
+        new_card: the Card (object) to replace the card at hand_index
+        """
+        if player == 0:
+            self.P1_Hand[hand_index] = new_card
+            self.P1_HandStr = convertSyntax(self.P1_Hand)
 
-#                 action = choice(actions)
-#                 #print "Choosing action:", action
-#                 h = h.simulateAction(action)
+        elif player == 1:
+            self.P2_Hand[hand_index] = new_card
+            self.P2_HandStr = convertSyntax(self.P2_Hand)
 
-#                 if h.NodeType == 1:
-#                     p = choice([0,1])
-#                     print convertHtoI(h, p)
-                
-#             else:
-#                 assert False, "Not recognized node type"
+        else:
+            assert False, "Error: tried to update the hand of a player that does not exist"
 
-#         #print "End of hand ----------"
-#         #h.printAttr()
+    def updateHand(self, player=0, hand):
+        """
+        Used during preflop to set the player's hand.
+        """
+        if player==0:
+            P1_Hand = hand
 
-#         sb_player = (sb_player+1) % 2 # alternate sb players each time
+        elif player==1:
+            P2_Hand = hand
 
-#     time1 = time.time()
-#     print "Simulated", num_simulations, "hands in", time1-time0, "secs"
+        else:
+            assert False, "Error: player %d does not exist!" % player
 
-# testHistoryRandomWithConvert()
+    def updateBoard(self, board):
+        self.Board = board
 
+    def updatePotAndBankroll(self, pot, p1_bankroll, p2_bankroll, p1_inpot, p2_inpot):
+        """
+        Updates the current pot, p1's bankroll, p2's bankroll, and the amount each player has put in
+        pot during this betting street.
+        """
+        self.Pot = pot
+        self.P1_Bankroll = p1_bankroll
+        self.P2_Bankroll = p2_bankroll
+        self.P1_inPot = p1_inpot
+        self.P2_inPot = p2_inpot
+
+    def getLegalActions(self):
+        """
+        Gets the legal actions available at this point in the game (current history object)
+        """
+        assert self.NodeType == 1, "Error: trying to get legal actions for a non-action node!"
+
+        # IF WE ARE AT A D ACTION NODE
+        # if ((self.Street == 1 or self.Street == 2) and self.Round == "D"): # flop/turn, and we have the option to discard
+        #     return ["CK", "D"]
+
+        # ELSE THIS IS A BETTING ACTION NODE
+        # determine if there was a bet already during this round
+        prevBetAmt = abs(self.P1_inPot-self.P2_inPot)
+
+        # if either player is all-in, the only options are to check
+        if self.P1_Bankroll==0 or self.P2_Bankroll==0:
+            if self.ActivePlayer==0:
+                if self.P1_Bankroll==0: # if the active player has no money, they can only check
+                    return ["CK"]
+                else: # the other player must have no money, so they will only be able to F, CL, or CK, depending on the case
+                    # if P1's opponent has no money, but has more in the pot, P1 can F or CL
+                    if prevBetAmt > 0:
+                        return ["F", "CL"]
+                    else: # no prev bet, so should check
+                        return ["CK"]
+            else: 
+                if self.P2_Bankroll==0: 
+                    return ["CK"]
+                else: # the other player must have no money, so they will only be able to F, CL, or CK, depending on the case
+                    # if P2's opponent has no money, but has more in the pot, P2 can F or CL
+                    if prevBetAmt > 0:
+                        return ["F", "CL"]
+                    else: # no prev bet, so should check
+                        return ["CK"]
+
+        
+        # if there have already been 3 betting rounds, end the betting with either fold or call
+        if self.Round == "B3":
+            assert prevBetAmt > 0, "Error: previous bet amount must have been > 0 to reach B3"
+            actions = ["F", "CL"]
+
+        else: #B1, B2, B3
+
+            # if no bets yet: we can check, bet half-pot, bet pot, or go all-in
+            if prevBetAmt==0:
+                actions = ["CK", "B:H", "B:P", "B:A"]
+
+            # if a bet HAS been placed during this round: we can fold, call, raise by pot, or raise by all-in amount
+            if prevBetAmt > 0:
+                actions = ["F", "CL", "R:P", "R:A"]
+
+            # remove any bets (besides all-in) that would make us or the opponent pot-committed
+            if (float(self.Pot) / 2) > self.P1_Bankroll*0.6 or (float(self.Pot) / 2) > self.P2_Bankroll*0.6:
+                if "B:P" in actions:
+                    actions.remove("B:P")
+                if "B:H" in actions:
+                    actions.remove("B:H")
+                if "R:P" in actions:
+                    actions.remove("R:P")
+                if "R:H" in actions:
+                    actions.remove("R:H")
+
+        return actions
