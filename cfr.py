@@ -335,7 +335,10 @@ def convertHtoI(history, player):
         elif s_parsed[0] == "H1":
             numDiscardActions+=1
             if player==1:
-                hand = "H%d" % min(int(float(s_parsed[2])*4), 3) # scales hand to an int 0,1,2,3
+                if currentSection==1: # flop, 4 buckets
+                    hand = "H%d" % min(int(float(s_parsed[2])*4), 3) # scales hand to an int 0,1,2,3
+                elif currentSection==2: # turn, 3 buckets
+                    hand = "H%d" % min(int(float(s_parsed[2])*3), 2) # scales hand to an int 0,1,2,3
                 Current_Player_HS=hand
 
         # if flop or turn, we don't want to add anything yet
@@ -908,5 +911,53 @@ class History(object):
         else:
             assert False, "Error: reached a terminal node for a reason we didn't account for!"
 
+# def testHistoryRandomWithConvert():
+#     """
+#     Randomly choose actions from the game engine to try to find every edge case possible
 
+#     (history, node_type, current_street, current_round, button_player, dealer, \
+#                     active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board)
+#     """
+#     num_simulations = 1000
+#     sb_player = 0
+
+#     time0 = time.time()
+#     for i in range(num_simulations):
+
+#         if i % 10 == 0:
+#             print i
+#         #print "############# HAND:", i, "###############"
+
+#         initialDealer = Dealer()
+#         h = History([], 0, 0, 0, sb_player, initialDealer, sb_player, 0, 0, 0, 200, 200, [], [], [])
+
+#         while(h.NodeType != 2): # while not terminal, simulate
+#             if h.NodeType == 0:
+#                 #h.printAttr()
+#                 h = h.simulateChance()
+#             elif h.NodeType == 1:
+#                 #h.printAttr()
+#                 actions = h.getLegalActions()
+#                 #print "Legal Actions:", actions
+
+#                 action = choice(actions)
+#                 #print "Choosing action:", action
+#                 h = h.simulateAction(action)
+
+#                 if h.NodeType == 1:
+#                     p = choice([0,1])
+#                     print convertHtoI(h, p)
+                
+#             else:
+#                 assert False, "Not recognized node type"
+
+#         #print "End of hand ----------"
+#         #h.printAttr()
+
+#         sb_player = (sb_player+1) % 2 # alternate sb players each time
+
+#     time1 = time.time()
+#     print "Simulated", num_simulations, "hands in", time1-time0, "secs"
+
+# testHistoryRandomWithConvert()
 
