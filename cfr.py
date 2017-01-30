@@ -971,7 +971,7 @@ class LightweightHistory(object):
             print "P1_BANK:%d P2_BANK:%d" % (self.P1_Bankroll, self.P2_Bankroll)
             print "P1_HAND:%s P2_HAND:%s BOARD:%s" % (convertSyntax(self.P1_Hand), convertSyntax(self.P2_Hand), convertSyntax(self.Board))
 
-    def updateHandDiscard(self, player=0, new_card, hand_index):
+    def updateHandDiscard(self, new_card, hand_index):
         """
         Updates the player's hand and the handstr.
         player: the player (0 or 1) whose hand we are updating
@@ -988,7 +988,7 @@ class LightweightHistory(object):
         else:
             assert False, "Error: tried to update the hand of a player that does not exist"
 
-    def updateHand(self, player=0, hand):
+    def updateHand(self, hand):
         """
         Used during preflop to set the player's hand.
         """
