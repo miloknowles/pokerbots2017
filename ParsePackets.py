@@ -23,10 +23,10 @@ class NEWGAME(object):
 
         self.ourName = itemized[1]
         self.oppName = itemized[2]
-        self.stackSize = itemized[3] # number of chips we have at start of game
-        self.bb = itemized[4] # big blind amount being used for the game (guaranteed multiple of 2)
-        self.numHands = itemized[5] # max number of hands to be played in this match
-        self.timeBank = itemized[6] # number of seconds left for our bot to return an action
+        self.stackSize = int(itemized[3]) # number of chips we have at start of game
+        self.bb = int(itemized[4]) # big blind amount being used for the game (guaranteed multiple of 2)
+        self.numHands = int(itemized[5]) # max number of hands to be played in this match
+        self.timeBank = float(itemized[6]) # number of seconds left for our bot to return an action
 
 
 class NEWHAND:
@@ -77,11 +77,11 @@ class GETACTION:
         self.type = itemized[0]
         assert(self.type=="GETACTION")
 
-        self.potSize = itemized[1]
+        self.potSize = int(itemized[1])
         self.numBoardCards = int(itemized[2])
         
         parse_index = 3
-        self.BoardCards = []
+        self.boardCards = []
         for i in range(self.numBoardCards):
             self.BoardCards.append(itemized[parse_index])
             parse_index+=1
@@ -102,4 +102,14 @@ class GETACTION:
         for i in range(self.numLegalActions):
             parse_index += 1
             self.legalActions.append(itemized[parse_index])
+
+    def getBoard(self):
+        """
+        Returns the board as Card objects
+        """
+        board = []
+        for c in self.boardCards:
+            board.append(Card(rankDict[c[0]], suitDict[c[1]]))
+        return board
+
 
