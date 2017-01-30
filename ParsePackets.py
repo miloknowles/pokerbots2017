@@ -1,4 +1,11 @@
-#!/usr/bin/env 
+#!/usr/bin/env
+from pokereval.card import Card
+
+
+# mappings used by the NEWHAND class
+rankDict = {'2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, '9':9, 'T':10, 'J':11, 'Q':12, 'K':13, 'A':14}
+suitDict = {'s': 1, 'h': 2, 'd': 3, 'c': 4}
+
 
 class NEWGAME(object):
     """
@@ -24,6 +31,7 @@ class NEWGAME(object):
 
 class NEWHAND:
     """
+
     Used to parse the data from a NEWHAND packet
     See: http://mitpokerbots.com/docs/grammar.html
 
@@ -36,15 +44,21 @@ class NEWHAND:
         self.type = itemized[0]
         assert(self.type=="NEWHAND")
 
-        self.handID = itemized[1]
-        self.button = itemized[2]
-        self.hand = [itemized[3], itemized[4]]
-        self.myBank = itemized[5]
-        self.oppBank = itemized[6]
-        self.timeBank = itemized[7]
+        self.handID = int(itemized[1])
+        self.button = bool(itemized[2])
+        self.hand = [itemized[3], itemized[4]] # stores as card strings
+        self.myBank = int(itemized[5])
+        self.oppBank = int(itemized[6])
+        self.timeBank = float(itemized[7])
 
     def getHand(self):
-        return self.hand
+        """
+        Returns the hand as card objects.
+        """
+        hand = []
+        hand.append(Card(rankDict[self.hand[0][0]], suitDict[self.hand[0][1]]))
+        hand.append(Card(rankDict[self.hand[1][0]], suitDict[self.hand[1][1]]))
+        return hand
 
 
        
@@ -88,3 +102,4 @@ class GETACTION:
         for i in range(self.numLegalActions):
             parse_index += 1
             self.legalActions.append(itemized[parse_index])
+
