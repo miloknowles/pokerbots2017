@@ -27,7 +27,7 @@ CURRENT_ROUND = 0 # chance round
 HISTORY = LightweightHistory([], 0, 0, 0, 0, 0, 0, 0, 0, 200, 200, [], [], [])
 
 
-def mapBetToAbstraction(bet_amt, bet_options):
+def mapBetToAbstraction(betAmt):
 	raise NotImplementedError
 
 
@@ -60,12 +60,66 @@ def handleDiscard(hand, board):
         return "CHECK\n"
 
 
-def extractOppBetting():
+def extractOppAction():
     """
     Reads through lastActions in GETACTION_PACKET and updates global information if an opponent betting action was made.
     """
-    global GETACTION_PACKET
-    for a in GETACTION_PACKET.lastActions:
+    global GETACTION_PACKET, NEWGAME_PACKET, HISTORY
+
+    for action in GETACTION_PACKET.lastActions:
+        parsedAction = a.split(':')
+        if parsedAction[0] == 'BET' or parsedAction[0] == 'RAISE':
+            assert parsedAction[2] == NEWGAME_PACKET.oppName, "Error: expected the opp. betting/raising action to be associated with %s" % NEWGAME_PACKET.oppName
+
+            # increase the Pot, P2_inPot, and update P2_Bankroll
+            HISTORY.Pot = GETACTION_PACKET.potSize
+
+            if parsedAction[0]=='BET': # increment the P2_inPot
+                betAmount = int(parsedAction[1])
+
+                # TODO: map the bet amount to an action (abstracted)
+                oppActionStr = mapBetToAbstraction(betAmount)
+                HISTORY.History.append(oppActionStr)
+
+                # update the history AFTER abstraction determined!!
+                HISTORY.P2_inPot += betAmount
+                HISTORY.P2_Bankroll -= betAmount
+
+            elif parsedAction[0] == 'RAISE': # P2_inPot should be EQUAL to the amount that they raise 'to'
+                callAmount = HISTORY.P1_inPot - HISTORY.P2_inPot # calculate the amount the opponent had to put in to call
+                assert callAmount > 0, "Error: expected positive call amount for opponent"
+
+                betAmount = int(parsedAction[1]) - callAmount # determine amount of money that the opp. increased inPot by
+
+                # TODO: map the bet amount to an action (abstracted)
+                oppActionStr = mapBetToAbstraction(betAmount)
+                HISTORY.History.append(oppActionStr)
+
+                # update the history AFTER abstraction determined!!
+                HISTORY.P2_inPot += betAmount
+                HISTORY.P2_Bankroll -= betAmount
+
+
+        elif parsedAction[0] == 'CALL':
+            # update the global history
+
+            callAmount = HISTORY.P1_inPot - HISTORY.P2_inPot # calculate the amount the opponent had to put in to call
+            assert callAmount > 0, "Error: expected positive call amount for opponent"
+            HISTORY.P2_inPot += callAmount
+            HISTORY.P2_Bankroll -= callAmount
+            HISTORY.Pot = GETACTION_PACKET.potSize
+
+            HISTORY.History.append('1:CL')
+
+        elif parsedAction[0] == 'CHECK':
+            HISTORY.History.append('1:CK')
+
+        elif parsedAction[0] == 'DISCARD':
+            HISTORY.History.append('1:D')
+
+
+
+
 
 
 class Player:
@@ -94,6 +148,7 @@ class Player:
 
                 if "DEAL:FLOP" in GETACTION_PACKET.lastActions:
                 	HISTORY.P1_inPot, P2_inPot = 0, 0 # reset the in pot for this street
+                    HISTORY.Board = GETACTION_PACKET.getBoard()
 
             	elif "DEAL:TURN" in GETACTION_PACKET.lastActions:
             		HISTORY.P1_inPot, P2_inPot = 0, 0 # reset the in pot for this street

@@ -117,7 +117,7 @@ def testHistoryAgainstCurrentStrategy():
     print "P1_Util:", p1_util, "P2_Util:", p2_util
 
 
-testHistoryAgainstCurrentStrategy()
+#testHistoryAgainstCurrentStrategy()
 
 
 

@@ -916,8 +916,8 @@ class LightweightHistory(object):
     """
     A history object that peforms action simulations. Leaves chance events and terminal utilities to the game engine.
     """
-    def __init__(self, history, node_type, current_street, current_round, button_player, dealer, \
-                    active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board):
+    def __init__(self, history, node_type, current_street, current_round, button_player, \
+                active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board):
         """
         history: a list of strings representing the history of actions so far
         node_type: (0,1,2)for chance, action, or terminal
@@ -935,7 +935,6 @@ class LightweightHistory(object):
         self.Street = current_street
         self.Round = current_round
         self.ButtonPlayer = button_player
-        self.Dealer = dealer
         self.ActivePlayer = active_player
         self.Pot = pot
         self.P1_inPot = p1_inpot
