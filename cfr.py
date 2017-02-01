@@ -1020,18 +1020,18 @@ class LightweightHistory(object):
             assert False, "Error: wasn't expected board of size %d" % len(self.Board)
 
 
-    def updatePotAndBankroll(self, pot, p1_bankroll, p2_bankroll, p1_inpot=self.P1_inPot, p2_inpot=self.P2_inPot):
-        """
-        Updates the current pot, p1's bankroll, p2's bankroll, and the amount each player has put in
-        pot during this betting street.
-        """
-        self.Pot = pot
-        self.P1_Bankroll = p1_bankroll
-        self.P2_Bankroll = p2_bankroll
-        self.P1_inPot = p1_inpot
-        self.P2_inPot = p2_inpot
+    # def updatePotAndBankroll(self, pot, p1_bankroll, p2_bankroll, p1_inpot=self.P1_inPot, p2_inpot=self.P2_inPot):
+    #     """
+    #     Updates the current pot, p1's bankroll, p2's bankroll, and the amount each player has put in
+    #     pot during this betting street.
+    #     """
+    #     self.Pot = pot
+    #     self.P1_Bankroll = p1_bankroll
+    #     self.P2_Bankroll = p2_bankroll
+    #     self.P1_inPot = p1_inpot
+    #     self.P2_inPot = p2_inpot
 
-        assert (self.Pot+self.P1_Bankroll+self.P2_Bankroll)==400, "Error: player bankrolls and pot does not add up to 400"
+    #     assert (self.Pot+self.P1_Bankroll+self.P2_Bankroll)==400, "Error: player bankrolls and pot does not add up to 400"
 
     def getLegalActions(self, player):
         """
