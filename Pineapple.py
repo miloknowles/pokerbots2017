@@ -12,18 +12,13 @@ import json
 from ParsePackets import *
 
 
-# when we get an opponent action, map it into the abstracted space and use a History object to simulate it
-# ask the History for legal actions when it's our turn
-# deal with discrepancies between History's allowed actions and engine's allowed actions
-	# all actions from History should be in engine's allowed actions, but not necessarily other way around
-# when we get to a discard, use the History to determine which one?
-
-
-global NEWGAME_PACKET, NEWHAND_PACKET, GETACTION_PACKET, HISTORY,
-CURRENT_ROUND = 0 # chance round
+# DEFINE GLOBAL VARIABLES TO STORE THE GAME STATE #
+global NEWGAME_PACKET, NEWHAND_PACKET, GETACTION_PACKET, HISTORY
 
 # (self, history, node_type, current_street, current_round, button_player, \
 # active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board):
+
+# CREATE THE GLOBAL HISTORY #
 HISTORY = LightweightHistory([], 0, 0, 0, 0, 0, 0, 0, 0, 200, 200, [], [], [])
 
 
@@ -34,7 +29,7 @@ def mapBetToAbstraction(betAmt):
     Returns: H, P, or A (halfpot, pot, or all-in)
     """
     # get legal actions for the opponent based on the actions we've given to history so far
-	legalActions = HISTORY.getLegalActions(1) 
+    legalActions = HISTORY.getLegalActions(1) 
 
     # extract the betting options to consider from the legal options
     betOptions = []
@@ -68,7 +63,7 @@ def mapBetToAbstraction(betAmt):
     else:
         best_index, best_ratio = 0, float('inf')
         for j in range(len(betOptions)):
-            ratio = (float(betAmt)/betOptionAmounts[j] if betAmt>betOptionAmounts[j]) else (float(betOptionAmounts[j])/betAmt)
+            ratio = (float(betAmt)/betOptionAmounts[j]) if betAmt>betOptionAmounts[j] else (float(betOptionAmounts[j])/betAmt)
             
             if ratio < best_ratio:
                 best_ratio, best_index = ratio, j
@@ -171,6 +166,7 @@ def extractOppActionAndDiscardResult():
                 HISTORY.History.append('1:D')
             
             else: # our discard
+                HISTORY.History.append('0:D')
                 assert parsedAction[3] == NEWGAME_PACKET.ourName, "Error: expected discard action to be done by us, but instead it was %s" % parsedAction[3]
                 
                 # update our hand with the new card we received
@@ -270,15 +266,15 @@ class Player:
 
                 # check if we entered a new street
                 if "DEAL:FLOP" in GETACTION_PACKET.lastActions:
-                	HISTORY.P1_inPot, P2_inPot = 0, 0 # reset the in pot for this street
+                    HISTORY.P1_inPot, P2_inPot = 0, 0 # reset the in pot for this street
                     HISTORY.updateBoard(GETACTION_PACKET.getBoard())
 
-            	elif "DEAL:TURN" in GETACTION_PACKET.lastActions:
-            		HISTORY.P1_inPot, P2_inPot = 0, 0 # reset the in pot for this street
+                elif "DEAL:TURN" in GETACTION_PACKET.lastActions:
+                    HISTORY.P1_inPot, P2_inPot = 0, 0 # reset the in pot for this street
                     HISTORY.updateBoard(GETACTION_PACKET.getBoard())
 
-            	elif "DEAL:RIVER" in GETACTION_PACKET.lastActions
-            		HISTORY.P1_inPot, P2_inPot = 0, 0 # reset the in pot for this street
+                elif "DEAL:RIVER" in GETACTION_PACKET.lastActions:
+                    HISTORY.P1_inPot, P2_inPot = 0, 0 # reset the in pot for this street
                     HISTORY.updateBoard(GETACTION_PACKET.getBoard())
 
                 # extract information from the lastActions to update HISTORY
@@ -336,7 +332,7 @@ class Player:
             elif word=="NEWGAME":
 
                 # store game information globally
-            	global NEWGAME_PACKET
+                global NEWGAME_PACKET
                 NEWGAME_PACKET = NEWGAME(data)
 
                 # just in case
@@ -346,7 +342,7 @@ class Player:
             elif word=="NEWHAND":
 
                 # update the global NEWHAND packet
-            	global NEWHAND_PACKET
+                global NEWHAND_PACKET
                 NEWHAND_PACKET = NEWHAND(data)
 
                 # update the player's hand in the HISTORY
