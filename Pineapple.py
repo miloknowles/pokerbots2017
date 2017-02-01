@@ -7,7 +7,7 @@ import time
 from random import random, choice
 from pokereval.card import Card
 from query_cfr import chooseAction, chooseActionRandom, getStrategy
-from cfr import getHandStrength, determineBestDiscardFast, convertHtoI, LightweightHistory
+from cfr import getHandStrength, determineBestDiscardFast, convertHtoI, LightweightHistory, convertSyntax
 import json
 from ParsePackets import *
 
@@ -104,7 +104,7 @@ def handleDiscard(hand, board):
         return "CHECK\n"
 
 
-def extractOppAction():
+def extractOppActionAndDiscardResult():
     """
     Reads through lastActions in GETACTION_PACKET and updates global information if an opponent betting action was made.
     """
@@ -165,63 +165,76 @@ def extractOppAction():
             HISTORY.History.append('1:CK')
 
         elif parsedAction[0] == 'DISCARD':
-            HISTORY.History.append('1:D')
+            # DISCARD:(oldcard):(newcard):PLAYER
+            # only append the discard if it was done by the other player
+            if parsedAction[3] == NEWGAME_PACKET.oppName:
+                HISTORY.History.append('1:D')
+            
+            else: # our discard
+                assert parsedAction[3] == NEWGAME_PACKET.ourName, "Error: expected discard action to be done by us, but instead it was %s" % parsedAction[3]
+                
+                # update our hand with the new card we received
+                old_card, new_card = parsedAction[1], parsedAction[2]
+                index = 0 if (old_card==HISTORY.P1_HandStr[0:2]) else 1
+                HISTORY.updateHandDiscard(new_card, index)
 
         elif parsedAction[0] == 'FOLD':
             HISTORY.History.append('1:F')
+
+        elif parsedAction[0] == 'DEAL':
+            pass
 
         else:
             assert False, "Error: encountered unknown opponent action %s from lastActions" % parsedAction[0]
 
 
-def convertSyntaxToEngine(h_action):
+def convertSyntaxToEngine(i_action):
     """
-    h_action: an action in the format that the HISTORY object returns them
+    i_action: an action in the format that the HISTORY object returns them
 
     Returns the action in a syntax that the engine recognizes.
     Also maps bets to legal integer values.
 
     Note: this function only works for OUR player!!! Do not use for opponent.
     """
-    if h_action=="CK":
+    if i_action=="CK":
         a = "CHECK\n"
-    elif h_action=="CL":
+    elif i_action=="CL":
         a = "CALL\n"
-    elif h_action=="F":
+    elif i_action=="F":
         a = "FOLD\n"
     else: # parsed action
-        h_action_parsed = h_action.split(':')
-        if h_action_parsed[0]=='B':
+        if i_action[0]=='B':
             # get the legal betting range
             minBet, maxBet = GETACTION_PACKET.getBettingRange()
 
             # amounts must be between min and max bets
-            if h_action_parsed[1] == 'H':
+            if i_action[1] == 'H':
                 betAmt = max(minBet, min(int(float(HISTORY.Pot) / 2), maxBet))
 
-            elif h_action_parsed[1] == 'P':
+            elif i_action[1] == 'P':
                 betAmt = max(minBet, min(HISTORY.Pot, maxBet))
 
-            elif h_action_parsed[1] == 'A':
+            elif i_action[1] == 'A':
                 betAmt = maxBet
 
             a = 'BET:%s\n' % str(betAmt)
 
-        elif h_action_parsed[0]=='R':
+        elif i_action[0]=='R':
 
             # get the legal raising range
             minRaise, maxRaise = GETACTION_PACKET.getRaisingRange()
 
             # amounts must be between min and max raises
-            if h_action_parsed[1] == 'H':
+            if i_action[1] == 'H':
                 betAmt = int(float(HISTORY.Pot) / 2)
                 raiseAmt = HISTORY.P2_inPot + betAmt # we raise by betAmt OVER the opponent's current amount in the pot
 
-            elif h_action_parsed[1] == 'P':
+            elif i_action[1] == 'P':
                 betAmt = HISTORY.Pot
                 raiseAmt = HISTORY.P2_inPot + betAmt # we raise by betAmt OVER the opponent's current amount in the pot
 
-            elif h_action_parsed[1] == 'A':
+            elif i_action[1] == 'A':
                 raiseAmt = maxRaise
 
             a = 'RAISE:%s\n' % str(raiseAmt)
@@ -255,6 +268,7 @@ class Player:
                 global GETACTION_PACKET, HISTORY
                 GETACTION_PACKET = GETACTION(data)
 
+                # check if we entered a new street
                 if "DEAL:FLOP" in GETACTION_PACKET.lastActions:
                 	HISTORY.P1_inPot, P2_inPot = 0, 0 # reset the in pot for this street
                     HISTORY.updateBoard(GETACTION_PACKET.getBoard())
@@ -268,26 +282,55 @@ class Player:
                     HISTORY.updateBoard(GETACTION_PACKET.getBoard())
 
                 # extract information from the lastActions to update HISTORY
-                # if we convert HISTORY to an information set, we can look up our strategy
-                playerActions = HISTORY.getLegalActions(0)
-                I_player = convertHtoI(HISTORY, 0)
-                strategy = getStrategy(I_player)
-                print "I:", I_player
-                print "Strategy:", strategy
-                # if we could find a learned strategy, use it, otherwise choose randomly from available actions
-                action = chooseActionRandom(player_actions) if s==None else chooseAction(strategy)
+                # this will add opponent actions to the HISTORY list, and update our hand if we discarded
+                extractOppActionAndDiscardResult()
 
-                # convert actions to history syntax to get appended
-                # add the colon back to oppAction so that helper functions can parse (my fault again)
-                if action[0]=='B' or action[0]=='R':
-                    action_h = "0:%s:%s" % (action[0], action[1])
-                else: # just add the player 0 tag to the beginning of the action
-                    action_h = "0:%s" % action
-                HISTORY.History.append(action_h)
+                # determine if this is a discard action
+                inDiscardSection = False
+                parsedLegalActions = [i.split(':') for i in GETACTION_PACKET.legalActions]
+                for legalAction in parsedLegalActions:
+                    if legalAction[0] == 'DISCARD':
+                        inDiscardSection = True
+                        break
+
+                # if a discard section
+                if inDiscardSection:
+                    shouldDiscard, discardIndex, swapEV, originalHandEV = determineBestDiscardFast(HISTORY.P1_Hand, HISTORY.Board)
+
+                    if shouldDiscard:
+                        discardAction = 'DISCARD:%s\n' % convertSyntax(HISTORY.P1_Hand[discardIndex])
+                        s.send(discardAction)
+
+                    else:
+                        s.send('CHECK\n')
 
 
-                # TODO: convert actions into engine syntax / amounts
-                s.send(action_e)
+                # otherwise, betting action
+                else:
+
+                    # convert the current HISTORY to an information set from our perspective
+                    playerActions = HISTORY.getLegalActions(0)
+                    I_player = convertHtoI(HISTORY, 0)
+
+                    # look up our strategy for the given info. set
+                    strategy = getStrategy(I_player)
+                    print "I:", I_player
+                    print "Strategy:", strategy
+
+                    # if we could find a learned strategy, use it, otherwise choose randomly from available actions
+                    action_i = chooseActionRandom(player_actions) if s==None else chooseAction(strategy)
+
+                    # convert actions to HISTORY list syntax to get appended
+                    if action_i[0]=='B' or action_i[0]=='R':
+                        action_h = "0:%s:%s" % (action_i[0], action_i[1])
+                    else: # just add the player 0 tag to the beginning of the action
+                        action_h = "0:%s" % action_i
+                    HISTORY.History.append(action_h)
+
+                    # convert the action we chose to syntax compatible with the engine
+                    # bet amounts like H/P/A are converted to integer values
+                    action_e = convertSyntaxToEngine(action_h)
+                    s.send(action_e)
 
 
             elif word=="NEWGAME":
