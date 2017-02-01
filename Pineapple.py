@@ -180,6 +180,8 @@ def convertSyntaxToEngine(h_action):
 
     Returns the action in a syntax that the engine recognizes.
     Also maps bets to legal integer values.
+
+    Note: this function only works for OUR player!!! Do not use for opponent.
     """
     if h_action=="CK":
         a = "CHECK\n"
@@ -190,19 +192,42 @@ def convertSyntaxToEngine(h_action):
     else: # parsed action
         h_action_parsed = h_action.split(':')
         if h_action_parsed[0]=='B':
-
             # get the legal betting range
             minBet, maxBet = GETACTION_PACKET.getBettingRange()
 
+            # amounts must be between min and max bets
+            if h_action_parsed[1] == 'H':
+                betAmt = max(minBet, min(int(float(HISTORY.Pot) / 2), maxBet))
 
-            a = 'BET:%s\n' % h_action_parsed[1]
+            elif h_action_parsed[1] == 'P':
+                betAmt = max(minBet, min(HISTORY.Pot, maxBet))
+
+            elif h_action_parsed[1] == 'A':
+                betAmt = maxBet
+
+            a = 'BET:%s\n' % str(betAmt)
+
         elif h_action_parsed[0]=='R':
 
             # get the legal raising range
             minRaise, maxRaise = GETACTION_PACKET.getRaisingRange()
 
-            a = 'RAISE:%s\n' % h_action_parsed[1]
+            # amounts must be between min and max raises
+            if h_action_parsed[1] == 'H':
+                betAmt = int(float(HISTORY.Pot) / 2)
+                raiseAmt = HISTORY.P2_inPot + betAmt # we raise by betAmt OVER the opponent's current amount in the pot
 
+            elif h_action_parsed[1] == 'P':
+                betAmt = HISTORY.Pot
+                raiseAmt = HISTORY.P2_inPot + betAmt # we raise by betAmt OVER the opponent's current amount in the pot
+
+            elif h_action_parsed[1] == 'A':
+                raiseAmt = maxRaise
+
+            a = 'RAISE:%s\n' % str(raiseAmt)
+
+    # finally, return the action
+    return a
 
 
 

@@ -116,16 +116,16 @@ class GETACTION:
         for a in self.legalActions:
             a_parsed = a.split(':')
             if a_parsed[0] == 'BET':
-                minBet = a_parsed[1]
-                maxBet = a_parsed[2]
+                minBet = int(a_parsed[1])
+                maxBet = int(a_parsed[2])
                 return (minBet, maxBet)
 
     def getRaisingRange(self):
         for a in self.legalActions:
             a_parsed = a.split(':')
             if a_parsed[0] == 'RAISE':
-                minBet = a_parsed[1]
-                maxBet = a_parsed[2]
+                minBet = int(a_parsed[1])
+                maxBet = int(a_parsed[2])
                 return (minRaise, maxRaise)
 
 
