@@ -1004,7 +1004,7 @@ class LightweightHistory(object):
     def updateBoard(self, board):
         self.Board = board
 
-    def updatePotAndBankroll(self, pot, p1_bankroll, p2_bankroll, p1_inpot, p2_inpot):
+    def updatePotAndBankroll(self, pot, p1_bankroll, p2_bankroll, p1_inpot=self.P1_inPot, p2_inpot=self.P2_inPot):
         """
         Updates the current pot, p1's bankroll, p2's bankroll, and the amount each player has put in
         pot during this betting street.
@@ -1015,15 +1015,13 @@ class LightweightHistory(object):
         self.P1_inPot = p1_inpot
         self.P2_inPot = p2_inpot
 
+        assert (self.Pot+self.P1_Bankroll+self.P2_Bankroll)==400, "Error: player bankrolls and pot does not add up to 400"
+
     def getLegalActions(self):
         """
         Gets the legal actions available at this point in the game (current history object)
         """
         assert self.NodeType == 1, "Error: trying to get legal actions for a non-action node!"
-
-        # IF WE ARE AT A D ACTION NODE
-        # if ((self.Street == 1 or self.Street == 2) and self.Round == "D"): # flop/turn, and we have the option to discard
-        #     return ["CK", "D"]
 
         # ELSE THIS IS A BETTING ACTION NODE
         # determine if there was a bet already during this round
