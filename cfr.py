@@ -973,36 +973,52 @@ class LightweightHistory(object):
 
     def updateHandDiscard(self, new_card, hand_index):
         """
-        Updates the player's hand and the handstr.
-        player: the player (0 or 1) whose hand we are updating
+        Updates the Player 1 hand and the handstr.
         new_card: the Card (object) to replace the card at hand_index
+        Also determines the updated hand's strength, and adds the appropriate item to the History list.
         """
-        if player == 0:
-            self.P1_Hand[hand_index] = new_card
-            self.P1_HandStr = convertSyntax(self.P1_Hand)
+        self.P1_Hand[hand_index] = new_card
+        self.P1_HandStr = convertSyntax(self.P1_Hand)
+        self.History.append("0:D:%d" % hand_index)
+        self.History.append("H0:%s:%f" % (self.P1_HandStr, getHandStrength(self.P1_HandStr, self.BoardStr))) 
 
-        elif player == 1:
-            self.P2_Hand[hand_index] = new_card
-            self.P2_HandStr = convertSyntax(self.P2_Hand)
-
-        else:
-            assert False, "Error: tried to update the hand of a player that does not exist"
 
     def updateHand(self, hand):
         """
-        Used during preflop to set the player's hand.
+        Used during preflop to set the Player 1 hand.
+        Also determines the hand's strength, and adds the appropriate item to the History list.
+
+        ['H0:KcQh:0.609:H1:Ad9s:0.580', '0:CL', '1:B:H', '0:CL', 'FP:7s6c3s:H0:0.625:H1:0.586', 
+        '1:D:0', 'H1:9c9s:0.745', '0:D:1', 'H0:Kc5c:0.498', '1:B:P', '0:R:P', 
+        '1:CL', 'TN:7s6c3sQs:H0:0.552:H1:0.710', '1:CK', '0:D:0', 'H0:3d5c:0.432', '1:CK', 
+        '0:CK', 'RV:7s6c3sQsJc:H0:0.362:H1:0.727', '1:CK', '0:B:A', '1:F']
         """
-        if player==0:
-            P1_Hand = hand
+        # we only update the hand thoroughly for P1
+        self.P1_Hand = hand
+        self.P1_HandStr = convertSyntax(self.P1_Hand)
+        assert len(self.Board)==0, "Error: only use updateHand during preflop!"
+        self.History.append("H0:%s:%f:H1:xx:0.0" % (self.P1_HandStr, getHandStrength(self.P1_HandStr,"")))
 
-        elif player==1:
-            P2_Hand = hand
-
-        else:
-            assert False, "Error: player %d does not exist!" % player
 
     def updateBoard(self, board):
+        """
+        Updates self.Board to board (a list of Card objects)
+        Also appends the appropriate item to the History list (includes updated player HS with new board).
+        """
         self.Board = board
+        self.BoardStr = convertSyntax(self.Board)
+
+        if len(self.Board)==3: # flop 
+            self.History.append("FP:%s:H0:%f:H1:0.0" % (self.BoardStr, getHandStrength(self.P1_HandStr, self.BoardStr)))
+
+        elif len(self.Board)==4: # turn
+            self.History.append("TN:%s:H0:%f:H1:0.0" % (self.BoardStr, getHandStrength(self.P1_HandStr, self.BoardStr)))
+
+        elif len(self.Board)==5: # river
+            self.History.append("RV:%s:H0:%f:H1:0.0" % (self.BoardStr, getHandStrength(self.P1_HandStr, self.BoardStr)))
+        else:
+            assert False, "Error: wasn't expected board of size %d" % len(self.Board)
+
 
     def updatePotAndBankroll(self, pot, p1_bankroll, p2_bankroll, p1_inpot=self.P1_inPot, p2_inpot=self.P2_inPot):
         """
@@ -1017,11 +1033,14 @@ class LightweightHistory(object):
 
         assert (self.Pot+self.P1_Bankroll+self.P2_Bankroll)==400, "Error: player bankrolls and pot does not add up to 400"
 
-    def getLegalActions(self):
+    def getLegalActions(self, player):
         """
         Gets the legal actions available at this point in the game (current history object)
         """
         assert self.NodeType == 1, "Error: trying to get legal actions for a non-action node!"
+
+        # lightweight history allows us to set the active player here for simplicity
+        self.ActivePlayer=player
 
         # ELSE THIS IS A BETTING ACTION NODE
         # determine if there was a bet already during this round
