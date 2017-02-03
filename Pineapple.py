@@ -99,7 +99,7 @@ def handleDiscard(hand, board):
         return "CHECK\n"
 
 
-def extractOppActionAndDiscardResult():
+def extractInfoFromLastActions():
     """
     Reads through lastActions in GETACTION_PACKET and updates global information if an opponent betting action was made.
     """
@@ -109,11 +109,26 @@ def extractOppActionAndDiscardResult():
         # SPLIT THE ACTION INTO PIECES OF INFORMATION SEPARATED BY ':''
         parsedAction = action.split(':')
 
+        if parsedAction[0] == 'DEAL':
+            # check if we entered a new street
+            board = GETACTION_PACKET.getBoard()
+            if parsedAction[1] == "FLOP":
+                HISTORY.P1_inPot, HISTORY.P2_inPot = 0, 0 # reset the in pot for this street
+                HISTORY.updateBoard(board)
+
+            elif parsedAction[1] == "TURN":
+                HISTORY.P1_inPot, HISTORY.P2_inPot = 0, 0 # reset the in pot for this street
+                HISTORY.updateBoard(board)
+
+            elif parsedAction[1] == "RIVER":
+                HISTORY.P1_inPot, HISTORY.P2_inPot = 0, 0 # reset the in pot for this street
+                HISTORY.updateBoard(board)
+
         # if the action was to post a blind, we take of that for both players here
-        if parsedAction[0] == 'POST': # handles posting BB and SB
+        elif parsedAction[0] == 'POST': # handles posting BB and SB
             # we want to subtract the BB and SB from the correct players
             # the parsedAction[1] is the posted amt
-            if parsedAction[2] == NEWGAME_PACKET.oppName:
+            if parsedAction[-1] == NEWGAME_PACKET.oppName:
                 HISTORY.P2_Bankroll -= int(parsedAction[1])
                 HISTORY.P2_inPot += int(parsedAction[1])
                 HISTORY.Pot += int(parsedAction[1])
@@ -121,7 +136,6 @@ def extractOppActionAndDiscardResult():
                 HISTORY.P1_Bankroll -= int(parsedAction[1])
                 HISTORY.P1_inPot += int(parsedAction[1])
                 HISTORY.Pot += int(parsedAction[1])
-            continue
 
         # if the action was a discard, we handle for both players here
         elif parsedAction[0] == 'DISCARD':
@@ -136,9 +150,10 @@ def extractOppActionAndDiscardResult():
                 assert parsedAction[3] == NEWGAME_PACKET.ourName, "Error: expected discard action to be done by us, but instead it was %s" % parsedAction[3]
                 
                 # update our hand with the new card we received
-                old_card, new_card = convertSyntax(parsedAction[1]), convertSyntax(parsedAction[2])
+                old_card, new_card = parsedAction[1], parsedAction[2] # these are card strings!
                 index = 0 if (old_card==HISTORY.P1_HandStr[0:2]) else 1
-                HISTORY.updateHandDiscard(new_card, index)
+                newCardObj = convertToCard(new_card)
+                HISTORY.updateHandDiscard(newCardObj, index)
 
 
         # ONLY APPEND OPP ACTIONS TO HISTORY, because we already take care of ours when actions are chosen
@@ -147,9 +162,6 @@ def extractOppActionAndDiscardResult():
             # note: engine puts action first, and the "actor" as the last item
             if parsedAction[0] == 'BET' or parsedAction[0] == 'RAISE':
                 assert (parsedAction[2] == NEWGAME_PACKET.oppName), "Error: expected the opp. betting/raising action to be associated with %s" % NEWGAME_PACKET.oppName
-
-                # increase the Pot, P2_inPot, and update P2_Bankroll
-                HISTORY.Pot = GETACTION_PACKET.potSize
 
                 if parsedAction[0]=='BET': # increment the P2_inPot
                     betAmount = int(parsedAction[1])
@@ -185,6 +197,9 @@ def extractOppActionAndDiscardResult():
                     print "callAmount:", callAmount, "raiseToAmt:", raiseToAmount, "betAmt:", betAmount, "raiseAmt:", raiseAmount
                     HISTORY.P2_inPot += raiseAmount
                     HISTORY.P2_Bankroll -= raiseAmount
+
+                # update the pot AFTER map bets to abstraction, to prevent the function from seeing the change in the pot due to the opponents bet/raise
+                HISTORY.Pot = GETACTION_PACKET.potSize
 
                 print "P1:Bank", HISTORY.P1_Bankroll, "P2:Bank", HISTORY.P2_Bankroll, "Pot:", HISTORY.Pot
                 assert (HISTORY.P1_Bankroll+HISTORY.P2_Bankroll+HISTORY.Pot) == 400, "Error: bankroll's and pot to not match up for oppponent: %d" % (HISTORY.P1_Bankroll+HISTORY.P2_Bankroll+HISTORY.Pot)
@@ -268,6 +283,8 @@ def convertSyntaxToEngineAndUpdate(i_action):
             callAmt = HISTORY.P2_inPot - HISTORY.P1_inPot
             assert callAmt > 0, "Error: expected positive call amount, got %d" % callAmt
 
+            assert (i_action[1] in ['H','P','A']), "Error: got raise letter %s" % i_action[1]
+
             # amounts must be between min and max raises
             if i_action[1] == 'H':
                 betAmt = int(float(HISTORY.Pot) / 2)
@@ -279,6 +296,7 @@ def convertSyntaxToEngineAndUpdate(i_action):
 
             elif i_action[1] == 'A':
                 raiseToAmt = maxRaise
+                betAmt = raiseToAmt - callAmt # this is the amount we put in ABOVE calling
 
             a = 'RAISE:%s\n' % str(raiseToAmt)
             
@@ -323,22 +341,10 @@ class Player:
                 global GETACTION_PACKET, HISTORY
                 GETACTION_PACKET = GETACTION(data)
 
-                # check if we entered a new street
-                if "DEAL:FLOP" in GETACTION_PACKET.lastActions:
-                    HISTORY.P1_inPot, P2_inPot = 0, 0 # reset the in pot for this street
-                    HISTORY.updateBoard(GETACTION_PACKET.getBoard())
-
-                elif "DEAL:TURN" in GETACTION_PACKET.lastActions:
-                    HISTORY.P1_inPot, P2_inPot = 0, 0 # reset the in pot for this street
-                    HISTORY.updateBoard(GETACTION_PACKET.getBoard())
-
-                elif "DEAL:RIVER" in GETACTION_PACKET.lastActions:
-                    HISTORY.P1_inPot, P2_inPot = 0, 0 # reset the in pot for this street
-                    HISTORY.updateBoard(GETACTION_PACKET.getBoard())
-
                 # extract information from the lastActions to update HISTORY
                 # this will add opponent actions to the HISTORY list, and update our hand if we discarded
-                extractOppActionAndDiscardResult()
+                extractInfoFromLastActions()
+
                 HISTORY.printAttr() # print out the current HISTORY
 
                 # determine if this is a discard action
@@ -368,7 +374,7 @@ class Player:
 
                     # convert the current HISTORY to an information set from our perspective
                     playerActions = HISTORY.getLegalActions(0)
-                    I_player = convertHtoI(HISTORY, 0)
+                    I_player = HISTORY.convertToInformationSet(0)
 
                     # look up our strategy for the given info. set
                     strategy = getStrategy(I_player)
@@ -402,9 +408,10 @@ class Player:
 
             elif word=="NEWHAND":
                 # don't reset the history on the first hand (hits error)
-                if self.handCounter > 0:
-                    resetHistory()
                 self.handCounter += 1
+                if self.handCounter > 1:
+                    resetHistory()
+                
 
                 global NEWHAND_PACKET
                 NEWHAND_PACKET = NEWHAND(data)

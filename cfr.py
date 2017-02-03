@@ -979,7 +979,8 @@ class LightweightHistory(object):
         """
         self.P1_Hand[hand_index] = new_card
         self.P1_HandStr = convertSyntax(self.P1_Hand)
-        self.History.append("0:D:%d" % hand_index)
+        #self.History.append("0:D")
+        #self.History.append("0:D:%d" % hand_index)
         self.History.append("H0:%s:%.3f" % (self.P1_HandStr, getHandStrength(self.P1_HandStr, self.BoardStr))) 
 
 
@@ -1083,3 +1084,155 @@ class LightweightHistory(object):
                     actions.remove("R:H")
 
         return actions
+
+    def convertToInformationSet(self, player):
+        """
+        Uses predefined abstraction rules to convert a sequency (history) into an information set.
+        Note: player determines whose point of view the history is represented from (0 or 1)
+
+        ['H0:KcQh:0.609:H1:Ad9s:0.580', '0:CL', '1:B:H', '0:CL', 'FP:7s6c3s:H0:0.625:H1:0.586', 
+        '1:D:0', 'H1:9c9s:0.745', '0:D:1', 'H0:Kc5c:0.498', '1:B:P', '0:R:P', 
+        '1:CL', 'TN:7s6c3sQs:H0:0.552:H1:0.710', '1:CK', '0:D:0', 'H0:3d5c:0.432', '1:CK', 
+        '0:CK', 'RV:7s6c3sQsJc:H0:0.362:H1:0.727', '1:CK', '0:B:A', '1:F']
+        """
+        seq = self.History # a list of actions
+
+        # always starts with a hand
+        infoset_str = "" 
+        Current_Player_HS = None
+        inDiscardSection = False
+        numDiscards = 0
+        numDiscardActions = 0
+
+        currentSection = 0
+
+        i=0
+        while i < len(seq):
+            shouldNotAddDot = False
+            s_parsed = seq[i].split(":")
+
+            if i==0 and s_parsed[0]=="H0": # PREFLOP
+                if player==0: # we definitely have our player's hand somewhere in this preflop packet
+                    hand = "H%d" % min(int(float(s_parsed[2])*3), 2) # scales hand to an int 0,1,2,
+                    infoset_str+=hand
+                elif player==1:
+                    hand = "H%d" % min(int(float(s_parsed[5])*3), 2) # scales hand to an int 0,1,2,
+                    infoset_str+=hand
+                else:
+                    assert False, "Error: didn't find our player's hand in a preflop newhand packet"
+
+            # check for discard section hand packets
+            elif s_parsed[0] == "H0":
+                numDiscardActions+=1
+                if player==0: # we need to update our player's hand
+                    if currentSection==1: # flop, 4 buckets
+                        hand = "H%d" % min(int(float(s_parsed[2])*4), 3) # scales hand to an int 0,1,2,3
+                    elif currentSection==2: # turn, 3 buckets
+                        hand = "H%d" % min(int(float(s_parsed[2])*3), 2) # scales hand to an int 0,1,2,3
+
+                    Current_Player_HS=hand
+
+            elif s_parsed[0] == "H1":
+                numDiscardActions+=1
+                if player==1:
+                    if currentSection==1: # flop, 4 buckets
+                        hand = "H%d" % min(int(float(s_parsed[2])*4), 3) # scales hand to an int 0,1,2,3
+                    elif currentSection==2: # turn, 3 buckets
+                        hand = "H%d" % min(int(float(s_parsed[2])*3), 2) # scales hand to an int 0,1,2,3
+                    Current_Player_HS=hand
+
+            # if flop or turn, we don't want to add anything yet
+            elif s_parsed[0]== "FP" or s_parsed[0]=="TN":
+                if s_parsed[0]== "FP": # use 4 hand buckets on flop
+                    currentSection=1
+                    Current_Player_HS = ("H%d" % min(int(float(s_parsed[3])*4), 3)) if player==0 else ("H%d" % min(int(float(s_parsed[5])*4), 3))
+
+                elif s_parsed[0]=="TN": # use 3 hand buckets on turn
+                    currentSection=2
+                    Current_Player_HS = ("H%d" % min(int(float(s_parsed[3])*3), 2)) if player==0 else ("H%d" % min(int(float(s_parsed[5])*3), 2))
+
+                # set this flag so we start to append discard actions after the flop or turn has happened
+                inDiscardSection=True
+
+            # if its the river
+            elif s_parsed[0]=="RV": # use 4 hand buckets on river
+                currentSection=3
+                # if p1
+                if player==0:
+                    hand = "H%d" % min(int(float(s_parsed[3])*4), 3) # scales hand to an int 0,1,2,3
+                    infoset_str+=hand
+
+                # if p2
+                elif player==1:
+                    hand = "H%d" % min(int(float(s_parsed[5])*4), 3) # scales hand to an int 0,1,2,3
+                    infoset_str+=hand
+
+
+            else: # this action has a player associated with it
+
+                if int(s_parsed[0])==player and inDiscardSection==False: # if the player associated with this action is us, add *
+                    infoset_str+="*"
+
+                # now shorted different action strings
+                if s_parsed[1]=='CL':
+                    infoset_str+="CL"
+
+                # only add a check if it happens outside of a discard section
+                elif s_parsed[1]=="CK":
+                    if inDiscardSection==True: 
+                        numDiscardActions+= 1
+                    else: infoset_str+="CK"
+
+                elif s_parsed[1]=="B":
+                    if s_parsed[2]=="H":
+                        infoset_str+="BH"
+
+                    elif s_parsed[2]=="P":
+                        infoset_str+="BP"
+
+                    elif s_parsed[2]=="A":
+                        infoset_str+="BA"
+
+                elif s_parsed[1]=="R":
+                    if s_parsed[2]=="H":
+                        infoset_str+="RH"
+
+                    elif s_parsed[2]=="P":
+                        infoset_str+="RP"
+
+                    elif s_parsed[2]=="A":
+                        infoset_str+="RA"
+
+                elif s_parsed[1]=="F":
+                    shouldNotAddDot = True
+
+                # we dont' want to add discard sections
+                elif s_parsed[1]=="D":
+                    assert inDiscardSection==True, "Error: got a discard action but didn't think it was in a discard section!"
+                    numDiscardActions += 1
+                    if s_parsed[0] == 0: # only increment num discards if it's OUR discard
+                        numDiscards += 1
+
+                else: assert False, "Error: tried to convert H to I and reached unknown term"
+
+            # decide whether or not we ended a discard section
+            # if so, add the player's hand strength to the info set
+            if inDiscardSection:
+                if numDiscards >= 1 and numDiscardActions == 3:
+                    infoset_str += Current_Player_HS
+                    numDiscards = 0
+                    numDiscardActions = 0
+                    inDiscardSection=False
+                elif numDiscards==0 and numDiscardActions == 2:
+                    infoset_str += Current_Player_HS
+                    numDiscards = 0
+                    numDiscardActions = 0
+                    inDiscardSection=False
+
+            if inDiscardSection==False and not shouldNotAddDot:
+                infoset_str+="." # separate from the next thing
+
+            #increment
+            i+=1
+
+        return infoset_str

@@ -7,6 +7,14 @@ rankDict = {'2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, '9':9, 'T':10, 'J':
 suitDict = {'s': 1, 'h': 2, 'd': 3, 'c': 4}
 
 
+def convertToCard(card_str):
+    """
+    Takes a card string (i.e Kd Th 8c), and converts to a Card object
+    """
+    card = Card(rankDict[card_str[0]], suitDict[card_str[1]])
+    return card
+
+
 class NEWGAME(object):
     """
     Used to parse the data from a NEWGAME packet
@@ -56,8 +64,8 @@ class NEWHAND(object):
         Returns the hand as card objects.
         """
         hand = []
-        hand.append(Card(rankDict[self.hand[0][0]], suitDict[self.hand[0][1]]))
-        hand.append(Card(rankDict[self.hand[1][0]], suitDict[self.hand[1][1]]))
+        hand.append(convertToCard(self.hand[0]))
+        hand.append(convertToCard(self.hand[1]))
         return hand
 
 
