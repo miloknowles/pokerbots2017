@@ -19,7 +19,7 @@ global NEWGAME_PACKET, NEWHAND_PACKET, GETACTION_PACKET, HISTORY
 # active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board):
 
 # CREATE THE GLOBAL HISTORY #
-HISTORY = LightweightHistory([], 0, 0, 0, 0, 0, 0, 0, 0, 200, 200, [], [], [])
+HISTORY = LightweightHistory([], 1, 0, 0, 0, 0, 0, 0, 0, 200, 200, [], [], [])
 
 
 def mapBetToAbstraction(betAmt):
@@ -51,7 +51,7 @@ def mapBetToAbstraction(betAmt):
 
                 # a player can never bet/raise to amount greater than their bankroll or the other player's
                 allInAmt = min(HISTORY.P1_Bankroll, HISTORY.P2_Bankroll)
-                betOptionsAmounts.append(allInAmt)
+                betOptionAmounts.append(allInAmt)
 
 
     assert len(betOptions)>0, "Error: history doesn't think there are any legal betting options"
@@ -74,11 +74,11 @@ def resetHistory():
     """
     Resets the global HISTORY to defaults.
     """
-    global HISTORY
+    global HISTORY, NEWHAND_PACKET
     HISTORY.P1_inPot, HISTORY.p2_inPot, HISTORY.Pot = 0, 0, 0 # reset the in-pot and pot for this street
-    HISTORY.ButtonPlayer = 0 if NEWHAND_PACKET.button==True else 1
+    HISTORY.ButtonPlayer = 0 if NEWHAND_PACKET.button == True else 1
     HISTORY.P1_Bankroll, HISTORY.P2_Bankroll = 200, 200 # reset both bankrolls to 200
-    HISTORY.Street, HISTORY.CurrentRound, HISTORY.NodeType = 0,0,0 # preflop
+    HISTORY.Street, HISTORY.CurrentRound, HISTORY.NodeType = 0,0,1 # preflop
     HISTORY.P1_Hand, HISTORY.P2_Hand, HISTORY.Board = [], [], []
 
 
@@ -106,99 +106,138 @@ def extractOppActionAndDiscardResult():
     global GETACTION_PACKET, NEWGAME_PACKET, HISTORY
 
     for action in GETACTION_PACKET.lastActions:
-        parsedAction = a.split(':')
+        # SPLIT THE ACTION INTO PIECES OF INFORMATION SEPARATED BY ':''
+        parsedAction = action.split(':')
 
-        # note: engine puts action first, and the "actor" as the last item
-        if parsedAction[0] == 'BET' or parsedAction[0] == 'RAISE':
-            assert (parsedAction[2] == NEWGAME_PACKET.oppName), "Error: expected the opp. betting/raising action to be associated with %s" % NEWGAME_PACKET.oppName
+        # if the action was to post a blind, we take of that for both players here
+        if parsedAction[0] == 'POST': # handles posting BB and SB
+            # we want to subtract the BB and SB from the correct players
+            # the parsedAction[1] is the posted amt
+            if parsedAction[2] == NEWGAME_PACKET.oppName:
+                HISTORY.P2_Bankroll -= int(parsedAction[1])
+                HISTORY.P2_inPot += int(parsedAction[1])
+                HISTORY.Pot += int(parsedAction[1])
+            else: # the action is us posting something
+                HISTORY.P1_Bankroll -= int(parsedAction[1])
+                HISTORY.P1_inPot += int(parsedAction[1])
+                HISTORY.Pot += int(parsedAction[1])
+            continue
 
-            # increase the Pot, P2_inPot, and update P2_Bankroll
-            HISTORY.Pot = GETACTION_PACKET.potSize
-
-            if parsedAction[0]=='BET': # increment the P2_inPot
-                betAmount = int(parsedAction[1])
-
-                # TODO: map the bet amount to an action (abstracted)
-                oppActionStr = "B:%s" % mapBetToAbstraction(betAmount)
-                HISTORY.History.append(oppActionStr)
-
-                # update the history AFTER abstraction determined!!
-                HISTORY.P2_inPot += betAmount
-                HISTORY.P2_Bankroll -= betAmount
-
-
-            elif parsedAction[0] == 'RAISE': # P2_inPot should be EQUAL to the amount that they raise 'to'
-
-                callAmount = HISTORY.P2_inPot - HISTORY.P1_inPot # calculate the amount the opponent had to put in to call
-                assert callAmount > 0, "Error: expected positive call amount for opponent"
-
-                raiseToAmount = int(parsedAction[1]) # determine amount of money that the opp raised to
-                betAmount = raiseToAmount - HISTORY.P1_Bankroll # this is the ammount that the player added on top of calling
-                raiseAmount = callAmount + betAmount # the amount to call + the bet amount on top of that
-
-                # TODO: map the raise-to amount to an action (abstracted)
-                oppActionStr = "R:%s" % mapBetToAbstraction(betAmount)
-                HISTORY.History.append(oppActionStr)
-
-                # update the history AFTER abstraction determined!!
-                HISTORY.P2_inPot += raiseAmount
-                HISTORY.P2_Bankroll -= raiseAmount
-
-            assert (HISTORY.P1_Bankroll+HISTORY.P2_Bankroll+HISTORY.Pot) == 400, "Error: bankroll's and pot to not match up for oppponent"
-
-
-        elif parsedAction[0] == 'CALL':
-            # update the global history
-            callAmount = HISTORY.P1_inPot - HISTORY.P2_inPot # calculate the amount the opponent had to put in to call
-            assert callAmount > 0, "Error: expected positive call amount for opponent"
-            HISTORY.P2_inPot += callAmount
-            HISTORY.P2_Bankroll -= callAmount
-            HISTORY.Pot = GETACTION_PACKET.potSize
-            HISTORY.History.append('1:CL')
-
-        elif parsedAction[0] == 'CHECK':
-            HISTORY.History.append('1:CK')
-
+        # if the action was a discard, we handle for both players here
         elif parsedAction[0] == 'DISCARD':
             # DISCARD:(oldcard):(newcard):PLAYER
             # only append the discard if it was done by the other player
-            if parsedAction[3] == NEWGAME_PACKET.oppName:
+            if parsedAction[-1] == NEWGAME_PACKET.oppName:
                 HISTORY.History.append('1:D')
             
             else: # our discard
-                HISTORY.History.append('0:D')
+                # I think that we already handle self discard appends?
+                #HISTORY.History.append('0:D')
                 assert parsedAction[3] == NEWGAME_PACKET.ourName, "Error: expected discard action to be done by us, but instead it was %s" % parsedAction[3]
                 
                 # update our hand with the new card we received
-                old_card, new_card = parsedAction[1], parsedAction[2]
+                old_card, new_card = convertSyntax(parsedAction[1]), convertSyntax(parsedAction[2])
                 index = 0 if (old_card==HISTORY.P1_HandStr[0:2]) else 1
                 HISTORY.updateHandDiscard(new_card, index)
 
-        elif parsedAction[0] == 'FOLD':
-            HISTORY.History.append('1:F')
 
-        elif parsedAction[0] == 'DEAL':
-            pass
+        # ONLY APPEND OPP ACTIONS TO HISTORY, because we already take care of ours when actions are chosen
+        elif parsedAction[-1] == NEWGAME_PACKET.oppName:
 
-        else:
-            assert False, "Error: encountered unknown opponent action %s from lastActions" % parsedAction[0]
+            # note: engine puts action first, and the "actor" as the last item
+            if parsedAction[0] == 'BET' or parsedAction[0] == 'RAISE':
+                assert (parsedAction[2] == NEWGAME_PACKET.oppName), "Error: expected the opp. betting/raising action to be associated with %s" % NEWGAME_PACKET.oppName
+
+                # increase the Pot, P2_inPot, and update P2_Bankroll
+                HISTORY.Pot = GETACTION_PACKET.potSize
+
+                if parsedAction[0]=='BET': # increment the P2_inPot
+                    betAmount = int(parsedAction[1])
+
+                    # TODO: map the bet amount to an action (abstracted)
+                    oppActionStr = "B:%s" % mapBetToAbstraction(betAmount)
+                    HISTORY.History.append(oppActionStr)
+
+                    # update the history AFTER abstraction determined!!
+                    HISTORY.P2_inPot += betAmount
+                    HISTORY.P2_Bankroll -= betAmount
 
 
-def convertSyntaxToEngine(i_action):
+                elif parsedAction[0] == 'RAISE': # P2_inPot should be EQUAL to the amount that they raise 'to'
+
+                    callAmount = HISTORY.P1_inPot - HISTORY.P2_inPot # calculate the amount the opponent had to put in to call
+                    # to make this >= because on preflop, the BB can 'RAISE' after the SB checks
+                    assert callAmount >= 0, "Error: expected positive call amount for opponent, got %d" % callAmount
+
+                    raiseToAmount = int(parsedAction[1]) # determine amount of money that the opp raised to
+                    betAmount = raiseToAmount - HISTORY.P1_inPot # this is the ammount that the player added on top of calling
+                    raiseAmount = callAmount + betAmount # the amount to call + the bet amount on top of that
+
+                    # map the raise-amount to the abstracted letters
+                    # Note: had to add case where callAmount == zero to handle engine allowing the BB to 'RAISE' after SB calls on PREFLOP
+                    if callAmount > 0:
+                        oppActionStr = "R:%s" % mapBetToAbstraction(betAmount)
+                    else:
+                        oppActionStr = "B:%s" % mapBetToAbstraction(betAmount)
+                    HISTORY.History.append(oppActionStr)
+
+                    # update the history AFTER abstraction determined!!
+                    print "callAmount:", callAmount, "raiseToAmt:", raiseToAmount, "betAmt:", betAmount, "raiseAmt:", raiseAmount
+                    HISTORY.P2_inPot += raiseAmount
+                    HISTORY.P2_Bankroll -= raiseAmount
+
+                print "P1:Bank", HISTORY.P1_Bankroll, "P2:Bank", HISTORY.P2_Bankroll, "Pot:", HISTORY.Pot
+                assert (HISTORY.P1_Bankroll+HISTORY.P2_Bankroll+HISTORY.Pot) == 400, "Error: bankroll's and pot to not match up for oppponent: %d" % (HISTORY.P1_Bankroll+HISTORY.P2_Bankroll+HISTORY.Pot)
+
+
+            elif parsedAction[0] == 'CALL':
+                # update the global history
+                callAmount = HISTORY.P1_inPot - HISTORY.P2_inPot # calculate the amount the opponent had to put in to call
+                assert callAmount > 0, "Error: expected positive call amount for opponent, got %d" % callAmount
+                HISTORY.P2_inPot += callAmount
+                HISTORY.P2_Bankroll -= callAmount
+                HISTORY.Pot = GETACTION_PACKET.potSize
+                HISTORY.History.append('1:CL')
+
+            elif parsedAction[0] == 'CHECK':
+                HISTORY.History.append('1:CK')
+
+            elif parsedAction[0] == 'FOLD':
+                HISTORY.History.append('1:F')
+
+            elif parsedAction[0] == 'DEAL':
+                pass
+
+            else:
+                assert False, "Error: encountered unknown opponent action %s from lastActions" % parsedAction[0]
+
+
+def convertSyntaxToEngineAndUpdate(i_action):
     """
     i_action: an action in the format that the HISTORY object returns them
 
     Returns the action in a syntax that the engine recognizes.
     Also maps bets to legal integer values.
-
+    
+    Also updates the global HISTORY based on the action we chose.
     Note: this function only works for OUR player!!! Do not use for opponent.
     """
+    global HISTORY
     if i_action=="CK":
         a = "CHECK\n"
     elif i_action=="CL":
         a = "CALL\n"
+
+        # also, update the HISTORY values to reflect the fact that we called
+        callAmount = HISTORY.P2_inPot - HISTORY.P1_inPot
+        assert callAmount > 0, "Error: expected positive call amount, got %d" % callAmount
+        HISTORY.P1_inPot += callAmount
+        HISTORY.Pot += callAmount
+        HISTORY.P1_Bankroll -= callAmount
+
     elif i_action=="F":
         a = "FOLD\n"
+
     else: # parsed action
         if i_action[0]=='B':
             # get the legal betting range
@@ -215,32 +254,52 @@ def convertSyntaxToEngine(i_action):
                 betAmt = maxBet
 
             a = 'BET:%s\n' % str(betAmt)
+            
+            # also, update the HISTORY money values due to betting
+            HISTORY.P1_inPot += betAmt
+            HISTORY.Pot += betAmt
+            HISTORY.P1_Bankroll -= betAmt
+
 
         elif i_action[0]=='R':
 
             # get the legal raising range
             minRaise, maxRaise = GETACTION_PACKET.getRaisingRange()
+            callAmt = HISTORY.P2_inPot - HISTORY.P1_inPot
+            assert callAmt > 0, "Error: expected positive call amount, got %d" % callAmt
 
             # amounts must be between min and max raises
             if i_action[1] == 'H':
                 betAmt = int(float(HISTORY.Pot) / 2)
-                raiseAmt = HISTORY.P2_inPot + betAmt # we raise by betAmt OVER the opponent's current amount in the pot
+                raiseToAmt = HISTORY.P2_inPot + betAmt # we raise by betAmt OVER the opponent's current amount in the pot
 
             elif i_action[1] == 'P':
                 betAmt = HISTORY.Pot
-                raiseAmt = HISTORY.P2_inPot + betAmt # we raise by betAmt OVER the opponent's current amount in the pot
+                raiseToAmt = HISTORY.P2_inPot + betAmt # we raise by betAmt OVER the opponent's current amount in the pot
 
             elif i_action[1] == 'A':
-                raiseAmt = maxRaise
+                raiseToAmt = maxRaise
 
-            a = 'RAISE:%s\n' % str(raiseAmt)
+            a = 'RAISE:%s\n' % str(raiseToAmt)
+            
+            # also, update the HISTORY money values due to us raising
+            HISTORY.P1_inPot = raiseToAmount
+            HISTORY.Pot += (callAmt + betAmt)
+            HISTORY.P1_Bankroll -= (callAmt + betAmt)
 
     # finally, return the action
+    print "Converting syntax for:", i_action
+    print "Chose action", a
     return a
 
 
 
 class Player:
+
+    def __init__(self):
+        self.handCounter = 0
+
+
     def run(self, input_socket):
         # Get a file-object for reading packets from the socket.
         # Using this ensures that you get exactly one packet per read.
@@ -280,6 +339,7 @@ class Player:
                 # extract information from the lastActions to update HISTORY
                 # this will add opponent actions to the HISTORY list, and update our hand if we discarded
                 extractOppActionAndDiscardResult()
+                HISTORY.printAttr() # print out the current HISTORY
 
                 # determine if this is a discard action
                 inDiscardSection = False
@@ -295,9 +355,11 @@ class Player:
 
                     if shouldDiscard:
                         discardAction = 'DISCARD:%s\n' % convertSyntax(HISTORY.P1_Hand[discardIndex])
+                        HISTORY.History.append('0:D')
                         s.send(discardAction)
 
                     else:
+                        HISTORY.History.append('0:CK')
                         s.send('CHECK\n')
 
 
@@ -314,7 +376,7 @@ class Player:
                     print "Strategy:", strategy
 
                     # if we could find a learned strategy, use it, otherwise choose randomly from available actions
-                    action_i = chooseActionRandom(player_actions) if s==None else chooseAction(strategy)
+                    action_i = chooseActionRandom(player_actions) if strategy==None else chooseAction(strategy)
 
                     # convert actions to HISTORY list syntax to get appended
                     if action_i[0]=='B' or action_i[0]=='R':
@@ -325,7 +387,9 @@ class Player:
 
                     # convert the action we chose to syntax compatible with the engine
                     # bet amounts like H/P/A are converted to integer values
-                    action_e = convertSyntaxToEngine(action_h)
+                    action_e = convertSyntaxToEngineAndUpdate(action_i)
+
+                    # update the global history every time we make an action
                     s.send(action_e)
 
 
@@ -335,13 +399,13 @@ class Player:
                 global NEWGAME_PACKET
                 NEWGAME_PACKET = NEWGAME(data)
 
-                # just in case
-                resetHistory()
-
 
             elif word=="NEWHAND":
+                # don't reset the history on the first hand (hits error)
+                if self.handCounter > 0:
+                    resetHistory()
+                self.handCounter += 1
 
-                # update the global NEWHAND packet
                 global NEWHAND_PACKET
                 NEWHAND_PACKET = NEWHAND(data)
 
@@ -349,8 +413,6 @@ class Player:
                 # doing so will also automatically append the right item to the HISTORY list
                 HISTORY.updateHand(NEWHAND_PACKET.getHand())
 
-                # reset the global HISTORY to defaults for the start of a hand
-                resetHistory()
 
             elif word == "REQUESTKEYVALUES":
                 # At the end, the engine will allow your bot save key/value pairs.

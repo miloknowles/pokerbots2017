@@ -980,7 +980,7 @@ class LightweightHistory(object):
         self.P1_Hand[hand_index] = new_card
         self.P1_HandStr = convertSyntax(self.P1_Hand)
         self.History.append("0:D:%d" % hand_index)
-        self.History.append("H0:%s:%f" % (self.P1_HandStr, getHandStrength(self.P1_HandStr, self.BoardStr))) 
+        self.History.append("H0:%s:%.3f" % (self.P1_HandStr, getHandStrength(self.P1_HandStr, self.BoardStr))) 
 
 
     def updateHand(self, hand):
@@ -997,7 +997,7 @@ class LightweightHistory(object):
         self.P1_Hand = hand
         self.P1_HandStr = convertSyntax(self.P1_Hand)
         assert len(self.Board)==0, "Error: only use updateHand during preflop!"
-        self.History.append("H0:%s:%f:H1:xx:0.0" % (self.P1_HandStr, getHandStrength(self.P1_HandStr,"")))
+        self.History.append("H0:%s:%.3f:H1:xx:0.0" % (self.P1_HandStr, getHandStrength(self.P1_HandStr,"")))
 
 
     def updateBoard(self, board):
@@ -1009,29 +1009,17 @@ class LightweightHistory(object):
         self.BoardStr = convertSyntax(self.Board)
 
         if len(self.Board)==3: # flop 
-            self.History.append("FP:%s:H0:%f:H1:0.0" % (self.BoardStr, getHandStrength(self.P1_HandStr, self.BoardStr)))
+            self.History.append("FP:%s:H0:%.3f:H1:0.0" % (self.BoardStr, getHandStrength(self.P1_HandStr, self.BoardStr)))
 
         elif len(self.Board)==4: # turn
-            self.History.append("TN:%s:H0:%f:H1:0.0" % (self.BoardStr, getHandStrength(self.P1_HandStr, self.BoardStr)))
+            self.History.append("TN:%s:H0:%.3f:H1:0.0" % (self.BoardStr, getHandStrength(self.P1_HandStr, self.BoardStr)))
 
         elif len(self.Board)==5: # river
-            self.History.append("RV:%s:H0:%f:H1:0.0" % (self.BoardStr, getHandStrength(self.P1_HandStr, self.BoardStr)))
+            self.History.append("RV:%s:H0:%.3f:H1:0.0" % (self.BoardStr, getHandStrength(self.P1_HandStr, self.BoardStr)))
         else:
             assert False, "Error: wasn't expected board of size %d" % len(self.Board)
 
 
-    # def updatePotAndBankroll(self, pot, p1_bankroll, p2_bankroll, p1_inpot=self.P1_inPot, p2_inpot=self.P2_inPot):
-    #     """
-    #     Updates the current pot, p1's bankroll, p2's bankroll, and the amount each player has put in
-    #     pot during this betting street.
-    #     """
-    #     self.Pot = pot
-    #     self.P1_Bankroll = p1_bankroll
-    #     self.P2_Bankroll = p2_bankroll
-    #     self.P1_inPot = p1_inpot
-    #     self.P2_inPot = p2_inpot
-
-    #     assert (self.Pot+self.P1_Bankroll+self.P2_Bankroll)==400, "Error: player bankrolls and pot does not add up to 400"
 
     def getLegalActions(self, player):
         """

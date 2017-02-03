@@ -29,7 +29,7 @@ class NEWGAME(object):
         self.timeBank = float(itemized[6]) # number of seconds left for our bot to return an action
 
 
-class NEWHAND:
+class NEWHAND(object):
     """
 
     Used to parse the data from a NEWHAND packet
@@ -62,7 +62,7 @@ class NEWHAND:
 
 
        
-class GETACTION:
+class GETACTION(object):
     """
     Used to parse the data from a GETACTION packet
     For packet sections of variable length, uses for loops
@@ -83,7 +83,7 @@ class GETACTION:
         parse_index = 3
         self.boardCards = []
         for i in range(self.numBoardCards):
-            self.BoardCards.append(itemized[parse_index])
+            self.boardCards.append(itemized[parse_index])
             parse_index+=1
 
         #print "Parse Index for numLast Actions:", parse_index
@@ -124,8 +124,8 @@ class GETACTION:
         for a in self.legalActions:
             a_parsed = a.split(':')
             if a_parsed[0] == 'RAISE':
-                minBet = int(a_parsed[1])
-                maxBet = int(a_parsed[2])
+                minRaise = int(a_parsed[1])
+                maxRaise = int(a_parsed[2])
                 return (minRaise, maxRaise)
 
 
