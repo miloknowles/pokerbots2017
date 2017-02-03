@@ -30,32 +30,39 @@ def mapBetToAbstraction(betAmt):
     Returns: H, P, or A (halfpot, pot, or all-in)
     """
     # get legal actions for the opponent based on the actions we've given to history so far
+    global HISTORY, FORCED_ACTION
     legalActions = HISTORY.getLegalActions(1) 
 
     # extract the betting options to consider from the legal options
     betOptions = []
     betOptionAmounts = []
     for a in legalActions:
-        parsedAction = a.split(':')
+        #parsedAction = a.split(':')
 
-        if parsedAction[0] == 'B' or parsedAction[0] == 'R':
-            betOptions.append(parsedAction[1]) # add the string
+        if a[0] == 'B' or a[0] == 'R':
+            betOptions.append(a[1]) # add the string
 
             # also add to the list of int amounts associated with each string amount
-            if parsedAction[1]=='H':
+            if a[1]=='H':
                 betOptionAmounts.append(float(HISTORY.Pot) / 2)
 
-            elif parsedAction[1]=='P':
+            elif a[1]=='P':
                 betOptionAmounts.append(HISTORY.Pot)
 
-            elif parsedAction[1]=='A':
+            elif a[1]=='A':
 
                 # a player can never bet/raise to amount greater than their bankroll or the other player's
                 allInAmt = min(HISTORY.P1_Bankroll, HISTORY.P2_Bankroll)
                 betOptionAmounts.append(allInAmt)
 
-
-    assert len(betOptions)>0, "Error: history doesn't think there are any legal betting options"
+    # if we are trying to map a bet to the abstraction, but no valid options are found
+    # this means that the opponent probably went close to all in, but not quite
+    # this means we are forced to CALL
+    if len(betOptions) == 0: 
+        print "Tried to map bet to abstraction, found no bettings options. FORCING CALL"
+        FORCED_ACTION='CL'
+        return None
+        #assert len(betOptions)>0, "Error: history doesn't think there are any legal betting options"
 
     # now determine which of the bet options our opponent's betAmt was closest to
     if len(betOptions) == 1:
@@ -80,7 +87,7 @@ def resetHistory():
     HISTORY.ButtonPlayer = 0 if NEWHAND_PACKET.button == True else 1
     HISTORY.P1_Bankroll, HISTORY.P2_Bankroll = 200, 200 # reset both bankrolls to 200
     HISTORY.Street, HISTORY.CurrentRound, HISTORY.NodeType = 0,0,1 # preflop
-    HISTORY.P1_Hand, HISTORY.P2_Hand, HISTORY.Board = [], [], []
+    HISTORY.P1_Hand, HISTORY.P2_Hand, HISTORY.Board, HISTORY.History = [], [], [], []
 
 
 def handleDiscard(hand, board):
@@ -98,30 +105,6 @@ def handleDiscard(hand, board):
         return "DISCARD:%s\n" % hand[swapIndex]
     else:
         return "CHECK\n"
-
-
-def getValidAbstractOppAction(opp_action_str):
-    """
-    Used for opponent BET/RAISE
-    Makes sure that after bets have been mapped to the game abstraction, that the abstraction actually allows them.
-    For example, the bet mapping could think an opponent is all-in, even if they have a few chips left and can still bet/raise.
-    """
-    global HISTORY, FORCED_ACTION
-    legalOppActions = HISTORY.getLegalActions(1) # 1 means opp
-    print "Legal opp actions (abstraction):", legalOppActions
-
-    # check if the opp_action_str we already found is valid
-    if opp_action_str in legalOppActions:
-        return opp_action_str
-
-    else:
-        if opp_action_str == 'BA': # BA not in actions
-            FORCED_ACTION = 'CL\n'
-            return "CK"
-
-        elif opp_action_str == 'RA': # raise
-            FORCED_ACTION = 'CL\n'
-            return "CL"
 
 
 def extractInfoFromLastActions():
@@ -191,11 +174,12 @@ def extractInfoFromLastActions():
                 if parsedAction[0]=='BET': # increment the P2_inPot
                     betAmount = int(parsedAction[1])
 
-                    # TODO: map the bet amount to an action (abstracted)
-                    oppActionStr = "1:B:%s" % mapBetToAbstraction(betAmount)
+                    mappedBet = mapBetToAbstraction(betAmount)
+                    if mappedBet == None:
+                        oppActionStr = '1:CK'
+                    else:
+                        oppActionStr = "1:B:%s" % mappedBet
 
-                    # TODO: compare the oppActionStr to our abstractions legal actions 
-                    validOppActionStr = getValidAbstractOppAction(oppActionStr)
                     HISTORY.History.append(oppActionStr)
 
                     # update the history AFTER abstraction determined!!
@@ -215,13 +199,18 @@ def extractInfoFromLastActions():
 
                     # map the raise-amount to the abstracted letters
                     # Note: had to add case where callAmount == zero to handle engine allowing the BB to 'RAISE' after SB calls on PREFLOP
-                    if callAmount > 0:
-                        oppActionStr = "1:R:%s" % mapBetToAbstraction(betAmount)
-                    else:
-                        oppActionStr = "1:B:%s" % mapBetToAbstraction(betAmount)
+                    mappedBet = mapBetToAbstraction(betAmount)
+                    if callAmount == 0: # treat this like a bet
+                        if mappedBet == None:
+                            oppActionStr = '1:CK'
+                        else:
+                            oppActionStr = "1:B:%s" % mappedBet
+                    else: # treat this as a raise
+                        if mappedBet == None:
+                            oppActionStr = '1:CL'
+                        else:
+                            oppActionStr = "1:R:%s" % mappedBet
 
-                    # TODO: compare the oppActionStr to our abstractions legal actions 
-                    validOppActionStr = getValidAbstractOppAction(oppActionStr)
                     HISTORY.History.append(oppActionStr)
 
                     # update the history AFTER abstraction determined!!
@@ -408,14 +397,13 @@ class Player:
                     # that our strategy lookup won't find
                     global FORCED_ACTION
                     if FORCED_ACTION != None:
-                        s.send(FORCED_ACTION)
+                        print "Was forced to choose %s" % FORCED_ACTION
+                        action_e = convertSyntaxToEngineAndUpdate(FORCED_ACTION)
+                        #s.send(FORCED_ACTION)
 
                     else: # not a forced action, so we can look up our strategy
                         # convert the current HISTORY to an information set from our perspective
                         playerActions = HISTORY.getLegalActions(0)
-                        # need to remove : from playerActions
-                        # TODO 
-
 
                         I_player = HISTORY.convertToInformationSet(0)
 
@@ -439,7 +427,8 @@ class Player:
                         action_e = convertSyntaxToEngineAndUpdate(action_i)
 
                         # update the global history every time we make an action
-                        s.send(action_e)
+                    
+                    s.send(action_e)
 
 
             elif word=="NEWGAME":

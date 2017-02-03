@@ -1066,22 +1066,37 @@ class LightweightHistory(object):
 
             # if no bets yet: we can check, bet half-pot, bet pot, or go all-in
             if prevBetAmt==0:
-                actions = ["CK", "B:H", "B:P", "B:A"]
+                actions = ["CK", "BH", "BP", "BA"]
 
             # if a bet HAS been placed during this round: we can fold, call, raise by pot, or raise by all-in amount
             if prevBetAmt > 0:
-                actions = ["F", "CL", "R:P", "R:A"]
+                actions = ["F", "CL", "RP", "RA"]
 
             # remove any bets (besides all-in) that would make us or the opponent pot-committed
             if (float(self.Pot) / 2) > self.P1_Bankroll*0.6 or (float(self.Pot) / 2) > self.P2_Bankroll*0.6:
-                if "B:P" in actions:
-                    actions.remove("B:P")
-                if "B:H" in actions:
-                    actions.remove("B:H")
-                if "R:P" in actions:
-                    actions.remove("R:P")
-                if "R:H" in actions:
-                    actions.remove("R:H")
+                if "BP" in actions:
+                    actions.remove("BP")
+                if "BH" in actions:
+                    actions.remove("BH")
+                if "RP" in actions:
+                    actions.remove("RP")
+                if "RH" in actions:
+                    actions.remove("RH")
+
+            # don't allow the opponent to bet/raise again if they've already gone "all in"
+            if '1:B:A' in self.History or '1:R:A' in self.History:
+                if "BP" in actions:
+                    actions.remove("BP")
+                if "BH" in actions:
+                    actions.remove("BH")
+                if "RP" in actions:
+                    actions.remove("RP")
+                if "RH" in actions:
+                    actions.remove("RH")
+                if "BA" in actions:
+                    actions.remove("BA")
+                if "RA" in actions:
+                    actions.remove("RA")
 
         return actions
 
@@ -1123,7 +1138,7 @@ class LightweightHistory(object):
 
             # check for discard section hand packets
             elif s_parsed[0] == "H0":
-                numDiscardActions+=1
+                #numDiscardActions+=1
                 if player==0: # we need to update our player's hand
                     if currentSection==1: # flop, 4 buckets
                         hand = "H%d" % min(int(float(s_parsed[2])*4), 3) # scales hand to an int 0,1,2,3
@@ -1133,7 +1148,7 @@ class LightweightHistory(object):
                     Current_Player_HS=hand
 
             elif s_parsed[0] == "H1":
-                numDiscardActions+=1
+                #numDiscardActions+=1
                 if player==1:
                     if currentSection==1: # flop, 4 buckets
                         hand = "H%d" % min(int(float(s_parsed[2])*4), 3) # scales hand to an int 0,1,2,3
@@ -1180,7 +1195,8 @@ class LightweightHistory(object):
                 # only add a check if it happens outside of a discard section
                 elif s_parsed[1]=="CK":
                     if inDiscardSection==True: 
-                        numDiscardActions+= 1
+                        numDiscardActions += 1
+                        print "checking in discard section convert h to i"
                     else: infoset_str+="CK"
 
                 elif s_parsed[1]=="B":
@@ -1217,7 +1233,7 @@ class LightweightHistory(object):
 
             # decide whether or not we ended a discard section
             # if so, add the player's hand strength to the info set
-            if inDiscardSection and numDiscardActions ==2:
+            if inDiscardSection and numDiscardActions == 2:
                 infoset_str += Current_Player_HS
                 numDiscards = 0
                 numDiscardActions = 0
