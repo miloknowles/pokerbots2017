@@ -13,7 +13,8 @@ from ParsePackets import *
 
 
 # DEFINE GLOBAL VARIABLES TO STORE THE GAME STATE #
-global NEWGAME_PACKET, NEWHAND_PACKET, GETACTION_PACKET, HISTORY
+global NEWGAME_PACKET, NEWHAND_PACKET, GETACTION_PACKET, HISTORY, FORCED_ACTION
+FORCED_ACTION = None
 
 # (self, history, node_type, current_street, current_round, button_player, \
 # active_player, pot, p1_inpot, p2_inpot, bank_1, bank_2, p1_hand, p2_hand, board):
@@ -75,7 +76,7 @@ def resetHistory():
     Resets the global HISTORY to defaults.
     """
     global HISTORY, NEWHAND_PACKET
-    HISTORY.P1_inPot, HISTORY.p2_inPot, HISTORY.Pot = 0, 0, 0 # reset the in-pot and pot for this street
+    HISTORY.P1_inPot, HISTORY.P2_inPot, HISTORY.Pot = 0, 0, 0 # reset the in-pot and pot for this street
     HISTORY.ButtonPlayer = 0 if NEWHAND_PACKET.button == True else 1
     HISTORY.P1_Bankroll, HISTORY.P2_Bankroll = 200, 200 # reset both bankrolls to 200
     HISTORY.Street, HISTORY.CurrentRound, HISTORY.NodeType = 0,0,1 # preflop
@@ -97,6 +98,30 @@ def handleDiscard(hand, board):
         return "DISCARD:%s\n" % hand[swapIndex]
     else:
         return "CHECK\n"
+
+
+def getValidAbstractOppAction(opp_action_str):
+    """
+    Used for opponent BET/RAISE
+    Makes sure that after bets have been mapped to the game abstraction, that the abstraction actually allows them.
+    For example, the bet mapping could think an opponent is all-in, even if they have a few chips left and can still bet/raise.
+    """
+    global HISTORY, FORCED_ACTION
+    legalOppActions = HISTORY.getLegalActions(1) # 1 means opp
+    print "Legal opp actions (abstraction):", legalOppActions
+
+    # check if the opp_action_str we already found is valid
+    if opp_action_str in legalOppActions:
+        return opp_action_str
+
+    else:
+        if opp_action_str == 'BA': # BA not in actions
+            FORCED_ACTION = 'CL\n'
+            return "CK"
+
+        elif opp_action_str == 'RA': # raise
+            FORCED_ACTION = 'CL\n'
+            return "CL"
 
 
 def extractInfoFromLastActions():
@@ -168,6 +193,9 @@ def extractInfoFromLastActions():
 
                     # TODO: map the bet amount to an action (abstracted)
                     oppActionStr = "1:B:%s" % mapBetToAbstraction(betAmount)
+
+                    # TODO: compare the oppActionStr to our abstractions legal actions 
+                    validOppActionStr = getValidAbstractOppAction(oppActionStr)
                     HISTORY.History.append(oppActionStr)
 
                     # update the history AFTER abstraction determined!!
@@ -191,6 +219,9 @@ def extractInfoFromLastActions():
                         oppActionStr = "1:R:%s" % mapBetToAbstraction(betAmount)
                     else:
                         oppActionStr = "1:B:%s" % mapBetToAbstraction(betAmount)
+
+                    # TODO: compare the oppActionStr to our abstractions legal actions 
+                    validOppActionStr = getValidAbstractOppAction(oppActionStr)
                     HISTORY.History.append(oppActionStr)
 
                     # update the history AFTER abstraction determined!!
@@ -238,6 +269,7 @@ def convertSyntaxToEngineAndUpdate(i_action):
     Note: this function only works for OUR player!!! Do not use for opponent.
     """
     global HISTORY
+    print "Converting i_action:", i_action
     if i_action=="CK":
         a = "CHECK\n"
     elif i_action=="CL":
@@ -257,6 +289,7 @@ def convertSyntaxToEngineAndUpdate(i_action):
         if i_action[0]=='B':
             # get the legal betting range
             minBet, maxBet = GETACTION_PACKET.getBettingRange()
+            assert (i_action[1] in ['H','P','A']), "Error: got bet letter %s" % i_action[1]
 
             # amounts must be between min and max bets
             if i_action[1] == 'H':
@@ -317,7 +350,6 @@ class Player:
     def __init__(self):
         self.handCounter = 0
 
-
     def run(self, input_socket):
         # Get a file-object for reading packets from the socket.
         # Using this ensures that you get exactly one packet per read.
@@ -372,31 +404,42 @@ class Player:
                 # otherwise, betting action
                 else:
 
-                    # convert the current HISTORY to an information set from our perspective
-                    playerActions = HISTORY.getLegalActions(0)
-                    I_player = HISTORY.convertToInformationSet(0)
+                    # check if a modification we made to the opponent's action forced us to take an action 
+                    # that our strategy lookup won't find
+                    global FORCED_ACTION
+                    if FORCED_ACTION != None:
+                        s.send(FORCED_ACTION)
 
-                    # look up our strategy for the given info. set
-                    strategy = getStrategy(I_player)
-                    print "I:", I_player
-                    print "Strategy:", strategy
+                    else: # not a forced action, so we can look up our strategy
+                        # convert the current HISTORY to an information set from our perspective
+                        playerActions = HISTORY.getLegalActions(0)
+                        # need to remove : from playerActions
+                        # TODO 
 
-                    # if we could find a learned strategy, use it, otherwise choose randomly from available actions
-                    action_i = chooseActionRandom(playerActions) if strategy==None else chooseAction(strategy)
 
-                    # convert actions to HISTORY list syntax to get appended
-                    if action_i[0]=='B' or action_i[0]=='R':
-                        action_h = "0:%s:%s" % (action_i[0], action_i[1])
-                    else: # just add the player 0 tag to the beginning of the action
-                        action_h = "0:%s" % action_i
-                    HISTORY.History.append(action_h)
+                        I_player = HISTORY.convertToInformationSet(0)
 
-                    # convert the action we chose to syntax compatible with the engine
-                    # bet amounts like H/P/A are converted to integer values
-                    action_e = convertSyntaxToEngineAndUpdate(action_i)
+                        # look up our strategy for the given info. set
+                        strategy = getStrategy(I_player)
+                        print "I:", I_player
+                        print "Strategy:", strategy
 
-                    # update the global history every time we make an action
-                    s.send(action_e)
+                        # if we could find a learned strategy, use it, otherwise choose randomly from available actions
+                        action_i = chooseActionRandom(playerActions) if strategy==None else chooseAction(strategy)
+
+                        # convert actions to HISTORY list syntax to get appended
+                        if action_i[0]=='B' or action_i[0]=='R':
+                            action_h = "0:%s:%s" % (action_i[0], action_i[1])
+                        else: # just add the player 0 tag to the beginning of the action
+                            action_h = "0:%s" % action_i
+                        HISTORY.History.append(action_h)
+
+                        # convert the action we chose to syntax compatible with the engine
+                        # bet amounts like H/P/A are converted to integer values
+                        action_e = convertSyntaxToEngineAndUpdate(action_i)
+
+                        # update the global history every time we make an action
+                        s.send(action_e)
 
 
             elif word=="NEWGAME":
@@ -410,6 +453,7 @@ class Player:
                 # don't reset the history on the first hand (hits error)
                 self.handCounter += 1
                 if self.handCounter > 1:
+                    print "Resetting history after NEWHAND packet received"
                     resetHistory()
                 
 

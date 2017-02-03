@@ -1217,17 +1217,11 @@ class LightweightHistory(object):
 
             # decide whether or not we ended a discard section
             # if so, add the player's hand strength to the info set
-            if inDiscardSection:
-                if numDiscards >= 1 and numDiscardActions == 3:
-                    infoset_str += Current_Player_HS
-                    numDiscards = 0
-                    numDiscardActions = 0
-                    inDiscardSection=False
-                elif numDiscards==0 and numDiscardActions == 2:
-                    infoset_str += Current_Player_HS
-                    numDiscards = 0
-                    numDiscardActions = 0
-                    inDiscardSection=False
+            if inDiscardSection and numDiscardActions ==2:
+                infoset_str += Current_Player_HS
+                numDiscards = 0
+                numDiscardActions = 0
+                inDiscardSection=False
 
             if inDiscardSection==False and not shouldNotAddDot:
                 infoset_str+="." # separate from the next thing
