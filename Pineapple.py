@@ -155,7 +155,7 @@ def extractOppActionAndDiscardResult():
                     betAmount = int(parsedAction[1])
 
                     # TODO: map the bet amount to an action (abstracted)
-                    oppActionStr = "B:%s" % mapBetToAbstraction(betAmount)
+                    oppActionStr = "1:B:%s" % mapBetToAbstraction(betAmount)
                     HISTORY.History.append(oppActionStr)
 
                     # update the history AFTER abstraction determined!!
@@ -176,9 +176,9 @@ def extractOppActionAndDiscardResult():
                     # map the raise-amount to the abstracted letters
                     # Note: had to add case where callAmount == zero to handle engine allowing the BB to 'RAISE' after SB calls on PREFLOP
                     if callAmount > 0:
-                        oppActionStr = "R:%s" % mapBetToAbstraction(betAmount)
+                        oppActionStr = "1:R:%s" % mapBetToAbstraction(betAmount)
                     else:
-                        oppActionStr = "B:%s" % mapBetToAbstraction(betAmount)
+                        oppActionStr = "1:B:%s" % mapBetToAbstraction(betAmount)
                     HISTORY.History.append(oppActionStr)
 
                     # update the history AFTER abstraction determined!!
@@ -283,7 +283,7 @@ def convertSyntaxToEngineAndUpdate(i_action):
             a = 'RAISE:%s\n' % str(raiseToAmt)
             
             # also, update the HISTORY money values due to us raising
-            HISTORY.P1_inPot = raiseToAmount
+            HISTORY.P1_inPot = raiseToAmt
             HISTORY.Pot += (callAmt + betAmt)
             HISTORY.P1_Bankroll -= (callAmt + betAmt)
 
@@ -376,7 +376,7 @@ class Player:
                     print "Strategy:", strategy
 
                     # if we could find a learned strategy, use it, otherwise choose randomly from available actions
-                    action_i = chooseActionRandom(player_actions) if strategy==None else chooseAction(strategy)
+                    action_i = chooseActionRandom(playerActions) if strategy==None else chooseAction(strategy)
 
                     # convert actions to HISTORY list syntax to get appended
                     if action_i[0]=='B' or action_i[0]=='R':
