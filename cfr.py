@@ -1148,6 +1148,7 @@ class LightweightHistory(object):
                     Current_Player_HS=hand
 
             elif s_parsed[0] == "H1":
+                shouldNotAddDot = True
                 #numDiscardActions+=1
                 if player==1:
                     if currentSection==1: # flop, 4 buckets
