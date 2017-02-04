@@ -122,14 +122,17 @@ def extractInfoFromLastActions():
             board = GETACTION_PACKET.getBoard()
             if parsedAction[1] == "FLOP":
                 HISTORY.P1_inPot, HISTORY.P2_inPot = 0, 0 # reset the in pot for this street
+                HISTORY.Street = 1
                 HISTORY.updateBoard(board)
 
             elif parsedAction[1] == "TURN":
                 HISTORY.P1_inPot, HISTORY.P2_inPot = 0, 0 # reset the in pot for this street
+                HISTORY.Street = 2
                 HISTORY.updateBoard(board)
 
             elif parsedAction[1] == "RIVER":
                 HISTORY.P1_inPot, HISTORY.P2_inPot = 0, 0 # reset the in pot for this street
+                HISTORY.Street = 3
                 HISTORY.updateBoard(board)
 
         # if the action was to post a blind, we take of that for both players here
@@ -275,7 +278,10 @@ def convertSyntaxToEngineAndUpdate(i_action):
         a = "FOLD\n"
 
     else: # parsed action
-        if i_action[0]=='B':
+        # Note: if it is the preflop and we are BB, we should RAISE not BET after SB calls 
+        # extra conditions added to account for that
+        if i_action[0]=='B' and not (HISTORY.Street==0 and HISTORY.ButtonPlayer==1):
+
             # get the legal betting range
             minBet, maxBet = GETACTION_PACKET.getBettingRange()
             assert (i_action[1] in ['H','P','A']), "Error: got bet letter %s" % i_action[1]
@@ -298,7 +304,7 @@ def convertSyntaxToEngineAndUpdate(i_action):
             HISTORY.P1_Bankroll -= betAmt
 
 
-        elif i_action[0]=='R':
+        elif i_action[0]=='R' or (HISTORY.Street==0 and HISTORY.ButtonPlayer==1):
 
             # get the legal raising range
             minRaise, maxRaise = GETACTION_PACKET.getRaisingRange()
