@@ -1138,7 +1138,7 @@ class LightweightHistory(object):
 
             # check for discard section hand packets
             elif s_parsed[0] == "H0":
-                #numDiscardActions+=1
+                numDiscardActions+=1
                 if player==0: # we need to update our player's hand
                     if currentSection==1: # flop, 4 buckets
                         hand = "H%d" % min(int(float(s_parsed[2])*4), 3) # scales hand to an int 0,1,2,3
@@ -1227,18 +1227,25 @@ class LightweightHistory(object):
                 elif s_parsed[1]=="D":
                     assert inDiscardSection==True, "Error: got a discard action but didn't think it was in a discard section!"
                     numDiscardActions += 1
-                    if s_parsed[0] == 0: # only increment num discards if it's OUR discard
+                    if int(s_parsed[0]) == 0: # only increment num discards if it's OUR discard
                         numDiscards += 1
 
                 else: assert False, "Error: tried to convert H to I and reached unknown term"
 
             # decide whether or not we ended a discard section
             # if so, add the player's hand strength to the info set
-            if inDiscardSection and numDiscardActions == 2:
-                infoset_str += Current_Player_HS
-                numDiscards = 0
-                numDiscardActions = 0
-                inDiscardSection=False
+            if inDiscardSection:
+                if numDiscards >= 1 and numDiscardActions == 3:
+                    infoset_str += Current_Player_HS
+                    numDiscards = 0
+                    numDiscardActions = 0
+                    inDiscardSection=False
+                elif numDiscards == 0 and numDiscardActions == 2:
+                    infoset_str += Current_Player_HS
+                    numDiscards = 0
+                    numDiscardActions = 0
+                    inDiscardSection=False
+
 
             if inDiscardSection==False and not shouldNotAddDot:
                 infoset_str+="." # separate from the next thing
