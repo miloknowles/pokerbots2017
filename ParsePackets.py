@@ -37,6 +37,7 @@ class NEWGAME(object):
         self.timeBank = float(itemized[6]) # number of seconds left for our bot to return an action
 
 
+
 class NEWHAND(object):
     """
 

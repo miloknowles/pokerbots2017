@@ -2,13 +2,15 @@ import time
 from cfr import *
 from random import random, choice
 import json
+import numpy as np
 
 
 # load the cumulative strategy into memory
+time0 = time.time()
 with open('./jsons/currentStrategy/cumulativeStrategy.json') as csFile:   
     CUMULATIVE_STRATEGY = json.load(csFile)
-    print "Loaded in cumulative strategy"
-
+    time1 = time.time()
+    print "Loaded in cumulative strategy in %f sec" % (time1-time0)
 
 def getStrategy(I):
     """
@@ -33,20 +35,38 @@ def getStrategy(I):
         return None
 
 
-def chooseAction(action_dict):
-    """
-    Chooses an action from a dict of action:prob pairs
-    Tested with a million choices, is very close in practice to the profile given.
-    """
-    action_dict_sum = sum(action_dict.itervalues())
-    assert (action_dict_sum < 1.03 and action_dict_sum > 0.97), "Error: Strategy profile probabilities do not add up to 1."
+# def chooseAction(action_dict):
+#     """
+#     Chooses an action from a dict of action:prob pairs
+#     Tested with a million choices, is very close in practice to the profile given.
+#     """
+#     action_dict_sum = sum(action_dict.itervalues())
+#     assert (action_dict_sum < 1.03 and action_dict_sum > 0.97), "Error: Strategy profile probabilities do not add up to 1."
 
-    random_float = random()
-    cutoff = 0
-    for a in action_dict.keys():
-        cutoff += action_dict[a]
-        if random_float <= cutoff:
-            return a
+#     random_float = random()
+#     cutoff = 0
+#     for a in action_dict.keys():
+#         cutoff += action_dict[a]
+#         if random_float <= cutoff:
+#             return a
+
+def chooseAction(action_dict):
+    choices = action_dict.keys()
+    weights = action_dict.values()
+
+    choices_select = []
+    weights_select = []
+    for i in range(len(choices)):
+        # remove any actions less than 10%
+        if weights[i] < 0.15:
+            pass
+        else:
+            choices_select.append(choices[i])
+            weights_select.append(choices[i])
+    return np.random.choice(choices, p=weights)
+
+
+
 
 def chooseActionRandom(legal_actions):
     """

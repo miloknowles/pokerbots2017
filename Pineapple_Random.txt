@@ -1,0 +1,1894 @@
+6.S912 MIT Pokerbots - Pineapple vs Random (stack=200, bb=2)
+Hand #1, Pineapple (0), Random (0)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [2h Th]
+Dealt to Random [6h Kc]
+Pineapple raises to 200
+Random folds
+Uncalled bet of 198 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #2, Random (-2), Pineapple (2)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [Qs Ac]
+Dealt to Pineapple [Kd 9c]
+Random calls
+Pineapple checks
+*** FLOP *** (4) [5s 5h 7d]
+Pineapple discards 9c for Js
+Random discards Ac for Tc
+Pineapple checks
+Random bets 146
+Pineapple calls
+*** TURN *** (296) [5s 5h 7d] [Ah]
+Pineapple discards Js for 2d
+Random checks
+Pineapple checks
+Random checks
+*** RIVER *** (296) [5s 5h 7d Ah] [7h]
+Pineapple checks
+Random bets 5
+Pineapple calls
+Random shows [Qs Tc]
+Pineapple shows [Kd 2d]
+Random ties for the pot (153)
+Pineapple ties for the pot (153)
+
+Hand #3, Pineapple (2), Random (-2)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [Ac 6s]
+Dealt to Random [3d 2c]
+Pineapple calls
+Random raises to 100
+Pineapple calls
+*** FLOP *** (200) [Qh 9s 5s]
+Random discards 3d for 9h
+Pineapple discards 6s for Qc
+Random bets 98
+Pineapple calls
+*** TURN *** (396) [Qh 9s 5s] [7c]
+Random discards 2c for As
+Pineapple checks
+Random bets 2
+Pineapple calls
+*** RIVER *** (400) [Qh 9s 5s 7c] [3s]
+Pineapple shows [Ac Qc]
+Random shows [9h As]
+Pineapple wins the pot (400)
+
+Hand #4, Random (-202), Pineapple (202)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [3h Ks]
+Dealt to Pineapple [Kd Kh]
+Random calls
+Pineapple checks
+*** FLOP *** (4) [2s 2d 9d]
+Pineapple checks
+Random checks
+Pineapple checks
+Random bets 111
+Pineapple calls
+*** TURN *** (226) [2s 2d 9d] [Ac]
+Pineapple checks
+Random discards 3h for Jd
+Pineapple checks
+Random bets 58
+Pineapple calls
+*** RIVER *** (342) [2s 2d 9d Ac] [8d]
+Pineapple checks
+Random bets 10
+Pineapple calls
+Random shows [Ks Jd]
+Pineapple shows [Kd Kh]
+Pineapple wins the pot (362)
+
+Hand #5, Pineapple (383), Random (-383)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [Ks 4h]
+Dealt to Random [Tc Kc]
+Pineapple calls
+Random raises to 18
+Pineapple raises to 38
+Random folds
+Uncalled bet of 20 returned to Pineapple
+Pineapple wins the pot (36)
+
+Hand #6, Random (-401), Pineapple (401)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [Jh 8h]
+Dealt to Pineapple [6s 4s]
+Random folds
+Pineapple wins the pot (3)
+
+Hand #7, Pineapple (402), Random (-402)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [5d Js]
+Dealt to Random [9d 4s]
+Pineapple calls
+Random raises to 45
+Pineapple folds
+Uncalled bet of 43 returned to Random
+Random wins the pot (4)
+
+Hand #8, Random (-400), Pineapple (400)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [Qs 7h]
+Dealt to Pineapple [Ac 8d]
+Random folds
+Pineapple wins the pot (3)
+
+Hand #9, Pineapple (401), Random (-401)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [6c 3s]
+Dealt to Random [4d Jd]
+Pineapple calls
+Random raises to 72
+Pineapple folds
+Uncalled bet of 70 returned to Random
+Random wins the pot (4)
+
+Hand #10, Random (-399), Pineapple (399)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [Js 6h]
+Dealt to Pineapple [Jd 5h]
+Random folds
+Pineapple wins the pot (3)
+
+Hand #11, Pineapple (400), Random (-400)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [Tc 8d]
+Dealt to Random [7d Qs]
+Pineapple calls
+Random raises to 173
+Pineapple calls
+*** FLOP *** (346) [8s Jh 7h]
+Random discards 7d for 9h
+Pineapple checks
+Random bets 12
+Pineapple calls
+*** TURN *** (370) [8s Jh 7h] [Ks]
+Random discards 9h for Ts
+Pineapple checks
+Random bets 6
+Pineapple calls
+*** RIVER *** (382) [8s Jh 7h Ks] [9s]
+Random bets 6
+Pineapple calls
+Pineapple shows [Tc 8d]
+Random shows [Qs Ts]
+Random wins the pot (394)
+
+Hand #12, Random (-203), Pineapple (203)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [4s 8s]
+Dealt to Pineapple [Th Kh]
+Random calls
+Pineapple checks
+*** FLOP *** (4) [Js 3h 9h]
+Pineapple checks
+Random checks
+Pineapple bets 2
+Random raises to 114
+Pineapple folds
+Uncalled bet of 112 returned to Random
+Random wins the pot (8)
+
+Hand #13, Pineapple (199), Random (-199)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [Qd Tc]
+Dealt to Random [9h Ks]
+Pineapple calls
+Random checks
+*** FLOP *** (4) [2d 6c 8h]
+Random discards 9h for As
+Pineapple discards Tc for 3d
+Random checks
+Pineapple bets 4
+Random raises to 14
+Pineapple calls
+*** TURN *** (32) [2d 6c 8h] [5d]
+Random discards As for 7h
+Pineapple checks
+Random checks
+Pineapple bets 184
+Random calls
+*** RIVER *** (400) [2d 6c 8h 5d] [5h]
+Pineapple shows [Qd 3d]
+Random shows [Ks 7h]
+Random wins the pot (400)
+
+Hand #14, Random (1), Pineapple (-1)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [4h Ac]
+Dealt to Pineapple [2d 9c]
+Random raises to 35
+Pineapple calls
+*** FLOP *** (70) [9d Qc 7d]
+Pineapple discards 2d for 7c
+Random checks
+Pineapple checks
+Random bets 121
+Pineapple calls
+*** TURN *** (312) [9d Qc 7d] [5h]
+Pineapple checks
+Random discards 4h for 2h
+Pineapple checks
+Random bets 35
+Pineapple calls
+*** RIVER *** (382) [9d Qc 7d 5h] [6d]
+Pineapple checks
+Random checks
+Random shows [Ac 2h]
+Pineapple shows [9c 7c]
+Pineapple wins the pot (382)
+
+Hand #15, Pineapple (190), Random (-190)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [4d 9s]
+Dealt to Random [4s Js]
+Pineapple calls
+Random raises to 95
+Pineapple calls
+*** FLOP *** (190) [Qd 8d 7s]
+Random discards Js for 9d
+Pineapple discards 4d for 8s
+Random checks
+Pineapple checks
+*** TURN *** (190) [Qd 8d 7s] [Jh]
+Random checks
+Pineapple checks
+Random checks
+Pineapple checks
+*** RIVER *** (190) [Qd 8d 7s Jh] [9c]
+Random checks
+Pineapple checks
+Pineapple shows [9s 8s]
+Random shows [4s 9d]
+Pineapple wins the pot (190)
+
+Hand #16, Random (-285), Pineapple (285)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [6d 6h]
+Dealt to Pineapple [5h Ah]
+Random calls
+Pineapple checks
+*** FLOP *** (4) [8c Jc 8h]
+Pineapple discards 5h for Kc
+Random checks
+Pineapple bets 2
+Random raises to 31
+Pineapple raises to 68
+Random calls
+*** TURN *** (140) [8c Jc 8h] [Qc]
+Pineapple checks
+Random discards 6d for Ac
+Pineapple bets 130
+Random calls
+*** RIVER *** (400) [8c Jc 8h Qc] [Jd]
+Random shows [6h Ac]
+Pineapple shows [Ah Kc]
+Random ties for the pot (200)
+Pineapple ties for the pot (200)
+
+Hand #17, Pineapple (285), Random (-285)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [6s Kc]
+Dealt to Random [9c 3s]
+Pineapple calls
+Random checks
+*** FLOP *** (4) [4c 6c 2h]
+Random discards 3s for 3d
+Pineapple checks
+Random checks
+Pineapple checks
+*** TURN *** (4) [4c 6c 2h] [8s]
+Random discards 9c for 4d
+Pineapple discards Kc for 7s
+Random checks
+Pineapple bets 198
+Random folds
+Uncalled bet of 198 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #18, Random (-287), Pineapple (287)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [6s 9d]
+Dealt to Pineapple [3d Ts]
+Random calls
+Pineapple checks
+*** FLOP *** (4) [5h Kc 2c]
+Pineapple discards 3d for 6h
+Random discards 6s for Jh
+Pineapple bets 198
+Random folds
+Uncalled bet of 198 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #19, Pineapple (289), Random (-289)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [Ks Kh]
+Dealt to Random [Jc 3d]
+Pineapple calls
+Random checks
+*** FLOP *** (4) [Jd 2c 4d]
+Random discards Jc for Js
+Pineapple checks
+Random checks
+Pineapple bets 4
+Random calls
+*** TURN *** (12) [Jd 2c 4d] [As]
+Random discards Js for Qs
+Pineapple checks
+Random checks
+Pineapple bets 194
+Random folds
+Uncalled bet of 194 returned to Pineapple
+Pineapple wins the pot (12)
+
+Hand #20, Random (-295), Pineapple (295)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [8c 7d]
+Dealt to Pineapple [2s 5h]
+Random raises to 94
+Pineapple calls
+*** FLOP *** (188) [3c 9d Ac]
+Pineapple discards 2s for 9c
+Random discards 8c for 9s
+Pineapple checks
+Random checks
+*** TURN *** (188) [3c 9d Ac] [Qh]
+Pineapple discards 5h for 4d
+Random discards 7d for Kd
+Pineapple checks
+Random checks
+*** RIVER *** (188) [3c 9d Ac Qh] [7s]
+Pineapple checks
+Random checks
+Random shows [9s Kd]
+Pineapple shows [9c 4d]
+Random wins the pot (188)
+
+Hand #21, Pineapple (201), Random (-201)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [Qs 8s]
+Dealt to Random [9d Ks]
+Pineapple calls
+Random raises to 161
+Pineapple calls
+*** FLOP *** (322) [7d 6d 7s]
+Random discards 9d for 7c
+Pineapple discards 8s for 9s
+Random checks
+Pineapple checks
+*** TURN *** (322) [7d 6d 7s] [2c]
+Random checks
+Pineapple discards 9s for Ts
+Random checks
+Pineapple checks
+*** RIVER *** (322) [7d 6d 7s 2c] [Qc]
+Random bets 25
+Pineapple calls
+Pineapple shows [Qs Ts]
+Random shows [Ks 7c]
+Random wins the pot (372)
+
+Hand #22, Random (-15), Pineapple (15)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [8s Ts]
+Dealt to Pineapple [Th 9s]
+Random folds
+Pineapple wins the pot (3)
+
+Hand #23, Pineapple (16), Random (-16)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [9h 4c]
+Dealt to Random [Jd Ks]
+Pineapple raises to 200
+Random folds
+Uncalled bet of 198 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #24, Random (-18), Pineapple (18)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [4s Ah]
+Dealt to Pineapple [As Ad]
+Random calls
+Pineapple checks
+*** FLOP *** (4) [Js 7d Qs]
+Pineapple checks
+Random discards Ah for Jd
+Pineapple checks
+Random checks
+*** TURN *** (4) [Js 7d Qs] [7s]
+Pineapple checks
+Random discards 4s for 2h
+Pineapple checks
+Random checks
+*** RIVER *** (4) [Js 7d Qs 7s] [Kh]
+Pineapple bets 198
+Random calls
+Random shows [Jd 2h]
+Pineapple shows [As Ad]
+Pineapple wins the pot (400)
+
+Hand #25, Pineapple (218), Random (-218)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [Js 3c]
+Dealt to Random [Qc 9s]
+Pineapple calls
+Random checks
+*** FLOP *** (4) [As 9d Qd]
+Random discards Qc for 8c
+Pineapple discards 3c for 5s
+Random bets 65
+Pineapple folds
+Uncalled bet of 65 returned to Random
+Random wins the pot (4)
+
+Hand #26, Random (-216), Pineapple (216)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [7c 7d]
+Dealt to Pineapple [Qc Kc]
+Random folds
+Pineapple wins the pot (3)
+
+Hand #27, Pineapple (217), Random (-217)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [9d 6c]
+Dealt to Random [Kh 9s]
+Pineapple raises to 200
+Random folds
+Uncalled bet of 198 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #28, Random (-219), Pineapple (219)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [7d Tc]
+Dealt to Pineapple [9s 7h]
+Random folds
+Pineapple wins the pot (3)
+
+Hand #29, Pineapple (220), Random (-220)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [Qs Ad]
+Dealt to Random [4d Qc]
+Pineapple calls
+Random raises to 171
+Pineapple calls
+*** FLOP *** (342) [8c 5c 6h]
+Random discards 4d for Ah
+Pineapple discards Qs for 4s
+Random checks
+Pineapple checks
+*** TURN *** (342) [8c 5c 6h] [Tc]
+Random discards Qc for 9c
+Pineapple discards Ad for Kh
+Random checks
+Pineapple checks
+*** RIVER *** (342) [8c 5c 6h Tc] [3h]
+Random bets 23
+Pineapple calls
+Pineapple shows [4s Kh]
+Random shows [Ah 9c]
+Random wins the pot (388)
+
+Hand #30, Random (-26), Pineapple (26)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [4s 5d]
+Dealt to Pineapple [3s 9h]
+Random calls
+Pineapple checks
+*** FLOP *** (4) [Th 3h 8h]
+Pineapple checks
+Random discards 5d for Ah
+Pineapple checks
+Random bets 154
+Pineapple calls
+*** TURN *** (312) [Th 3h 8h] [As]
+Pineapple discards 3s for 3c
+Random discards 4s for 5s
+Pineapple checks
+Random checks
+*** RIVER *** (312) [Th 3h 8h As] [Qs]
+Pineapple checks
+Random checks
+Random shows [Ah 5s]
+Pineapple shows [9h 3c]
+Random wins the pot (312)
+
+Hand #31, Pineapple (-130), Random (130)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [2s Th]
+Dealt to Random [5h 6h]
+Pineapple calls
+Random raises to 35
+Pineapple folds
+Uncalled bet of 33 returned to Random
+Random wins the pot (4)
+
+Hand #32, Random (132), Pineapple (-132)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [2h 4c]
+Dealt to Pineapple [Th Ah]
+Random raises to 135
+Pineapple calls
+*** FLOP *** (270) [Kc Kd 3s]
+Pineapple discards Th for 8h
+Random checks
+Pineapple checks
+Random bets 10
+Pineapple calls
+*** TURN *** (290) [Kc Kd 3s] [4h]
+Pineapple discards 8h for Jc
+Random discards 2h for 7s
+Pineapple checks
+Random bets 20
+Pineapple calls
+*** RIVER *** (330) [Kc Kd 3s 4h] [As]
+Pineapple checks
+Random bets 21
+Pineapple calls
+Random shows [4c 7s]
+Pineapple shows [Ah Jc]
+Pineapple wins the pot (372)
+
+Hand #33, Pineapple (54), Random (-54)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [2c 2d]
+Dealt to Random [2s 7s]
+Pineapple calls
+Random checks
+*** FLOP *** (4) [7d 8d 5s]
+Random discards 7s for 5c
+Pineapple checks
+Random bets 125
+Pineapple folds
+Uncalled bet of 125 returned to Random
+Random wins the pot (4)
+
+Hand #34, Random (-52), Pineapple (52)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [5c 3h]
+Dealt to Pineapple [4d Td]
+Random raises to 9
+Pineapple calls
+*** FLOP *** (18) [Ad As 3d]
+Pineapple checks
+Random discards 5c for 7c
+Pineapple checks
+Random checks
+*** TURN *** (18) [Ad As 3d] [5d]
+Pineapple checks
+Random checks
+Pineapple checks
+Random checks
+*** RIVER *** (18) [Ad As 3d 5d] [Qs]
+Pineapple bets 9
+Random raises to 164
+Pineapple calls
+Random shows [3h 7c]
+Pineapple shows [4d Td]
+Pineapple wins the pot (346)
+
+Hand #35, Pineapple (225), Random (-225)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [Ah Kd]
+Dealt to Random [8c Td]
+Pineapple calls
+Random checks
+*** FLOP *** (4) [6h Qc 8d]
+Random discards 8c for 3c
+Pineapple discards Kd for 5h
+Random checks
+Pineapple checks
+*** TURN *** (4) [6h Qc 8d] [Kc]
+Random discards 3c for 5s
+Pineapple discards 5h for Jd
+Random bets 20
+Pineapple raises to 44
+Random folds
+Uncalled bet of 24 returned to Pineapple
+Pineapple wins the pot (44)
+
+Hand #36, Random (-247), Pineapple (247)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [Js Ks]
+Dealt to Pineapple [8h 9s]
+Random folds
+Pineapple wins the pot (3)
+
+Hand #37, Pineapple (248), Random (-248)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [Kc 7c]
+Dealt to Random [4s Jc]
+Pineapple calls
+Random raises to 33
+Pineapple calls
+*** FLOP *** (66) [6d 5c 5h]
+Random discards Jc for 8d
+Pineapple discards 7c for 3h
+Random checks
+Pineapple checks
+*** TURN *** (66) [6d 5c 5h] [Js]
+Random checks
+Pineapple discards 3h for Qs
+Random checks
+Pineapple checks
+*** RIVER *** (66) [6d 5c 5h Js] [9h]
+Random checks
+Pineapple checks
+Pineapple shows [Kc Qs]
+Random shows [4s 8d]
+Pineapple wins the pot (66)
+
+Hand #38, Random (-281), Pineapple (281)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [7s 4h]
+Dealt to Pineapple [8h 9s]
+Random calls
+Pineapple checks
+*** FLOP *** (4) [Ad Qs 5h]
+Pineapple discards 8h for Tc
+Random checks
+Pineapple bets 2
+Random calls
+*** TURN *** (8) [Ad Qs 5h] [9d]
+Pineapple discards Tc for Qc
+Random discards 4h for 2c
+Pineapple checks
+Random bets 178
+Pineapple calls
+*** RIVER *** (364) [Ad Qs 5h 9d] [6c]
+Pineapple checks
+Random checks
+Random shows [7s 2c]
+Pineapple shows [9s Qc]
+Pineapple wins the pot (364)
+
+Hand #39, Pineapple (463), Random (-463)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [7h 8h]
+Dealt to Random [7s Kh]
+Pineapple calls
+Random checks
+*** FLOP *** (4) [6d 2s Ad]
+Random discards 7s for 6h
+Pineapple discards 7h for 3s
+Random checks
+Pineapple bets 2
+Random raises to 117
+Pineapple folds
+Uncalled bet of 115 returned to Random
+Random wins the pot (8)
+
+Hand #40, Random (-459), Pineapple (459)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [3h Kc]
+Dealt to Pineapple [8c Ah]
+Random raises to 108
+Pineapple calls
+*** FLOP *** (216) [Js 2h 4s]
+Pineapple discards 8c for 3d
+Random discards Kc for 8d
+Pineapple checks
+Random bets 69
+Pineapple calls
+*** TURN *** (354) [Js 2h 4s] [Jd]
+Pineapple discards 3d for Ks
+Random checks
+Pineapple checks
+Random bets 7
+Pineapple calls
+*** RIVER *** (368) [Js 2h 4s Jd] [Qd]
+Pineapple checks
+Random bets 10
+Pineapple calls
+Random shows [3h 8d]
+Pineapple shows [Ah Ks]
+Pineapple wins the pot (388)
+
+Hand #41, Pineapple (653), Random (-653)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [Kd Kc]
+Dealt to Random [4c 5s]
+Pineapple calls
+Random raises to 25
+Pineapple raises to 52
+Random calls
+*** FLOP *** (104) [3h Th Ah]
+Random checks
+Pineapple checks
+Random checks
+Pineapple bets 52
+Random folds
+Uncalled bet of 52 returned to Pineapple
+Pineapple wins the pot (104)
+
+Hand #42, Random (-705), Pineapple (705)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [4h 5d]
+Dealt to Pineapple [Kh 5h]
+Random calls
+Pineapple checks
+*** FLOP *** (4) [Qh Qd 7h]
+Pineapple checks
+Random checks
+Pineapple checks
+Random checks
+*** TURN *** (4) [Qh Qd 7h] [8h]
+Pineapple checks
+Random discards 4h for 5s
+Pineapple checks
+Random checks
+*** RIVER *** (4) [Qh Qd 7h 8h] [Js]
+Pineapple bets 198
+Random calls
+Random shows [5d 5s]
+Pineapple shows [Kh 5h]
+Pineapple wins the pot (400)
+
+Hand #43, Pineapple (905), Random (-905)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [4c 8h]
+Dealt to Random [Js Jc]
+Pineapple calls
+Random checks
+*** FLOP *** (4) [Jd Qc 6s]
+Random discards Js for 3c
+Pineapple discards 4c for Qh
+Random checks
+Pineapple checks
+*** TURN *** (4) [Jd Qc 6s] [7s]
+Random discards 3c for 4h
+Pineapple discards 8h for 8d
+Random checks
+Pineapple checks
+*** RIVER *** (4) [Jd Qc 6s 7s] [Qs]
+Random checks
+Pineapple checks
+Pineapple shows [Qh 8d]
+Random shows [Jc 4h]
+Pineapple wins the pot (4)
+
+Hand #44, Random (-907), Pineapple (907)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [2c 6d]
+Dealt to Pineapple [7d Kd]
+Random folds
+Pineapple wins the pot (3)
+
+Hand #45, Pineapple (908), Random (-908)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [Qh 3c]
+Dealt to Random [4s 5s]
+Pineapple calls
+Random raises to 130
+Pineapple calls
+*** FLOP *** (260) [Td Qs Qd]
+Random discards 4s for Jd
+Pineapple checks
+Random bets 12
+Pineapple calls
+*** TURN *** (284) [Td Qs Qd] [Ah]
+Random discards Jd for Ac
+Pineapple discards 3c for 6c
+Random checks
+Pineapple checks
+*** RIVER *** (284) [Td Qs Qd Ah] [8s]
+Random bets 57
+Pineapple calls
+Pineapple shows [Qh 6c]
+Random shows [5s Ac]
+Pineapple wins the pot (398)
+
+Hand #46, Random (-1107), Pineapple (1107)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [3c Kd]
+Dealt to Pineapple [6s Jh]
+Random raises to 158
+Pineapple calls
+*** FLOP *** (316) [7d 3h 2d]
+Pineapple discards 6s for Ad
+Random checks
+Pineapple checks
+Random checks
+*** TURN *** (316) [7d 3h 2d] [Ah]
+Pineapple checks
+Random discards 3c for 9s
+Pineapple checks
+Random bets 38
+Pineapple calls
+*** RIVER *** (392) [7d 3h 2d Ah] [2c]
+Pineapple checks
+Random checks
+Random shows [Kd 9s]
+Pineapple shows [Jh Ad]
+Pineapple wins the pot (392)
+
+Hand #47, Pineapple (1303), Random (-1303)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [5d 2d]
+Dealt to Random [Ad Qc]
+Pineapple calls
+Random checks
+*** FLOP *** (4) [2h 9h 4h]
+Random discards Ad for 6s
+Pineapple discards 5d for Kh
+Random checks
+Pineapple bets 2
+Random folds
+Uncalled bet of 2 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #48, Random (-1305), Pineapple (1305)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [8h Th]
+Dealt to Pineapple [Qd 6h]
+Random folds
+Pineapple wins the pot (3)
+
+Hand #49, Pineapple (1306), Random (-1306)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [Qs Jd]
+Dealt to Random [Ks 5d]
+Pineapple calls
+Random checks
+*** FLOP *** (4) [Tc 3d Js]
+Random discards 5d for 6s
+Pineapple checks
+Random checks
+Pineapple checks
+*** TURN *** (4) [Tc 3d Js] [2s]
+Random discards Ks for Ac
+Pineapple checks
+Random bets 34
+Pineapple calls
+*** RIVER *** (72) [Tc 3d Js 2s] [Kc]
+Random checks
+Pineapple checks
+Pineapple shows [Qs Jd]
+Random shows [6s Ac]
+Pineapple wins the pot (72)
+
+Hand #50, Random (-1342), Pineapple (1342)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [5c 3d]
+Dealt to Pineapple [Js 9h]
+Random calls
+Pineapple checks
+*** FLOP *** (4) [8d Ks 2s]
+Pineapple discards 9h for 9c
+Random discards 5c for 4c
+Pineapple bets 198
+Random folds
+Uncalled bet of 198 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #51, Pineapple (1344), Random (-1344)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [5h 6s]
+Dealt to Random [Tc 3s]
+Pineapple calls
+Random raises to 58
+Pineapple calls
+*** FLOP *** (116) [6h 5c 9s]
+Random checks
+Pineapple checks
+Random bets 63
+Pineapple calls
+*** TURN *** (242) [6h 5c 9s] [Th]
+Random discards 3s for 3d
+Pineapple checks
+Random checks
+Pineapple checks
+*** RIVER *** (242) [6h 5c 9s Th] [Qc]
+Random checks
+Pineapple checks
+Pineapple shows [5h 6s]
+Random shows [Tc 3d]
+Pineapple wins the pot (242)
+
+Hand #52, Random (-1465), Pineapple (1465)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [7c 4s]
+Dealt to Pineapple [9s 9c]
+Random raises to 197
+Pineapple calls
+*** FLOP *** (394) [4h 3d Kh]
+Pineapple checks
+Random discards 7c for Kd
+Pineapple checks
+Random bets 2
+Pineapple calls
+*** TURN *** (398) [4h 3d Kh] [2c]
+Pineapple checks
+Random checks
+Pineapple checks
+Random checks
+*** RIVER *** (398) [4h 3d Kh 2c] [As]
+Pineapple checks
+Random checks
+Random shows [4s Kd]
+Pineapple shows [9s 9c]
+Random wins the pot (398)
+
+Hand #53, Pineapple (1266), Random (-1266)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [8h 9d]
+Dealt to Random [9h Js]
+Pineapple calls
+Random checks
+*** FLOP *** (4) [Jh Ts Kc]
+Random discards Js for 3c
+Pineapple discards 8h for 3h
+Random checks
+Pineapple checks
+*** TURN *** (4) [Jh Ts Kc] [5c]
+Random discards 3c for 5h
+Pineapple discards 3h for 4c
+Random bets 13
+Pineapple raises to 30
+Random folds
+Uncalled bet of 17 returned to Pineapple
+Pineapple wins the pot (30)
+
+Hand #54, Random (-1281), Pineapple (1281)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [9h Js]
+Dealt to Pineapple [2h Kc]
+Random calls
+Pineapple checks
+*** FLOP *** (4) [7d 4c Jc]
+Pineapple discards 2h for 8d
+Random discards 9h for 5d
+Pineapple bets 2
+Random folds
+Uncalled bet of 2 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #55, Pineapple (1283), Random (-1283)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [Jh Td]
+Dealt to Random [Jc Ac]
+Pineapple calls
+Random checks
+*** FLOP *** (4) [Ts Kd 7s]
+Random discards Jc for 3d
+Pineapple checks
+Random bets 21
+Pineapple calls
+*** TURN *** (46) [Ts Kd 7s] [4c]
+Random discards 3d for 6d
+Pineapple discards Jh for 8c
+Random bets 169
+Pineapple calls
+*** RIVER *** (384) [Ts Kd 7s 4c] [Qs]
+Random checks
+Pineapple checks
+Pineapple shows [Td 8c]
+Random shows [Ac 6d]
+Pineapple wins the pot (384)
+
+Hand #56, Random (-1475), Pineapple (1475)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [2c 4d]
+Dealt to Pineapple [Qh Th]
+Random raises to 197
+Pineapple calls
+*** FLOP *** (394) [Jc Js Tc]
+Pineapple checks
+Random discards 4d for 3c
+Pineapple checks
+Random checks
+*** TURN *** (394) [Jc Js Tc] [5s]
+Pineapple checks
+Random discards 3c for Ks
+Pineapple checks
+Random checks
+*** RIVER *** (394) [Jc Js Tc 5s] [Kd]
+Pineapple checks
+Random checks
+Random shows [2c Ks]
+Pineapple shows [Qh Th]
+Random wins the pot (394)
+
+Hand #57, Pineapple (1278), Random (-1278)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [9s Jc]
+Dealt to Random [9h 6d]
+Pineapple raises to 5
+Random folds
+Uncalled bet of 3 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #58, Random (-1280), Pineapple (1280)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [8h 9h]
+Dealt to Pineapple [4s 5s]
+Random raises to 81
+Pineapple calls
+*** FLOP *** (162) [Js 7s Kd]
+Pineapple checks
+Random checks
+Pineapple checks
+Random checks
+*** TURN *** (162) [Js 7s Kd] [9c]
+Pineapple discards 4s for Qd
+Random discards 8h for 2h
+Pineapple checks
+Random checks
+*** RIVER *** (162) [Js 7s Kd 9c] [Ac]
+Pineapple checks
+Random checks
+Random shows [9h 2h]
+Pineapple shows [5s Qd]
+Random wins the pot (162)
+
+Hand #59, Pineapple (1199), Random (-1199)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [6h 9h]
+Dealt to Random [5s 8s]
+Pineapple calls
+Random checks
+*** FLOP *** (4) [2h Ad Js]
+Random checks
+Pineapple discards 6h for Ks
+Random bets 80
+Pineapple folds
+Uncalled bet of 80 returned to Random
+Random wins the pot (4)
+
+Hand #60, Random (-1197), Pineapple (1197)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [9s Ks]
+Dealt to Pineapple [Td 3h]
+Random calls
+Pineapple checks
+*** FLOP *** (4) [5c 7h 4d]
+Pineapple discards 3h for Qd
+Random checks
+Pineapple bets 2
+Random folds
+Uncalled bet of 2 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #61, Pineapple (1199), Random (-1199)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [7s 2c]
+Dealt to Random [6s 8h]
+Pineapple calls
+Random checks
+*** FLOP *** (4) [8c Qh 5s]
+Random discards 6s for 4c
+Pineapple discards 2c for 2s
+Random bets 143
+Pineapple folds
+Uncalled bet of 143 returned to Random
+Random wins the pot (4)
+
+Hand #62, Random (-1197), Pineapple (1197)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [Tc Qd]
+Dealt to Pineapple [4s 3h]
+Random calls
+Pineapple raises to 200
+Random calls
+*** FLOP *** (400) [2d 5c Kc]
+Pineapple checks
+Random discards Qd for 7h
+*** TURN *** (400) [2d 5c Kc] [Td]
+Pineapple discards 3h for Qc
+Random discards 7h for As
+*** RIVER *** (400) [2d 5c Kc Td] [6s]
+Random shows [Tc As]
+Pineapple shows [4s Qc]
+Random wins the pot (400)
+
+Hand #63, Pineapple (997), Random (-997)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [4d Td]
+Dealt to Random [9s Ks]
+Pineapple calls
+Random raises to 162
+Pineapple calls
+*** FLOP *** (324) [As Jd Kh]
+Random discards Ks for 7d
+Pineapple discards 4d for 8d
+Random checks
+Pineapple checks
+*** TURN *** (324) [As Jd Kh] [7s]
+Random discards 7d for Th
+Pineapple discards 8d for Ac
+Random checks
+Pineapple checks
+*** RIVER *** (324) [As Jd Kh 7s] [4c]
+Random bets 34
+Pineapple calls
+Pineapple shows [Td Ac]
+Random shows [9s Th]
+Pineapple wins the pot (392)
+
+Hand #64, Random (-1193), Pineapple (1193)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [Jc As]
+Dealt to Pineapple [8h 5h]
+Random folds
+Pineapple wins the pot (3)
+
+Hand #65, Pineapple (1194), Random (-1194)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [8c 5s]
+Dealt to Random [8h Ah]
+Pineapple calls
+Random checks
+*** FLOP *** (4) [5d 9s Qc]
+Random checks
+Pineapple discards 8c for 3h
+Random checks
+Pineapple bets 198
+Random calls
+*** TURN *** (400) [5d 9s Qc] [Qh]
+Random checks
+Pineapple discards 3h for 2h
+*** RIVER *** (400) [5d 9s Qc Qh] [2c]
+Pineapple shows [5s 2h]
+Random shows [8h Ah]
+Pineapple wins the pot (400)
+
+Hand #66, Random (-1394), Pineapple (1394)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [4c Jc]
+Dealt to Pineapple [8d 2d]
+Random calls
+Pineapple checks
+*** FLOP *** (4) [5c 2h 6d]
+Pineapple checks
+Random discards 4c for 8h
+Pineapple bets 2
+Random calls
+*** TURN *** (8) [5c 2h 6d] [Jd]
+Pineapple checks
+Random checks
+Pineapple bets 4
+Random folds
+Uncalled bet of 4 returned to Pineapple
+Pineapple wins the pot (8)
+
+Hand #67, Pineapple (1398), Random (-1398)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [Ad Ts]
+Dealt to Random [8c 3c]
+Pineapple raises to 5
+Random raises to 59
+Pineapple folds
+Uncalled bet of 54 returned to Random
+Random wins the pot (10)
+
+Hand #68, Random (-1393), Pineapple (1393)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [5d 8d]
+Dealt to Pineapple [Kd 4s]
+Random raises to 199
+Pineapple calls
+*** FLOP *** (398) [Js Qd 9s]
+Pineapple discards 4s for 2s
+Random discards 5d for Td
+Pineapple checks
+Random checks
+*** TURN *** (398) [Js Qd 9s] [9d]
+Pineapple discards 2s for 6s
+Random discards Td for Jh
+Pineapple checks
+Random bets 1
+Pineapple calls
+*** RIVER *** (400) [Js Qd 9s 9d] [8s]
+Random shows [8d Jh]
+Pineapple shows [Kd 6s]
+Random wins the pot (400)
+
+Hand #69, Pineapple (1193), Random (-1193)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [Th Ts]
+Dealt to Random [5c Qh]
+Pineapple calls
+Random checks
+*** FLOP *** (4) [Jd 2s 2d]
+Random discards 5c for 2h
+Pineapple checks
+Random checks
+Pineapple bets 198
+Random calls
+*** TURN *** (400) [Jd 2s 2d] [Jh]
+Random discards 2h for 6h
+Pineapple checks
+*** RIVER *** (400) [Jd 2s 2d Jh] [Ac]
+Pineapple shows [Th Ts]
+Random shows [Qh 6h]
+Pineapple wins the pot (400)
+
+Hand #70, Random (-1393), Pineapple (1393)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [6h 7s]
+Dealt to Pineapple [8d Tc]
+Random folds
+Pineapple wins the pot (3)
+
+Hand #71, Pineapple (1394), Random (-1394)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [6c 9s]
+Dealt to Random [Qd 4h]
+Pineapple calls
+Random raises to 63
+Pineapple calls
+*** FLOP *** (126) [3d Tc 9d]
+Random discards Qd for 7c
+Pineapple checks
+Random checks
+Pineapple checks
+*** TURN *** (126) [3d Tc 9d] [Td]
+Random checks
+Pineapple discards 6c for 5c
+Random checks
+Pineapple checks
+*** RIVER *** (126) [3d Tc 9d Td] [8h]
+Random checks
+Pineapple checks
+Pineapple shows [9s 5c]
+Random shows [4h 7c]
+Pineapple wins the pot (126)
+
+Hand #72, Random (-1457), Pineapple (1457)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [Jh As]
+Dealt to Pineapple [Ts 3d]
+Random calls
+Pineapple raises to 4
+Random folds
+Uncalled bet of 2 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #73, Pineapple (1459), Random (-1459)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [Tc Jc]
+Dealt to Random [5c Ts]
+Pineapple calls
+Random raises to 75
+Pineapple calls
+*** FLOP *** (150) [2c 2s Kh]
+Random discards Ts for 8h
+Pineapple discards Tc for Qd
+Random checks
+Pineapple checks
+*** TURN *** (150) [2c 2s Kh] [2h]
+Random discards 8h for 3c
+Pineapple discards Jc for Th
+Random checks
+Pineapple checks
+*** RIVER *** (150) [2c 2s Kh 2h] [Ah]
+Random bets 50
+Pineapple calls
+Pineapple shows [Qd Th]
+Random shows [5c 3c]
+Pineapple ties for the pot (125)
+Random ties for the pot (125)
+
+Hand #74, Random (-1459), Pineapple (1459)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [6s 3d]
+Dealt to Pineapple [Ks Ts]
+Random raises to 147
+Pineapple calls
+*** FLOP *** (294) [Qh 4d Jd]
+Pineapple checks
+Random discards 3d for Qs
+Pineapple checks
+Random checks
+*** TURN *** (294) [Qh 4d Jd] [7s]
+Pineapple discards Ts for 8c
+Random discards 6s for 9c
+Pineapple checks
+Random checks
+*** RIVER *** (294) [Qh 4d Jd 7s] [9h]
+Pineapple checks
+Random checks
+Random shows [Qs 9c]
+Pineapple shows [Ks 8c]
+Random wins the pot (294)
+
+Hand #75, Pineapple (1312), Random (-1312)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [9h 8s]
+Dealt to Random [5d 4c]
+Pineapple calls
+Random checks
+*** FLOP *** (4) [6s Qd 2c]
+Random discards 4c for Qs
+Pineapple discards 8s for 5s
+Random checks
+Pineapple checks
+*** TURN *** (4) [6s Qd 2c] [Js]
+Random discards 5d for 3d
+Pineapple discards 5s for Ac
+Random checks
+Pineapple bets 4
+Random calls
+*** RIVER *** (12) [6s Qd 2c Js] [8d]
+Random checks
+Pineapple bets 12
+Random folds
+Uncalled bet of 12 returned to Pineapple
+Pineapple wins the pot (12)
+
+Hand #76, Random (-1318), Pineapple (1318)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [Qh Kh]
+Dealt to Pineapple [Qd Js]
+Random calls
+Pineapple checks
+*** FLOP *** (4) [5h Th 8s]
+Pineapple checks
+Random checks
+Pineapple bets 4
+Random raises to 64
+Pineapple folds
+Uncalled bet of 60 returned to Random
+Random wins the pot (12)
+
+Hand #77, Pineapple (1312), Random (-1312)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [3d Jd]
+Dealt to Random [9c Js]
+Pineapple calls
+Random raises to 194
+Pineapple calls
+*** FLOP *** (388) [4c 2c 4s]
+Random discards 9c for As
+Pineapple discards 3d for 2s
+Random bets 3
+Pineapple calls
+*** TURN *** (394) [4c 2c 4s] [3c]
+Random discards Js for Qh
+Pineapple checks
+Random bets 2
+Pineapple calls
+*** RIVER *** (398) [4c 2c 4s 3c] [3s]
+Random bets 1
+Pineapple calls
+Pineapple shows [Jd 2s]
+Random shows [As Qh]
+Random wins the pot (400)
+
+Hand #78, Random (-1112), Pineapple (1112)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [5h 7h]
+Dealt to Pineapple [8d 8c]
+Random raises to 27
+Pineapple calls
+*** FLOP *** (54) [6c 4h Js]
+Pineapple checks
+Random checks
+Pineapple checks
+Random checks
+*** TURN *** (54) [6c 4h Js] [As]
+Pineapple checks
+Random checks
+Pineapple checks
+Random checks
+*** RIVER *** (54) [6c 4h Js As] [2h]
+Pineapple checks
+Random bets 144
+Pineapple calls
+Random shows [5h 7h]
+Pineapple shows [8d 8c]
+Pineapple wins the pot (342)
+
+Hand #79, Pineapple (1283), Random (-1283)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [3c Ac]
+Dealt to Random [2h 2s]
+Pineapple calls
+Random raises to 185
+Pineapple calls
+*** FLOP *** (370) [6c 4s Qc]
+Random checks
+Pineapple checks
+Random checks
+Pineapple checks
+*** TURN *** (370) [6c 4s Qc] [Ah]
+Random discards 2s for 9c
+Pineapple checks
+Random checks
+Pineapple checks
+*** RIVER *** (370) [6c 4s Qc Ah] [7d]
+Random bets 7
+Pineapple calls
+Pineapple shows [3c Ac]
+Random shows [2h 9c]
+Pineapple wins the pot (384)
+
+Hand #80, Random (-1475), Pineapple (1475)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [Ad Qs]
+Dealt to Pineapple [6h As]
+Random folds
+Pineapple wins the pot (3)
+
+Hand #81, Pineapple (1476), Random (-1476)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [2h Ts]
+Dealt to Random [Qs Ac]
+Pineapple calls
+Random checks
+*** FLOP *** (4) [3s 2c 5d]
+Random discards Qs for 7d
+Pineapple checks
+Random checks
+Pineapple bets 2
+Random raises to 7
+Pineapple raises to 20
+Random calls
+*** TURN *** (44) [3s 2c 5d] [6d]
+Random checks
+Pineapple checks
+Random checks
+Pineapple bets 178
+Random folds
+Uncalled bet of 178 returned to Pineapple
+Pineapple wins the pot (44)
+
+Hand #82, Random (-1498), Pineapple (1498)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [6h 4s]
+Dealt to Pineapple [Qh 9s]
+Random calls
+Pineapple checks
+*** FLOP *** (4) [Js 4d Qc]
+Pineapple checks
+Random discards 6h for Ad
+Pineapple checks
+Random checks
+*** TURN *** (4) [Js 4d Qc] [As]
+Pineapple checks
+Random checks
+Pineapple bets 198
+Random calls
+*** RIVER *** (400) [Js 4d Qc As] [Jd]
+Random shows [4s Ad]
+Pineapple shows [Qh 9s]
+Random wins the pot (400)
+
+Hand #83, Pineapple (1298), Random (-1298)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [8h 5d]
+Dealt to Random [Qs As]
+Pineapple calls
+Random raises to 10
+Pineapple calls
+*** FLOP *** (20) [9h 7c 5c]
+Random checks
+Pineapple checks
+Random bets 110
+Pineapple calls
+*** TURN *** (240) [9h 7c 5c] [Jd]
+Random discards As for 2h
+Pineapple checks
+Random checks
+Pineapple checks
+*** RIVER *** (240) [9h 7c 5c Jd] [9s]
+Random checks
+Pineapple checks
+Pineapple shows [8h 5d]
+Random shows [Qs 2h]
+Pineapple wins the pot (240)
+
+Hand #84, Random (-1418), Pineapple (1418)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [6s Kh]
+Dealt to Pineapple [7h Jd]
+Random calls
+Pineapple checks
+*** FLOP *** (4) [5h 7d 2d]
+Pineapple checks
+Random discards Kh for Th
+Pineapple bets 2
+Random calls
+*** TURN *** (8) [5h 7d 2d] [2c]
+Pineapple discards Jd for Kd
+Random checks
+Pineapple bets 4
+Random raises to 30
+Pineapple calls
+*** RIVER *** (68) [5h 7d 2d 2c] [9c]
+Pineapple bets 34
+Random folds
+Uncalled bet of 34 returned to Pineapple
+Pineapple wins the pot (68)
+
+Hand #85, Pineapple (1452), Random (-1452)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [7h Td]
+Dealt to Random [8h Qd]
+Pineapple calls
+Random checks
+*** FLOP *** (4) [3d As Ah]
+Random checks
+Pineapple discards 7h for 9h
+Random bets 116
+Pineapple folds
+Uncalled bet of 116 returned to Random
+Random wins the pot (4)
+
+Hand #86, Random (-1450), Pineapple (1450)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [Jh 6c]
+Dealt to Pineapple [6s Qc]
+Random folds
+Pineapple wins the pot (3)
+
+Hand #87, Pineapple (1451), Random (-1451)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [Qh 9s]
+Dealt to Random [4h 5c]
+Pineapple calls
+Random raises to 79
+Pineapple calls
+*** FLOP *** (158) [Qs Ac Ad]
+Random discards 4h for Jc
+Pineapple checks
+Random checks
+Pineapple checks
+*** TURN *** (158) [Qs Ac Ad] [Js]
+Random discards Jc for 7c
+Pineapple discards 9s for 7s
+Random bets 42
+Pineapple calls
+*** RIVER *** (242) [Qs Ac Ad Js] [3s]
+Random checks
+Pineapple checks
+Pineapple shows [Qh 7s]
+Random shows [5c 7c]
+Pineapple wins the pot (242)
+
+Hand #88, Random (-1572), Pineapple (1572)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [Th 9c]
+Dealt to Pineapple [2c Kc]
+Random folds
+Pineapple wins the pot (3)
+
+Hand #89, Pineapple (1573), Random (-1573)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [Ac 6s]
+Dealt to Random [8d 3h]
+Pineapple calls
+Random checks
+*** FLOP *** (4) [8c 7s 4h]
+Random discards 3h for 2h
+Pineapple checks
+Random bets 171
+Pineapple calls
+*** TURN *** (346) [8c 7s 4h] [9d]
+Random discards 2h for Ad
+Pineapple checks
+Random checks
+Pineapple checks
+*** RIVER *** (346) [8c 7s 4h 9d] [3s]
+Random bets 11
+Pineapple calls
+Pineapple shows [Ac 6s]
+Random shows [8d Ad]
+Random wins the pot (368)
+
+Hand #90, Random (-1389), Pineapple (1389)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [7d 8s]
+Dealt to Pineapple [2h 8h]
+Random folds
+Pineapple wins the pot (3)
+
+Hand #91, Pineapple (1390), Random (-1390)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [7h 9d]
+Dealt to Random [6s 7s]
+Pineapple calls
+Random checks
+*** FLOP *** (4) [Jh Js Qh]
+Random discards 7s for 3h
+Pineapple discards 7h for Ks
+Random bets 137
+Pineapple calls
+*** TURN *** (278) [Jh Js Qh] [4c]
+Random discards 3h for 4h
+Pineapple discards 9d for 3s
+Random checks
+Pineapple checks
+*** RIVER *** (278) [Jh Js Qh 4c] [6h]
+Random checks
+Pineapple checks
+Pineapple shows [Ks 3s]
+Random shows [6s 4h]
+Random wins the pot (278)
+
+Hand #92, Random (-1251), Pineapple (1251)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [5c 4d]
+Dealt to Pineapple [5s 6h]
+Random calls
+Pineapple raises to 200
+Random calls
+*** FLOP *** (400) [4s 7d 3c]
+Pineapple checks
+Random checks
+*** TURN *** (400) [4s 7d 3c] [Qd]
+Pineapple checks
+Random discards 4d for 7s
+*** RIVER *** (400) [4s 7d 3c Qd] [3d]
+Random shows [5c 7s]
+Pineapple shows [5s 6h]
+Pineapple wins the pot (400)
+
+Hand #93, Pineapple (1451), Random (-1451)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [6c 2s]
+Dealt to Random [9s Kc]
+Pineapple raises to 5
+Random folds
+Uncalled bet of 3 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #94, Random (-1453), Pineapple (1453)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [4h 9d]
+Dealt to Pineapple [3h 8c]
+Random raises to 165
+Pineapple calls
+*** FLOP *** (330) [Ac 2c 6c]
+Pineapple discards 3h for 8h
+Random checks
+Pineapple checks
+Random checks
+*** TURN *** (330) [Ac 2c 6c] [Kh]
+Pineapple checks
+Random discards 4h for 4s
+Pineapple checks
+Random bets 25
+Pineapple calls
+*** RIVER *** (380) [Ac 2c 6c Kh] [6s]
+Pineapple checks
+Random bets 3
+Pineapple calls
+Random shows [9d 4s]
+Pineapple shows [8c 8h]
+Pineapple wins the pot (386)
+
+Hand #95, Pineapple (1646), Random (-1646)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [Js 5c]
+Dealt to Random [6d Jc]
+Pineapple calls
+Random raises to 68
+Pineapple calls
+*** FLOP *** (136) [3c 9d Qd]
+Random discards 6d for 5h
+Pineapple discards 5c for Kc
+Random checks
+Pineapple checks
+*** TURN *** (136) [3c 9d Qd] [9c]
+Random discards Jc for 7h
+Pineapple discards Js for As
+Random bets 34
+Pineapple calls
+*** RIVER *** (204) [3c 9d Qd 9c] [Qs]
+Random checks
+Pineapple checks
+Pineapple shows [Kc As]
+Random shows [5h 7h]
+Pineapple wins the pot (204)
+
+Hand #96, Random (-1748), Pineapple (1748)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [9d Ts]
+Dealt to Pineapple [3s Td]
+Random raises to 97
+Pineapple calls
+*** FLOP *** (194) [Ks Ah 8s]
+Pineapple discards 3s for 7s
+Random checks
+Pineapple checks
+Random bets 93
+Pineapple calls
+*** TURN *** (380) [Ks Ah 8s] [9c]
+Pineapple discards 7s for Qs
+Random checks
+Pineapple checks
+Random bets 3
+Pineapple calls
+*** RIVER *** (386) [Ks Ah 8s 9c] [7h]
+Pineapple checks
+Random bets 3
+Pineapple calls
+Random shows [9d Ts]
+Pineapple shows [Td Qs]
+Random wins the pot (392)
+
+Hand #97, Pineapple (1552), Random (-1552)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [9c Qs]
+Dealt to Random [3d 9s]
+Pineapple calls
+Random raises to 150
+Pineapple calls
+*** FLOP *** (300) [Jd 2s 3s]
+Random discards 9s for Ac
+Pineapple discards 9c for 5h
+Random bets 16
+Pineapple calls
+*** TURN *** (332) [Jd 2s 3s] [Kd]
+Random discards Ac for 7d
+Pineapple discards 5h for 4c
+Random checks
+Pineapple checks
+*** RIVER *** (332) [Jd 2s 3s Kd] [Td]
+Random bets 8
+Pineapple calls
+Pineapple shows [Qs 4c]
+Random shows [3d 7d]
+Random wins the pot (348)
+
+Hand #98, Random (-1378), Pineapple (1378)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [8s Ks]
+Dealt to Pineapple [3h 9h]
+Random calls
+Pineapple checks
+*** FLOP *** (4) [6h 8c Ad]
+Pineapple discards 3h for Ah
+Random discards 8s for 6s
+Pineapple checks
+Random checks
+*** TURN *** (4) [6h 8c Ad] [2d]
+Pineapple checks
+Random discards 6s for Th
+Pineapple checks
+Random bets 194
+Pineapple calls
+*** RIVER *** (392) [6h 8c Ad 2d] [9c]
+Pineapple checks
+Random checks
+Random shows [Ks Th]
+Pineapple shows [9h Ah]
+Pineapple wins the pot (392)
+
+Hand #99, Pineapple (1574), Random (-1574)
+Pineapple posts the blind of 1
+Random posts the blind of 2
+Dealt to Pineapple [Tc 3h]
+Dealt to Random [Ks 9h]
+Pineapple calls
+Random raises to 160
+Pineapple calls
+*** FLOP *** (320) [Jh Jc 7c]
+Random discards Ks for 2h
+Pineapple discards 3h for 5d
+Random bets 6
+Pineapple calls
+*** TURN *** (332) [Jh Jc 7c] [7d]
+Random discards 9h for Ad
+Pineapple discards 5d for Qc
+Random checks
+Pineapple checks
+*** RIVER *** (332) [Jh Jc 7c 7d] [Js]
+Random bets 32
+Pineapple calls
+Pineapple shows [Tc Qc]
+Random shows [2h Ad]
+Pineapple ties for the pot (198)
+Random ties for the pot (198)
+
+Hand #100, Random (-1574), Pineapple (1574)
+Random posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Random [Ad 9c]
+Dealt to Pineapple [7h 9d]
+Random folds
+Pineapple wins the pot (3)
+
+FINAL: Pineapple (1575) Random (-1575)

@@ -23,6 +23,63 @@ FORCED_ACTION = None
 HISTORY = LightweightHistory([], 1, 0, 0, 0, 0, 0, 0, 0, 200, 200, [], [], [])
 
 
+def mapBetToAbstractionAbsolute(betAmt):
+    """
+    Given an amount that an opponent bet, determines whether this corresponds to H/P/A
+    Note: this is used to map raises also, which still have a "bet" amount associated with their increase over the last bet.
+    Returns: H, P, or A (halfpot, pot, or all-in)
+    """
+    # get legal actions for the opponent based on the actions we've given to history so far
+    global HISTORY, FORCED_ACTION
+    legalActions = HISTORY.getLegalActions(1) 
+
+    # extract the betting options to consider from the legal options
+    betOptions = []
+    betOptionAmounts = []
+    for a in legalActions:
+        #parsedAction = a.split(':')
+
+        if a[0] == 'B' or a[0] == 'R':
+            betOptions.append(a[1]) # add the string
+
+            # also add to the list of int amounts associated with each string amount
+            if a[1]=='H':
+                betOptionAmounts.append(float(HISTORY.Pot) / 2)
+
+            elif a[1]=='P':
+                betOptionAmounts.append(HISTORY.Pot)
+
+            elif a[1]=='A':
+
+                # a player can never bet/raise to amount greater than their bankroll or the other player's
+                allInAmt = min(HISTORY.P1_Bankroll, HISTORY.P2_Bankroll)
+                betOptionAmounts.append(allInAmt)
+
+    # if we are trying to map a bet to the abstraction, but no valid options are found
+    # this means that the opponent probably went close to all in, but not quite
+    # this means we are forced to CALL
+    if len(betOptions) == 0: 
+        #print "Tried to map bet to abstraction, found no bettings options. FORCING CALL"
+        # (action_to_send, action_to_append_history)
+        #FORCED_ACTION=('CL', None)
+        return None
+        #assert len(betOptions)>0, "Error: history doesn't think there are any legal betting options"
+
+    # now determine which of the bet options our opponent's betAmt was closest to
+    if len(betOptions) == 1:
+        return betOptions[0]
+
+    else:
+        bestOption = None
+        bestDist = float('inf')
+        for j in range(len(betOptions)):
+            dist = abs(betAmt - betOptionAmounts[j])
+            if dist < bestDist:
+                bestDist = dist
+                bestOption = betOptions[j]
+        return bestOption
+            
+
 def mapBetToAbstractionFractional(betAmt):
     """
     Given an amount that an opponent bet, determines whether this corresponds to H/P/A
@@ -177,7 +234,7 @@ def extractInfoFromLastActions():
                 if parsedAction[0]=='BET': # increment the P2_inPot
                     betAmount = int(parsedAction[1])
 
-                    mappedBet = mapBetToAbstractionFractional(betAmount)
+                    mappedBet = mapBetToAbstractionAbsolute(betAmount)
                     if mappedBet == None:
                         # TODO: update FORCED_ACTION
                         #global FORCED_ACTION
@@ -206,7 +263,7 @@ def extractInfoFromLastActions():
 
                     # map the raise-amount to the abstracted letters
                     # Note: had to add case where callAmount == zero to handle engine allowing the BB to 'RAISE' after SB calls on PREFLOP
-                    mappedBet = mapBetToAbstractionFractional(betAmount)
+                    mappedBet = mapBetToAbstractionAbsolute(betAmount)
                     if callAmount == 0: # treat this like a bet
                         if mappedBet == None:
                             # TODO: update FORCED_ACTION
@@ -353,6 +410,7 @@ class Player:
 
     def __init__(self):
         self.handCounter = 0
+        self.winnings = 0
 
     def run(self, input_socket):
         # Get a file-object for reading packets from the socket.
@@ -375,85 +433,93 @@ class Player:
             word = data.split()[0]
 
             if word == "GETACTION":
+
                 # store the current action information globally
-                global GETACTION_PACKET, HISTORY
+                global GETACTION_PACKET, HISTORY, NEWGAME_PACKET
                 GETACTION_PACKET = GETACTION(data)
+                
+                # modify the 2nd to last number
+                if self.winnings > (1.5*(NEWGAME_PACKET.numHands - NEWHAND_PACKET.handID + 1) + 100 + 2):
+                    print "WINNING"
+                    s.send("CHECK\n")
 
-                # extract information from the lastActions to update HISTORY
-                # this will add opponent actions to the HISTORY list, and update our hand if we discarded
-                extractInfoFromLastActions()
-
-                #HISTORY.printAttr() # print out the current HISTORY
-
-                # determine if this is a discard action
-                inDiscardSection = False
-                parsedLegalActions = [i.split(':') for i in GETACTION_PACKET.legalActions]
-                for legalAction in parsedLegalActions:
-                    if legalAction[0] == 'DISCARD':
-                        inDiscardSection = True
-                        break
-
-                # if a discard section
-                if inDiscardSection:
-                    shouldDiscard, discardIndex, swapEV, originalHandEV = determineBestDiscardFast(HISTORY.P1_Hand, HISTORY.Board)
-
-                    if shouldDiscard:
-                        discardAction = 'DISCARD:%s\n' % convertSyntax(HISTORY.P1_Hand[discardIndex])
-                        HISTORY.History.append('0:D')
-                        s.send(discardAction)
-
-                    else:
-                        HISTORY.History.append('0:CK')
-                        s.send('CHECK\n')
-
-
-                # otherwise, betting action
                 else:
 
-                    # check if a modification we made to the opponent's action forced us to take an action 
-                    # that our strategy lookup won't find
-                    global FORCED_ACTION
-                    if FORCED_ACTION != None:
-                        print "Was forced to choose %s" % FORCED_ACTION[0]
-                        
-                        action_to_send, action_to_append = FORCED_ACTION
-                        action_e = convertSyntaxToEngineAndUpdate(action_to_send)
+                    # extract information from the lastActions to update HISTORY
+                    # this will add opponent actions to the HISTORY list, and update our hand if we discarded
+                    extractInfoFromLastActions()
 
-                        if action_to_append != None:
-                            print "However, appending %s to history" % FORCED_ACTION[1]
-                            HISTORY.History.append(action_to_append)
+                    #HISTORY.printAttr() # print out the current HISTORY
 
-                        FORCED_ACTION = None # reset the forced action to None
-                        
+                    # determine if this is a discard action
+                    inDiscardSection = False
+                    parsedLegalActions = [i.split(':') for i in GETACTION_PACKET.legalActions]
+                    for legalAction in parsedLegalActions:
+                        if legalAction[0] == 'DISCARD':
+                            inDiscardSection = True
+                            break
 
-                    else: # not a forced action, so we can look up our strategy
-                        # convert the current HISTORY to an information set from our perspective
-                        playerActions = HISTORY.getLegalActions(0)
+                    # if a discard section
+                    if inDiscardSection:
+                        shouldDiscard, discardIndex, swapEV, originalHandEV = determineBestDiscardFast(HISTORY.P1_Hand, HISTORY.Board)
 
-                        I_player = HISTORY.convertToInformationSet(0)
+                        if shouldDiscard:
+                            discardAction = 'DISCARD:%s\n' % convertSyntax(HISTORY.P1_Hand[discardIndex])
+                            HISTORY.History.append('0:D')
+                            s.send(discardAction)
 
-                        # look up our strategy for the given info. set
-                        strategy = getStrategy(I_player)
-                        print "Info:", I_player
-                        print "Strategy:", strategy
+                        else:
+                            HISTORY.History.append('0:CK')
+                            s.send('CHECK\n')
 
-                        # if we could find a learned strategy, use it, otherwise choose randomly from available actions
-                        action_i = chooseActionRandom(playerActions) if strategy==None else chooseAction(strategy)
 
-                        # convert the action we chose to syntax compatible with the engine
-                        # bet amounts like H/P/A are converted to integer values
-                        action_e = convertSyntaxToEngineAndUpdate(action_i)
-                        
-                        # update the global history every time we make an action
-                        # convert actions to HISTORY list syntax to get appended
-                        if action_i[0]=='B' or action_i[0]=='R':
-                            action_h = "0:%s:%s" % (action_i[0], action_i[1])
-                        else: # just add the player 0 tag to the beginning of the action
-                            action_h = "0:%s" % action_i
-                        HISTORY.History.append(action_h)
+                    # otherwise, betting action
+                    else:
 
-                    print "Choosing:", action_e
-                    s.send(action_e)
+                        # check if a modification we made to the opponent's action forced us to take an action 
+                        # that our strategy lookup won't find
+                        global FORCED_ACTION
+                        if FORCED_ACTION != None:
+                            print "Was forced to choose %s" % FORCED_ACTION[0]
+                            
+                            action_to_send, action_to_append = FORCED_ACTION
+                            action_e = convertSyntaxToEngineAndUpdate(action_to_send)
+
+                            if action_to_append != None:
+                                print "However, appending %s to history" % FORCED_ACTION[1]
+                                HISTORY.History.append(action_to_append)
+
+                            FORCED_ACTION = None # reset the forced action to None
+                            
+
+                        else: # not a forced action, so we can look up our strategy
+                            # convert the current HISTORY to an information set from our perspective
+                            playerActions = HISTORY.getLegalActions(0)
+
+                            I_player = HISTORY.convertToInformationSet(0)
+
+                            # look up our strategy for the given info. set
+                            strategy = getStrategy(I_player)
+                            print "Info:", I_player
+                            print "Strategy:", strategy
+
+                            # if we could find a learned strategy, use it, otherwise choose randomly from available actions
+                            action_i = chooseActionRandom(playerActions) if strategy==None else chooseAction(strategy)
+
+                            # convert the action we chose to syntax compatible with the engine
+                            # bet amounts like H/P/A are converted to integer values
+                            action_e = convertSyntaxToEngineAndUpdate(action_i)
+                            
+                            # update the global history every time we make an action
+                            # convert actions to HISTORY list syntax to get appended
+                            if action_i[0]=='B' or action_i[0]=='R':
+                                action_h = "0:%s:%s" % (action_i[0], action_i[1])
+                            else: # just add the player 0 tag to the beginning of the action
+                                action_h = "0:%s" % action_i
+                            HISTORY.History.append(action_h)
+
+                        print "Choosing:", action_e
+                        s.send(action_e)
 
 
             elif word=="NEWGAME":
@@ -480,6 +546,9 @@ class Player:
                 # doing so will also automatically append the right item to the HISTORY list
                 HISTORY.updateHand(NEWHAND_PACKET.getHand())
 
+            elif word == "HANDOVER":
+                #End of hand add to winnings
+                self.winnings = int(data.split()[1])
 
             elif word == "REQUESTKEYVALUES":
                 # At the end, the engine will allow your bot save key/value pairs.

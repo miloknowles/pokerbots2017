@@ -1,0 +1,2059 @@
+6.S912 MIT Pokerbots - Pineapple vs Arinze (stack=200, bb=2)
+Hand #1, Pineapple (0), Arinze (0)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [Qs 6h]
+Dealt to Arinze [Ad 4s]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [2d 9c Ts]
+Arinze discards 4s for 6s
+Pineapple discards 6h for Jc
+Arinze checks
+Pineapple checks
+*** TURN *** (4) [2d 9c Ts] [5s]
+Arinze discards 6s for Kc
+Pineapple checks
+Arinze checks
+Pineapple bets 198
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 198 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #2, Arinze (-2), Pineapple (2)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [7c 8d]
+Dealt to Pineapple [Ks Kd]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [5s 9d 2c]
+Pineapple checks
+Arinze discards 7c for 6s
+Pineapple checks
+Arinze checks
+*** TURN *** (4) [5s 9d 2c] [5d]
+Pineapple checks
+Arinze discards 6s for 5h
+Pineapple bets 198
+Arinze calls
+*** RIVER *** (400) [5s 9d 2c 5d] [Js]
+Arinze shows [8d 5h]
+Pineapple shows [Ks Kd]
+Arinze wins the pot (400)
+
+Hand #3, Pineapple (-198), Arinze (198)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [Ks As]
+Dealt to Arinze [Qh Kc]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [6c 2d 8c]
+Arinze discards Qh for 5s
+Pineapple discards Ks for 4c
+Arinze checks
+Pineapple checks
+*** TURN *** (4) [6c 2d 8c] [Kd]
+Arinze discards 5s for Qc
+Pineapple discards 4c for 6d
+Arinze bets 103
+Pineapple folds
+Uncalled bet of 103 returned to Arinze
+Arinze wins the pot (4)
+
+Hand #4, Arinze (200), Pineapple (-200)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [3h 5c]
+Dealt to Pineapple [7s 9c]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [4s 6s Ks]
+Pineapple discards 9c for Tc
+Arinze discards 3h for 6d
+Pineapple bets 198
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 198 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #5, Pineapple (-198), Arinze (198)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [9s 3c]
+Dealt to Arinze [5h 2h]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [9c 4c 3h]
+Arinze discards 2h for 6s
+Pineapple checks
+Arinze checks
+Pineapple bets 2
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 2 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #6, Arinze (196), Pineapple (-196)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [2c 4c]
+Dealt to Pineapple [3s 4d]
+Arinze calls
+Pineapple raises to 200
+Arinze folds
+Uncalled bet of 198 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #7, Pineapple (-194), Arinze (194)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [2c Qd]
+Dealt to Arinze [9h Jh]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [5h 9c 6h]
+Arinze discards Jh for 2d
+Pineapple discards 2c for Ts
+Arinze checks
+Pineapple bets 2
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 2 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #8, Arinze (192), Pineapple (-192)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [7s 4d]
+Dealt to Pineapple [7h 5h]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [6h 4c 7d]
+Pineapple checks
+Arinze checks
+Pineapple checks
+Arinze bets 114
+Pineapple calls
+*** TURN *** (232) [6h 4c 7d] [6s]
+Pineapple checks
+Arinze discards 4d for Tc
+Pineapple checks
+Arinze bets 2
+Pineapple calls
+*** RIVER *** (236) [6h 4c 7d 6s] [3d]
+Pineapple checks
+Arinze checks
+Arinze shows [7s Tc]
+Pineapple shows [7h 5h]
+Pineapple wins the pot (236)
+
+Hand #9, Pineapple (-74), Arinze (74)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [9h Tc]
+Dealt to Arinze [5h Ac]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [Jc Ad 5s]
+Arinze checks
+Pineapple discards 9h for Ks
+Arinze bets 131
+Pineapple calls
+*** TURN *** (266) [Jc Ad 5s] [Ts]
+Arinze checks
+Pineapple checks
+Arinze checks
+Pineapple checks
+*** RIVER *** (266) [Jc Ad 5s Ts] [8s]
+Arinze checks
+Pineapple checks
+Pineapple shows [Tc Ks]
+Arinze shows [5h Ac]
+Arinze wins the pot (266)
+
+Hand #10, Arinze (207), Pineapple (-207)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [Ad Tc]
+Dealt to Pineapple [8c Kh]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [7c 9h 2d]
+Pineapple discards 8c for 8h
+Arinze discards Tc for Th
+Pineapple bets 4
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 4 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #11, Pineapple (-205), Arinze (205)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [6s Kc]
+Dealt to Arinze [3h 5d]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [9c 9s 5h]
+Arinze discards 3h for Ac
+Pineapple discards 6s for 3s
+Arinze bets 118
+Pineapple folds
+Uncalled bet of 118 returned to Arinze
+Arinze wins the pot (4)
+
+Hand #12, Arinze (207), Pineapple (-207)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [9d 5c]
+Dealt to Pineapple [Jc 4c]
+Arinze calls
+Pineapple raises to 6
+Arinze calls
+*** FLOP *** (12) [8s 7s 2d]
+Pineapple discards 4c for As
+Arinze discards 5c for 5s
+Pineapple checks
+Arinze checks
+*** TURN *** (12) [8s 7s 2d] [4s]
+Pineapple discards Jc for 5d
+Arinze discards 9d for Th
+Pineapple bets 6
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 6 returned to Pineapple
+Pineapple wins the pot (12)
+
+Hand #13, Pineapple (-201), Arinze (201)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [9d Qh]
+Dealt to Arinze [Ac Kc]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [9s Tc 7h]
+Arinze discards Kc for 3s
+Pineapple checks
+Arinze checks
+Pineapple checks
+*** TURN *** (4) [9s Tc 7h] [Kh]
+Arinze discards 3s for 6c
+Pineapple checks
+Arinze checks
+Pineapple bets 2
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 2 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #14, Arinze (199), Pineapple (-199)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [Qd Kh]
+Dealt to Pineapple [9s 5c]
+Arinze calls
+Pineapple raises to 200
+Arinze folds
+Uncalled bet of 198 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #15, Pineapple (-197), Arinze (197)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [6c 8h]
+Dealt to Arinze [Jc Ts]
+Pineapple raises to 200
+Arinze folds
+Uncalled bet of 198 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #16, Arinze (195), Pineapple (-195)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [7s Qc]
+Dealt to Pineapple [3s 4s]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [4c 7c 7h]
+Pineapple discards 3s for 5s
+Arinze discards Qc for Qd
+Pineapple bets 4
+Arinze raises to 141
+Pineapple calls
+*** TURN *** (286) [4c 7c 7h] [5d]
+Pineapple discards 4s for 2h
+Arinze discards Qd for 3d
+Pineapple checks
+Arinze bets 2
+Pineapple calls
+*** RIVER *** (290) [4c 7c 7h 5d] [3h]
+Pineapple checks
+Arinze bets 48
+Pineapple calls
+Arinze shows [7s 3d]
+Pineapple shows [5s 2h]
+Arinze wins the pot (386)
+
+Hand #17, Pineapple (-388), Arinze (388)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [Qd 4h]
+Dealt to Arinze [4s 6d]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [Ah 3c 7d]
+Arinze discards 4s for 7s
+Pineapple discards 4h for 8c
+Arinze checks
+Pineapple bets 2
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 2 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #18, Arinze (386), Pineapple (-386)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [Qc 5c]
+Dealt to Pineapple [Th Jd]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [Qs 9h 2c]
+Pineapple checks
+Arinze discards 5c for 9s
+Pineapple checks
+Arinze bets 125
+Pineapple calls
+*** TURN *** (254) [Qs 9h 2c] [Ks]
+Pineapple checks
+Arinze checks
+Pineapple checks
+Arinze bets 2
+Pineapple calls
+*** RIVER *** (258) [Qs 9h 2c Ks] [6h]
+Pineapple checks
+Arinze checks
+Arinze shows [Qc 9s]
+Pineapple shows [Th Jd]
+Pineapple wins the pot (258)
+
+Hand #19, Pineapple (-257), Arinze (257)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [4h 6c]
+Dealt to Arinze [3d 9c]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [6s 7h 2c]
+Arinze discards 3d for 8d
+Pineapple discards 4h for 4s
+Arinze checks
+Pineapple checks
+*** TURN *** (4) [6s 7h 2c] [6h]
+Arinze discards 8d for Qs
+Pineapple checks
+Arinze checks
+Pineapple bets 198
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 198 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #20, Arinze (255), Pineapple (-255)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [5d 4s]
+Dealt to Pineapple [Td Th]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [Qc Ac Jc]
+Pineapple checks
+Arinze discards 4s for 5s
+Pineapple checks
+Arinze checks
+*** TURN *** (4) [Qc Ac Jc] [Kh]
+Pineapple checks
+Arinze discards 5s for Jh
+Pineapple checks
+Arinze bets 93
+Pineapple raises to 198
+Arinze calls
+*** RIVER *** (400) [Qc Ac Jc Kh] [7c]
+Arinze shows [5d Jh]
+Pineapple shows [Td Th]
+Pineapple wins the pot (400)
+
+Hand #21, Pineapple (-55), Arinze (55)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [6h 7s]
+Dealt to Arinze [Kh Kd]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [7d As 8d]
+Arinze checks
+Pineapple discards 6h for 3h
+Arinze bets 104
+Pineapple calls
+*** TURN *** (212) [7d As 8d] [2s]
+Arinze checks
+Pineapple discards 3h for Qc
+Arinze checks
+Pineapple checks
+*** RIVER *** (212) [7d As 8d 2s] [Ks]
+Arinze bets 50
+Pineapple calls
+Pineapple shows [7s Qc]
+Arinze shows [Kh Kd]
+Arinze wins the pot (312)
+
+Hand #22, Arinze (211), Pineapple (-211)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [Ks 9s]
+Dealt to Pineapple [5d 8d]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [7d 6c 6d]
+Pineapple checks
+Arinze discards 9s for 4d
+Pineapple bets 4
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 4 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #23, Pineapple (-209), Arinze (209)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [4d Kh]
+Dealt to Arinze [Qh 3c]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [8c Qd 5s]
+Arinze discards 3c for 7h
+Pineapple discards 4d for Th
+Arinze bets 94
+Pineapple calls
+*** TURN *** (192) [8c Qd 5s] [Jd]
+Arinze discards 7h for 2h
+Pineapple checks
+Arinze bets 2
+Pineapple calls
+*** RIVER *** (196) [8c Qd 5s Jd] [7d]
+Arinze checks
+Pineapple checks
+Pineapple shows [Kh Th]
+Arinze shows [Qh 2h]
+Arinze wins the pot (196)
+
+Hand #24, Arinze (307), Pineapple (-307)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [Qh 5h]
+Dealt to Pineapple [5s 8d]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [4h Qd 6h]
+Pineapple discards 5s for 7d
+Arinze discards 5h for 8s
+Pineapple bets 4
+Arinze raises to 92
+Pineapple raises to 192
+Arinze folds
+Uncalled bet of 100 returned to Pineapple
+Pineapple wins the pot (188)
+
+Hand #25, Pineapple (-213), Arinze (213)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [5d Ts]
+Dealt to Arinze [2h 7c]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [Tc As Qh]
+Arinze discards 2h for Ad
+Pineapple discards 5d for 6h
+Arinze bets 109
+Pineapple calls
+*** TURN *** (222) [Tc As Qh] [Js]
+Arinze discards 7c for 7d
+Pineapple discards 6h for 6d
+Arinze checks
+Pineapple checks
+*** RIVER *** (222) [Tc As Qh Js] [Kc]
+Arinze bets 47
+Pineapple calls
+Pineapple shows [Ts 6d]
+Arinze shows [Ad 7d]
+Pineapple ties for the pot (158)
+Arinze ties for the pot (158)
+
+Hand #26, Arinze (213), Pineapple (-213)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [5d 8h]
+Dealt to Pineapple [2c 6c]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [Ac Jh 5h]
+Pineapple discards 2c for 9h
+Arinze discards 8h for Th
+Pineapple bets 4
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 4 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #27, Pineapple (-211), Arinze (211)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [As 6c]
+Dealt to Arinze [5c Th]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [8h 3c 9s]
+Arinze discards 5c for Jh
+Pineapple discards 6c for 5h
+Arinze checks
+Pineapple bets 2
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 2 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #28, Arinze (209), Pineapple (-209)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [Th 3h]
+Dealt to Pineapple [6s 6c]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [5d 8s 9d]
+Pineapple checks
+Arinze discards 3h for Tc
+Pineapple checks
+Arinze bets 83
+Pineapple raises to 198
+Arinze calls
+*** TURN *** (400) [5d 8s 9d] [Td]
+Pineapple checks
+Arinze checks
+*** RIVER *** (400) [5d 8s 9d Td] [Jh]
+Arinze shows [Th Tc]
+Pineapple shows [6s 6c]
+Arinze wins the pot (400)
+
+Hand #29, Pineapple (-409), Arinze (409)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [Th Ah]
+Dealt to Arinze [9h 9c]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [3c 6s 7h]
+Arinze checks
+Pineapple discards Th for Js
+Arinze checks
+Pineapple checks
+*** TURN *** (4) [3c 6s 7h] [7s]
+Arinze checks
+Pineapple discards Js for 2d
+Arinze bets 118
+Pineapple folds
+Uncalled bet of 118 returned to Arinze
+Arinze wins the pot (4)
+
+Hand #30, Arinze (411), Pineapple (-411)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [7c 3c]
+Dealt to Pineapple [3s 8d]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [Td 5d Ah]
+Pineapple discards 3s for Ac
+Arinze discards 3c for 4h
+Pineapple checks
+Arinze checks
+*** TURN *** (4) [Td 5d Ah] [9d]
+Pineapple checks
+Arinze discards 4h for 3h
+Pineapple checks
+Arinze checks
+*** RIVER *** (4) [Td 5d Ah 9d] [6s]
+Pineapple checks
+Arinze checks
+Arinze shows [7c 3h]
+Pineapple shows [8d Ac]
+Pineapple wins the pot (4)
+
+Hand #31, Pineapple (-409), Arinze (409)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [4c 9d]
+Dealt to Arinze [8s 4d]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [5s Kh 9h]
+Arinze discards 4d for Kd
+Pineapple discards 4c for 8c
+Arinze bets 100
+Pineapple calls
+*** TURN *** (204) [5s Kh 9h] [7c]
+Arinze discards 8s for Js
+Pineapple discards 8c for 6c
+Arinze bets 2
+Pineapple calls
+*** RIVER *** (208) [5s Kh 9h 7c] [8d]
+Arinze checks
+Pineapple checks
+Pineapple shows [9d 6c]
+Arinze shows [Kd Js]
+Pineapple wins the pot (208)
+
+Hand #32, Arinze (305), Pineapple (-305)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [7h Jh]
+Dealt to Pineapple [2s Ks]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [Kh Qh 2d]
+Pineapple checks
+Arinze discards 7h for 8h
+Pineapple checks
+Arinze checks
+*** TURN *** (4) [Kh Qh 2d] [3d]
+Pineapple checks
+Arinze discards 8h for Qs
+Pineapple checks
+Arinze bets 97
+Pineapple raises to 198
+Arinze calls
+*** RIVER *** (400) [Kh Qh 2d 3d] [2c]
+Arinze shows [Jh Qs]
+Pineapple shows [2s Ks]
+Pineapple wins the pot (400)
+
+Hand #33, Pineapple (-105), Arinze (105)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [6s 3h]
+Dealt to Arinze [Ah As]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [8c Ad 5h]
+Arinze checks
+Pineapple discards 3h for 9s
+Arinze bets 154
+Pineapple folds
+Uncalled bet of 154 returned to Arinze
+Arinze wins the pot (4)
+
+Hand #34, Arinze (107), Pineapple (-107)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [2c 6d]
+Dealt to Pineapple [Js 9h]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [2d 3c 5c]
+Pineapple discards 9h for 5h
+Arinze discards 6d for Ah
+Pineapple checks
+Arinze checks
+*** TURN *** (4) [2d 3c 5c] [4c]
+Pineapple discards Js for Jc
+Arinze discards 2c for 8h
+Pineapple bets 4
+Arinze raises to 153
+Pineapple calls
+*** RIVER *** (310) [2d 3c 5c 4c] [9c]
+Pineapple checks
+Arinze bets 2
+Pineapple calls
+Arinze shows [Ah 8h]
+Pineapple shows [5h Jc]
+Pineapple wins the pot (314)
+
+Hand #35, Pineapple (50), Arinze (-50)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [4d Kd]
+Dealt to Arinze [6d Ad]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [7d Td 3d]
+Arinze checks
+Pineapple checks
+Arinze bets 178
+Pineapple calls
+*** TURN *** (360) [7d Td 3d] [5d]
+Arinze discards 6d for 9d
+Pineapple checks
+Arinze bets 2
+Pineapple calls
+*** RIVER *** (364) [7d Td 3d 5d] [7c]
+Arinze checks
+Pineapple checks
+Pineapple shows [4d Kd]
+Arinze shows [Ad 9d]
+Arinze wins the pot (364)
+
+Hand #36, Arinze (132), Pineapple (-132)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [Qc Qh]
+Dealt to Pineapple [2s 3d]
+Arinze calls
+Pineapple raises to 4
+Arinze calls
+*** FLOP *** (8) [9d 8c 8d]
+Pineapple discards 2s for 5s
+Arinze checks
+Pineapple bets 8
+Arinze raises to 119
+Pineapple calls
+*** TURN *** (246) [9d 8c 8d] [3c]
+Pineapple discards 5s for 4h
+Arinze checks
+Pineapple checks
+Arinze bets 4
+Pineapple calls
+*** RIVER *** (254) [9d 8c 8d 3c] [Kd]
+Pineapple checks
+Arinze checks
+Arinze shows [Qc Qh]
+Pineapple shows [3d 4h]
+Arinze wins the pot (254)
+
+Hand #37, Pineapple (-259), Arinze (259)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [Kd Ac]
+Dealt to Arinze [7d 9d]
+Pineapple raises to 5
+Arinze calls
+*** FLOP *** (10) [9h 4s 2c]
+Arinze discards 7d for Th
+Pineapple discards Kd for Ad
+Arinze checks
+Pineapple checks
+*** TURN *** (10) [9h 4s 2c] [Kh]
+Arinze discards Th for Qh
+Pineapple checks
+Arinze bets 77
+Pineapple calls
+*** RIVER *** (164) [9h 4s 2c Kh] [4d]
+Arinze bets 37
+Pineapple calls
+Pineapple shows [Ac Ad]
+Arinze shows [9d Qh]
+Pineapple wins the pot (238)
+
+Hand #38, Arinze (140), Pineapple (-140)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [Jh Ah]
+Dealt to Pineapple [Qc Js]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [6h Ac 9s]
+Pineapple discards Js for 9h
+Arinze discards Jh for Tc
+Pineapple checks
+Arinze bets 107
+Pineapple calls
+*** TURN *** (218) [6h Ac 9s] [4h]
+Pineapple discards Qc for Kd
+Arinze discards Tc for 7h
+Pineapple checks
+Arinze checks
+*** RIVER *** (218) [6h Ac 9s 4h] [Kh]
+Pineapple checks
+Arinze bets 78
+Pineapple calls
+Arinze shows [Ah 7h]
+Pineapple shows [9h Kd]
+Arinze wins the pot (374)
+
+Hand #39, Pineapple (-327), Arinze (327)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [3s Kc]
+Dealt to Arinze [5s 4s]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [7d 5c 8h]
+Arinze discards 4s for Kh
+Pineapple discards 3s for 4c
+Arinze checks
+Pineapple checks
+*** TURN *** (4) [7d 5c 8h] [Ac]
+Arinze discards Kh for Kd
+Pineapple checks
+Arinze checks
+Pineapple bets 2
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 2 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #40, Arinze (325), Pineapple (-325)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [Jc 9c]
+Dealt to Pineapple [Qs 5c]
+Arinze calls
+Pineapple raises to 6
+Arinze calls
+*** FLOP *** (12) [5d 8d Tc]
+Pineapple checks
+Arinze discards 9c for Ks
+Pineapple checks
+Arinze checks
+*** TURN *** (12) [5d 8d Tc] [7c]
+Pineapple checks
+Arinze discards Ks for Jd
+Pineapple bets 12
+Arinze raises to 79
+Pineapple raises to 182
+Arinze folds
+Uncalled bet of 103 returned to Pineapple
+Pineapple wins the pot (170)
+
+Hand #41, Pineapple (-240), Arinze (240)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [5s 9s]
+Dealt to Arinze [9h 2d]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [6h 9d 6s]
+Arinze discards 2d for 2h
+Pineapple discards 5s for Ah
+Arinze bets 118
+Pineapple calls
+*** TURN *** (240) [6h 9d 6s] [9c]
+Arinze discards 2h for 6d
+Pineapple checks
+Arinze bets 73
+Pineapple calls
+*** RIVER *** (386) [6h 9d 6s 9c] [7h]
+Arinze checks
+Pineapple checks
+Pineapple shows [9s Ah]
+Arinze shows [9h 6d]
+Pineapple ties for the pot (193)
+Arinze ties for the pot (193)
+
+Hand #42, Arinze (240), Pineapple (-240)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [Kh 5d]
+Dealt to Pineapple [9c 7h]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [7d Ah Qc]
+Pineapple discards 9c for 2c
+Arinze discards 5d for Qs
+Pineapple checks
+Arinze bets 99
+### ILLEGAL ACTION: Raise [player=Pineapple][amount=202]
+Pineapple folds
+Uncalled bet of 99 returned to Arinze
+Arinze wins the pot (4)
+
+Hand #43, Pineapple (-242), Arinze (242)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [5c 8c]
+Dealt to Arinze [Qh 3c]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [Kh 4c 5d]
+Arinze discards 3c for 9s
+Pineapple discards 8c for 6c
+Arinze checks
+Pineapple checks
+*** TURN *** (4) [Kh 4c 5d] [Jd]
+Arinze discards 9s for 9h
+Pineapple checks
+Arinze checks
+Pineapple bets 198
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 198 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #44, Arinze (240), Pineapple (-240)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [Jd 2d]
+Dealt to Pineapple [6s 8h]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [7h Qh Kd]
+Pineapple discards 6s for 4s
+Arinze discards 2d for Qs
+Pineapple bets 198
+Arinze calls
+*** TURN *** (400) [7h Qh Kd] [Ad]
+Pineapple discards 4s for 2h
+Arinze discards Jd for 5h
+*** RIVER *** (400) [7h Qh Kd Ad] [Kc]
+Arinze shows [Qs 5h]
+Pineapple shows [8h 2h]
+Arinze wins the pot (400)
+
+Hand #45, Pineapple (-440), Arinze (440)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [9d 7d]
+Dealt to Arinze [Jd 8h]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [5s Qs 3h]
+Arinze discards 8h for 6s
+Pineapple discards 7d for 5c
+Arinze checks
+Pineapple checks
+*** TURN *** (4) [5s Qs 3h] [Jh]
+Arinze discards 6s for Td
+Pineapple checks
+Arinze bets 90
+Pineapple raises to 184
+Arinze folds
+Uncalled bet of 94 returned to Pineapple
+Pineapple wins the pot (184)
+
+Hand #46, Arinze (348), Pineapple (-348)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [7h 6c]
+Dealt to Pineapple [Js Jc]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [Qh 4s 3d]
+Pineapple checks
+Arinze discards 6c for 5d
+Pineapple checks
+Arinze checks
+*** TURN *** (4) [Qh 4s 3d] [6s]
+Pineapple checks
+Arinze checks
+Pineapple checks
+Arinze bets 155
+Pineapple calls
+*** RIVER *** (314) [Qh 4s 3d 6s] [3h]
+Pineapple checks
+Arinze checks
+Arinze shows [7h 5d]
+Pineapple shows [Js Jc]
+Arinze wins the pot (314)
+
+Hand #47, Pineapple (-505), Arinze (505)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [2c 8c]
+Dealt to Arinze [Ts Ad]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [Jc Qs Qd]
+Arinze discards Ts for Jh
+Pineapple discards 2c for As
+Arinze bets 126
+Pineapple calls
+*** TURN *** (256) [Jc Qs Qd] [4s]
+Arinze discards Ad for 7d
+Pineapple discards 8c for 3d
+Arinze checks
+Pineapple checks
+*** RIVER *** (256) [Jc Qs Qd 4s] [4d]
+Arinze checks
+Pineapple checks
+Pineapple shows [As 3d]
+Arinze shows [Jh 7d]
+Arinze wins the pot (256)
+
+Hand #48, Arinze (633), Pineapple (-633)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [3s 2d]
+Dealt to Pineapple [6h 2h]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [6c 7d Ad]
+Pineapple discards 2h for Td
+Arinze discards 2d for 8d
+Pineapple checks
+Arinze checks
+*** TURN *** (4) [6c 7d Ad] [8h]
+Pineapple discards Td for 3c
+Arinze discards 3s for Th
+Pineapple bets 198
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 198 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #49, Pineapple (-631), Arinze (631)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [Qs Ks]
+Dealt to Arinze [Js 5s]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [2s 7d Qd]
+Arinze discards 5s for Kh
+Pineapple checks
+Arinze checks
+Pineapple bets 2
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 2 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #50, Arinze (629), Pineapple (-629)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [8d 3s]
+Dealt to Pineapple [As 5d]
+Arinze calls
+Pineapple raises to 4
+Arinze calls
+*** FLOP *** (8) [Kh Jh Ks]
+Pineapple discards 5d for 4c
+Arinze discards 3s for 6h
+Pineapple checks
+Arinze bets 100
+Pineapple calls
+*** TURN *** (208) [Kh Jh Ks] [Qc]
+Pineapple discards 4c for 4s
+Arinze discards 6h for 8h
+Pineapple bets 96
+Arinze calls
+*** RIVER *** (400) [Kh Jh Ks Qc] [4h]
+Arinze shows [8d 8h]
+Pineapple shows [As 4s]
+Arinze wins the pot (400)
+
+Hand #51, Pineapple (-829), Arinze (829)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [4h 5d]
+Dealt to Arinze [Td 2s]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [Kh 5s Qc]
+Arinze discards 2s for 8c
+Pineapple discards 4h for 8d
+Arinze checks
+Pineapple checks
+*** TURN *** (4) [Kh 5s Qc] [Ts]
+Arinze discards 8c for As
+Pineapple checks
+Arinze bets 87
+Pineapple raises to 198
+Arinze calls
+*** RIVER *** (400) [Kh 5s Qc Ts] [Jc]
+Pineapple shows [5d 8d]
+Arinze shows [Td As]
+Arinze wins the pot (400)
+
+Hand #52, Arinze (1029), Pineapple (-1029)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [7d 6s]
+Dealt to Pineapple [2s 9d]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [Kc 4c 6d]
+Pineapple discards 2s for Qd
+Arinze discards 7d for Th
+Pineapple bets 4
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 4 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #53, Pineapple (-1027), Arinze (1027)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [Qd 2h]
+Dealt to Arinze [Tc Jc]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [3h 9s Ac]
+Arinze discards Tc for Ts
+Pineapple discards 2h for 5c
+Arinze checks
+Pineapple bets 2
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 2 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #54, Arinze (1025), Pineapple (-1025)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [8d 7h]
+Dealt to Pineapple [Ac 8c]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [6h 2d Ts]
+Pineapple discards 8c for Js
+Arinze discards 7h for Jc
+Pineapple checks
+Arinze checks
+*** TURN *** (4) [6h 2d Ts] [5s]
+Pineapple discards Js for 2s
+Arinze discards 8d for Tc
+Pineapple bets 2
+Arinze raises to 82
+Pineapple raises to 198
+Arinze calls
+*** RIVER *** (400) [6h 2d Ts 5s] [5c]
+Arinze shows [Jc Tc]
+Pineapple shows [Ac 2s]
+Arinze wins the pot (400)
+
+Hand #55, Pineapple (-1225), Arinze (1225)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [6c Qh]
+Dealt to Arinze [8h Ks]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [Ts 3s Tc]
+Arinze discards 8h for Jc
+Pineapple discards 6c for 2c
+Arinze bets 86
+Pineapple calls
+*** TURN *** (176) [Ts 3s Tc] [Jh]
+Arinze discards Ks for 3c
+Pineapple discards 2c for Ah
+Arinze bets 37
+Pineapple calls
+*** RIVER *** (250) [Ts 3s Tc Jh] [9d]
+Arinze checks
+Pineapple checks
+Pineapple shows [Qh Ah]
+Arinze shows [Jc 3c]
+Arinze wins the pot (250)
+
+Hand #56, Arinze (1350), Pineapple (-1350)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [3s 9d]
+Dealt to Pineapple [4s 6c]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [Qc 7d Ks]
+Pineapple discards 4s for Ts
+Arinze discards 3s for 7h
+Pineapple bets 4
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 4 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #57, Pineapple (-1348), Arinze (1348)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [9s 5s]
+Dealt to Arinze [4h Ts]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [Jc Kh 2h]
+Arinze discards 4h for 4c
+Pineapple discards 5s for 2s
+Arinze checks
+Pineapple bets 2
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 2 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #58, Arinze (1346), Pineapple (-1346)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [8d Ac]
+Dealt to Pineapple [Qd Qh]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [Th 6s 2c]
+Pineapple checks
+Arinze discards 8d for 8h
+Pineapple checks
+Arinze checks
+*** TURN *** (4) [Th 6s 2c] [3h]
+Pineapple checks
+Arinze discards 8h for Qs
+Pineapple checks
+Arinze checks
+*** RIVER *** (4) [Th 6s 2c 3h] [4s]
+Pineapple bets 4
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 4 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #59, Pineapple (-1344), Arinze (1344)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [5d 2s]
+Dealt to Arinze [Kh Ac]
+Pineapple raises to 5
+Arinze calls
+*** FLOP *** (10) [3d Jd 8h]
+Arinze discards Kh for 3s
+Pineapple discards 2s for Jh
+Arinze checks
+Pineapple checks
+*** TURN *** (10) [3d Jd 8h] [4d]
+Arinze discards Ac for 9d
+Pineapple checks
+Arinze checks
+Pineapple bets 10
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 10 returned to Pineapple
+Pineapple wins the pot (10)
+
+Hand #60, Arinze (1339), Pineapple (-1339)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [Qs 7s]
+Dealt to Pineapple [Jh 2s]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [6s 8c 8h]
+Pineapple discards 2s for 5d
+Arinze discards 7s for 2h
+Pineapple bets 2
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 2 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #61, Pineapple (-1337), Arinze (1337)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [Qd 2h]
+Dealt to Arinze [Qh Ad]
+Pineapple raises to 5
+Arinze calls
+*** FLOP *** (10) [Jd Th 6c]
+Arinze discards Qh for Qs
+Pineapple discards 2h for 3h
+Arinze checks
+Pineapple checks
+*** TURN *** (10) [Jd Th 6c] [Kc]
+Arinze checks
+Pineapple discards 3h for 4d
+Arinze bets 153
+Pineapple folds
+Uncalled bet of 153 returned to Arinze
+Arinze wins the pot (10)
+
+Hand #62, Arinze (1342), Pineapple (-1342)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [Th Ks]
+Dealt to Pineapple [3d Qs]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [2h 6c 8c]
+Pineapple discards 3d for 6d
+Arinze discards Th for 3c
+Pineapple checks
+Arinze checks
+*** TURN *** (4) [2h 6c 8c] [Kh]
+Pineapple checks
+Arinze discards 3c for 6s
+Pineapple bets 2
+Arinze raises to 127
+Pineapple calls
+*** RIVER *** (258) [2h 6c 8c Kh] [5d]
+Pineapple checks
+Arinze bets 2
+Pineapple calls
+Arinze shows [Ks 6s]
+Pineapple shows [Qs 6d]
+Arinze wins the pot (262)
+
+Hand #63, Pineapple (-1473), Arinze (1473)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [Qc Ad]
+Dealt to Arinze [6h 8d]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [Kh Qd 7d]
+Arinze discards 6h for 3h
+Pineapple checks
+Arinze checks
+Pineapple checks
+*** TURN *** (4) [Kh Qd 7d] [4d]
+Arinze discards 3h for 6d
+Pineapple checks
+Arinze bets 163
+Pineapple calls
+*** RIVER *** (330) [Kh Qd 7d 4d] [2h]
+Arinze checks
+Pineapple checks
+Pineapple shows [Qc Ad]
+Arinze shows [8d 6d]
+Arinze wins the pot (330)
+
+Hand #64, Arinze (1638), Pineapple (-1638)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [7s Ks]
+Dealt to Pineapple [6s 7c]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [Qs 8h As]
+Pineapple discards 6s for Th
+Arinze discards 7s for 2h
+Pineapple bets 198
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 198 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #65, Pineapple (-1636), Arinze (1636)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [Kh 3d]
+Dealt to Arinze [Ah Kd]
+Pineapple raises to 200
+Arinze folds
+Uncalled bet of 198 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #66, Arinze (1634), Pineapple (-1634)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [Js 5d]
+Dealt to Pineapple [4c 3s]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [Qh Kd Qd]
+Pineapple discards 3s for 7c
+Arinze discards 5d for 9d
+Pineapple bets 2
+Arinze raises to 96
+Pineapple raises to 198
+Arinze calls
+*** TURN *** (400) [Qh Kd Qd] [Ks]
+Pineapple discards 4c for Th
+Arinze discards 9d for Kh
+*** RIVER *** (400) [Qh Kd Qd Ks] [Jc]
+Arinze shows [Js Kh]
+Pineapple shows [7c Th]
+Arinze wins the pot (400)
+
+Hand #67, Pineapple (-1834), Arinze (1834)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [8h As]
+Dealt to Arinze [2h Tc]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [Qh Qs 8s]
+Arinze discards 2h for Qd
+Pineapple checks
+Arinze bets 151
+Pineapple calls
+*** TURN *** (306) [Qh Qs 8s] [3h]
+Arinze discards Tc for 2s
+Pineapple checks
+Arinze checks
+Pineapple checks
+*** RIVER *** (306) [Qh Qs 8s 3h] [9c]
+Arinze checks
+Pineapple checks
+Pineapple shows [8h As]
+Arinze shows [Qd 2s]
+Arinze wins the pot (306)
+
+Hand #68, Arinze (1987), Pineapple (-1987)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [5c 7d]
+Dealt to Pineapple [Ac 6d]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [9c 3d Jd]
+Pineapple discards 6d for 3c
+Arinze discards 5c for 3s
+Pineapple bets 2
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 2 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #69, Pineapple (-1985), Arinze (1985)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [2d Ah]
+Dealt to Arinze [9s Ad]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [Kc Kh 8h]
+Arinze discards 9s for Ks
+Pineapple discards 2d for 3h
+Arinze bets 154
+Pineapple calls
+*** TURN *** (312) [Kc Kh 8h] [9d]
+Arinze discards Ad for 4c
+Pineapple discards 3h for 9c
+Arinze checks
+Pineapple checks
+*** RIVER *** (312) [Kc Kh 8h 9d] [5d]
+Arinze checks
+Pineapple checks
+Pineapple shows [Ah 9c]
+Arinze shows [Ks 4c]
+Arinze wins the pot (312)
+
+Hand #70, Arinze (2141), Pineapple (-2141)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [Ad Ks]
+Dealt to Pineapple [Tc Kh]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [5h Qc 6s]
+Pineapple discards Tc for 7c
+Arinze discards Ks for 4d
+Pineapple bets 2
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 2 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #71, Pineapple (-2139), Arinze (2139)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [2d 9s]
+Dealt to Arinze [Tc Qc]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [Ks Kh 8d]
+Arinze discards Tc for 9d
+Pineapple discards 2d for Jh
+Arinze bets 103
+Pineapple folds
+Uncalled bet of 103 returned to Arinze
+Arinze wins the pot (4)
+
+Hand #72, Arinze (2141), Pineapple (-2141)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [Ah 7d]
+Dealt to Pineapple [9d 9h]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [2c 4s Qc]
+Pineapple checks
+Arinze discards 7d for Jh
+Pineapple checks
+Arinze checks
+*** TURN *** (4) [2c 4s Qc] [As]
+Pineapple checks
+Arinze discards Jh for 7s
+Pineapple bets 2
+Arinze raises to 107
+Pineapple folds
+Uncalled bet of 105 returned to Arinze
+Arinze wins the pot (8)
+
+Hand #73, Pineapple (-2145), Arinze (2145)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [2h 3s]
+Dealt to Arinze [8s 9s]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [2d 9c 3h]
+Arinze discards 8s for Kh
+Pineapple checks
+Arinze bets 79
+Pineapple calls
+*** TURN *** (162) [2d 9c 3h] [5s]
+Arinze discards Kh for 5c
+Pineapple checks
+Arinze bets 38
+Pineapple calls
+*** RIVER *** (238) [2d 9c 3h 5s] [8d]
+Arinze bets 2
+Pineapple calls
+Pineapple shows [2h 3s]
+Arinze shows [9s 5c]
+Arinze wins the pot (242)
+
+Hand #74, Arinze (2266), Pineapple (-2266)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [4c 6h]
+Dealt to Pineapple [3h 2s]
+Arinze calls
+Pineapple raises to 4
+Arinze calls
+*** FLOP *** (8) [Qc 2h Qd]
+Pineapple discards 3h for 5c
+Arinze discards 4c for Qh
+Pineapple bets 8
+Arinze raises to 144
+Pineapple calls
+*** TURN *** (296) [Qc 2h Qd] [4d]
+Pineapple checks
+Arinze discards 6h for 5s
+Pineapple checks
+Arinze bets 4
+Pineapple calls
+*** RIVER *** (304) [Qc 2h Qd 4d] [2c]
+Pineapple checks
+Arinze bets 42
+Pineapple calls
+Arinze shows [Qh 5s]
+Pineapple shows [2s 5c]
+Arinze wins the pot (388)
+
+Hand #75, Pineapple (-2460), Arinze (2460)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [As Ac]
+Dealt to Arinze [Jh 5c]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [4s 9h 2d]
+Arinze discards 5c for 8s
+Pineapple checks
+Arinze checks
+Pineapple checks
+*** TURN *** (4) [4s 9h 2d] [Js]
+Arinze discards 8s for 6h
+Pineapple checks
+Arinze bets 89
+Pineapple raises to 198
+Arinze calls
+*** RIVER *** (400) [4s 9h 2d Js] [8d]
+Pineapple shows [As Ac]
+Arinze shows [Jh 6h]
+Pineapple wins the pot (400)
+
+Hand #76, Arinze (2260), Pineapple (-2260)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [Ah 9d]
+Dealt to Pineapple [Qc 3s]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [9h 3d 6h]
+Pineapple checks
+Arinze discards Ah for Th
+Pineapple checks
+Arinze checks
+*** TURN *** (4) [9h 3d 6h] [Ad]
+Pineapple discards Qc for Jd
+Arinze discards Th for 9s
+Pineapple bets 198
+Arinze calls
+*** RIVER *** (400) [9h 3d 6h Ad] [Tc]
+Arinze shows [9d 9s]
+Pineapple shows [3s Jd]
+Arinze wins the pot (400)
+
+Hand #77, Pineapple (-2460), Arinze (2460)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [5d 8d]
+Dealt to Arinze [Kh Kd]
+Pineapple raises to 200
+Arinze folds
+Uncalled bet of 198 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #78, Arinze (2458), Pineapple (-2458)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [Ah 3h]
+Dealt to Pineapple [Td 2h]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [Jc Ks Kd]
+Pineapple discards 2h for 7h
+Arinze discards 3h for 5c
+Pineapple bets 198
+Arinze calls
+*** TURN *** (400) [Jc Ks Kd] [As]
+Pineapple discards 7h for 3d
+Arinze discards 5c for 3c
+*** RIVER *** (400) [Jc Ks Kd As] [5h]
+Arinze shows [Ah 3c]
+Pineapple shows [Td 3d]
+Arinze wins the pot (400)
+
+Hand #79, Pineapple (-2658), Arinze (2658)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [Qs Jh]
+Dealt to Arinze [9d Ac]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [Js Tc Ks]
+Arinze discards 9d for 5s
+Pineapple checks
+Arinze checks
+Pineapple checks
+*** TURN *** (4) [Js Tc Ks] [Kd]
+Arinze discards 5s for 6c
+Pineapple checks
+Arinze bets 104
+Pineapple calls
+*** RIVER *** (212) [Js Tc Ks Kd] [4d]
+Arinze checks
+Pineapple checks
+Pineapple shows [Qs Jh]
+Arinze shows [Ac 6c]
+Pineapple wins the pot (212)
+
+Hand #80, Arinze (2552), Pineapple (-2552)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [Kc 4h]
+Dealt to Pineapple [7d As]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [6d 2c Jh]
+Pineapple discards 7d for Jd
+Arinze discards 4h for 3s
+Pineapple checks
+Arinze checks
+*** TURN *** (4) [6d 2c Jh] [2s]
+Pineapple checks
+Arinze discards 3s for 6s
+Pineapple bets 2
+Arinze raises to 111
+Pineapple calls
+*** RIVER *** (226) [6d 2c Jh 2s] [4d]
+Pineapple checks
+Arinze bets 2
+Pineapple calls
+Arinze shows [Kc 6s]
+Pineapple shows [As Jd]
+Pineapple wins the pot (230)
+
+Hand #81, Pineapple (-2437), Arinze (2437)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [Qs 3h]
+Dealt to Arinze [6s 8s]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [6h 5c Qc]
+Arinze discards 8s for 4s
+Pineapple discards 3h for Th
+Arinze checks
+Pineapple checks
+*** TURN *** (4) [6h 5c Qc] [3d]
+Arinze discards 4s for 2d
+Pineapple discards Th for Jc
+Arinze checks
+Pineapple bets 2
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 2 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #82, Arinze (2435), Pineapple (-2435)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [5h 5c]
+Dealt to Pineapple [7h 8c]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [3d Ks 9s]
+Pineapple discards 7h for 8h
+Arinze checks
+Pineapple checks
+Arinze checks
+*** TURN *** (4) [3d Ks 9s] [Td]
+Pineapple checks
+Arinze checks
+Pineapple bets 4
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 4 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #83, Pineapple (-2433), Arinze (2433)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [Td 9s]
+Dealt to Arinze [5s 6d]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [Jh 2s 4c]
+Arinze discards 5s for Th
+Pineapple discards 9s for Kh
+Arinze checks
+Pineapple bets 4
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 4 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #84, Arinze (2431), Pineapple (-2431)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [9h Ah]
+Dealt to Pineapple [Jh 7c]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [Kd 9d 5s]
+Pineapple discards 7c for 8s
+Arinze discards Ah for 8d
+Pineapple bets 4
+Arinze raises to 78
+Pineapple raises to 198
+Arinze calls
+*** TURN *** (400) [Kd 9d 5s] [4c]
+Pineapple discards 8s for Kc
+Arinze discards 8d for 3d
+*** RIVER *** (400) [Kd 9d 5s 4c] [6s]
+Arinze shows [9h 3d]
+Pineapple shows [Jh Kc]
+Pineapple wins the pot (400)
+
+Hand #85, Pineapple (-2231), Arinze (2231)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [6s 4d]
+Dealt to Arinze [5s 5c]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [Js 9s 8c]
+Arinze checks
+Pineapple discards 4d for 2h
+Arinze checks
+Pineapple bets 4
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 4 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #86, Arinze (2229), Pineapple (-2229)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [Kc 3d]
+Dealt to Pineapple [5h 5c]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [Ad 4c 5d]
+Pineapple checks
+Arinze discards Kc for Ts
+Pineapple checks
+Arinze checks
+*** TURN *** (4) [Ad 4c 5d] [7c]
+Pineapple checks
+Arinze discards Ts for 2c
+Pineapple checks
+Arinze bets 155
+Pineapple calls
+*** RIVER *** (314) [Ad 4c 5d 7c] [4d]
+Pineapple checks
+Arinze checks
+Arinze shows [3d 2c]
+Pineapple shows [5h 5c]
+Pineapple wins the pot (314)
+
+Hand #87, Pineapple (-2072), Arinze (2072)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [8c 6d]
+Dealt to Arinze [Qh 9s]
+Pineapple raises to 200
+Arinze folds
+Uncalled bet of 198 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #88, Arinze (2070), Pineapple (-2070)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [Ks 7d]
+Dealt to Pineapple [Qs 8h]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [9d Ts 6c]
+Pineapple checks
+Arinze discards Ks for 2d
+Pineapple bets 2
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 2 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #89, Pineapple (-2068), Arinze (2068)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [3s 7d]
+Dealt to Arinze [Ks 9s]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [3h 4h Js]
+Arinze discards 9s for Jd
+Pineapple discards 7d for As
+Arinze bets 91
+Pineapple calls
+*** TURN *** (186) [3h 4h Js] [Th]
+Arinze discards Ks for 2h
+Pineapple checks
+Arinze checks
+Pineapple bets 107
+Arinze calls
+*** RIVER *** (400) [3h 4h Js Th] [2d]
+Pineapple shows [3s As]
+Arinze shows [Jd 2h]
+Arinze wins the pot (400)
+
+Hand #90, Arinze (2268), Pineapple (-2268)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [Ah Qc]
+Dealt to Pineapple [4h 5c]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [Tc 8h 9h]
+Pineapple discards 4h for 6s
+Arinze discards Ah for 9d
+Pineapple bets 4
+Arinze raises to 77
+Pineapple raises to 198
+Arinze calls
+*** TURN *** (400) [Tc 8h 9h] [Js]
+Pineapple discards 5c for Ks
+Arinze discards 9d for 4s
+*** RIVER *** (400) [Tc 8h 9h Js] [8s]
+Arinze shows [Qc 4s]
+Pineapple shows [6s Ks]
+Arinze wins the pot (400)
+
+Hand #91, Pineapple (-2468), Arinze (2468)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [As Jh]
+Dealt to Arinze [2c Qs]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [7d 3h 6c]
+Arinze discards 2c for 8d
+Pineapple discards Jh for 8s
+Arinze checks
+Pineapple checks
+*** TURN *** (4) [7d 3h 6c] [2h]
+Arinze discards 8d for 9c
+Pineapple discards 8s for 4c
+Arinze checks
+Pineapple bets 4
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 4 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #92, Arinze (2466), Pineapple (-2466)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [Kc 6h]
+Dealt to Pineapple [9c Jd]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [2s 9d 5h]
+Pineapple checks
+Arinze discards 6h for Kd
+Pineapple checks
+Arinze bets 100
+Pineapple calls
+*** TURN *** (204) [2s 9d 5h] [Ad]
+Pineapple discards Jd for 9h
+Arinze checks
+Pineapple checks
+Arinze bets 4
+Pineapple calls
+*** RIVER *** (212) [2s 9d 5h Ad] [Qd]
+Pineapple checks
+Arinze bets 2
+Pineapple calls
+Arinze shows [Kc Kd]
+Pineapple shows [9c 9h]
+Pineapple wins the pot (216)
+
+Hand #93, Pineapple (-2358), Arinze (2358)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [Jh 7s]
+Dealt to Arinze [9d 4s]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [3s 3h 3c]
+Arinze discards 4s for 4h
+Pineapple discards 7s for Kh
+Arinze bets 135
+Pineapple calls
+*** TURN *** (274) [3s 3h 3c] [Qd]
+Arinze discards 4h for 5c
+Pineapple discards Jh for 6d
+Arinze bets 2
+Pineapple calls
+*** RIVER *** (278) [3s 3h 3c Qd] [2s]
+Arinze checks
+Pineapple checks
+Pineapple shows [Kh 6d]
+Arinze shows [9d 5c]
+Pineapple wins the pot (278)
+
+Hand #94, Arinze (2219), Pineapple (-2219)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [2h 3d]
+Dealt to Pineapple [9c 2d]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [9s 4s 6s]
+Pineapple discards 2d for Qh
+Arinze discards 2h for Js
+Pineapple checks
+Arinze checks
+*** TURN *** (4) [9s 4s 6s] [3s]
+Pineapple discards Qh for Tc
+Arinze discards 3d for Ad
+Pineapple bets 198
+Arinze calls
+*** RIVER *** (400) [9s 4s 6s 3s] [5s]
+Arinze shows [Js Ad]
+Pineapple shows [9c Tc]
+Arinze wins the pot (400)
+
+Hand #95, Pineapple (-2419), Arinze (2419)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [3h 4h]
+Dealt to Arinze [Jc 7c]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [2c 3d 6d]
+Arinze discards 7c for 9c
+Pineapple checks
+Arinze checks
+Pineapple checks
+*** TURN *** (4) [2c 3d 6d] [Jh]
+Arinze discards 9c for As
+Pineapple discards 4h for Js
+Arinze bets 92
+Pineapple calls
+*** RIVER *** (188) [2c 3d 6d Jh] [9d]
+Arinze checks
+Pineapple bets 106
+Arinze calls
+Pineapple shows [3h Js]
+Arinze shows [Jc As]
+Pineapple wins the pot (400)
+
+Hand #96, Arinze (2219), Pineapple (-2219)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [4h Jd]
+Dealt to Pineapple [5h 6c]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [9h 7h 2h]
+Pineapple discards 6c for Qc
+Arinze discards Jd for 9s
+Pineapple bets 198
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 198 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #97, Pineapple (-2217), Arinze (2217)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [Tc Jc]
+Dealt to Arinze [3c 8c]
+Pineapple raises to 5
+Arinze calls
+*** FLOP *** (10) [8h 9d 4c]
+Arinze discards 3c for 3h
+Pineapple checks
+Arinze checks
+Pineapple checks
+*** TURN *** (10) [8h 9d 4c] [9c]
+Arinze discards 3h for Qd
+Pineapple checks
+Arinze bets 115
+Pineapple folds
+Uncalled bet of 115 returned to Arinze
+Arinze wins the pot (10)
+
+Hand #98, Arinze (2222), Pineapple (-2222)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [4d 5d]
+Dealt to Pineapple [Ah 7s]
+Arinze calls
+Pineapple raises to 200
+Arinze folds
+Uncalled bet of 198 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #99, Pineapple (-2220), Arinze (2220)
+Pineapple posts the blind of 1
+Arinze posts the blind of 2
+Dealt to Pineapple [Ts 7d]
+Dealt to Arinze [6h Js]
+Pineapple calls
+Arinze checks
+*** FLOP *** (4) [9s Qc 3h]
+Arinze discards 6h for Td
+Pineapple discards 7d for 2c
+Arinze checks
+Pineapple bets 4
+### ILLEGAL ACTION: Check [player=Arinze]
+Arinze folds
+Uncalled bet of 4 returned to Pineapple
+Pineapple wins the pot (4)
+
+Hand #100, Arinze (2218), Pineapple (-2218)
+Arinze posts the blind of 1
+Pineapple posts the blind of 2
+Dealt to Arinze [2h 4c]
+Dealt to Pineapple [7c 2s]
+Arinze calls
+Pineapple checks
+*** FLOP *** (4) [Jd 8d 9c]
+Pineapple discards 2s for Js
+Arinze discards 2h for Kd
+Pineapple checks
+Arinze checks
+*** TURN *** (4) [Jd 8d 9c] [Kh]
+Pineapple discards 7c for Ac
+Arinze discards 4c for 9h
+Pineapple checks
+Arinze bets 129
+Pineapple calls
+*** RIVER *** (262) [Jd 8d 9c Kh] [Qc]
+Pineapple checks
+Arinze checks
+Arinze shows [Kd 9h]
+Pineapple shows [Js Ac]
+Arinze wins the pot (262)
+
+FINAL: Pineapple (-2349) Arinze (2349)
