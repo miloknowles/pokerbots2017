@@ -53,7 +53,7 @@ class NEWHAND(object):
         assert(self.type=="NEWHAND")
 
         self.handID = int(itemized[1])
-        self.button = bool(itemized[2])
+        self.button = itemized[2]
         self.hand = [itemized[3], itemized[4]] # stores as card strings
         self.myBank = int(itemized[5])
         self.oppBank = int(itemized[6])

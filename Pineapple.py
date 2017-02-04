@@ -84,7 +84,6 @@ def resetHistory():
     """
     global HISTORY, NEWHAND_PACKET
     HISTORY.P1_inPot, HISTORY.P2_inPot, HISTORY.Pot = 0, 0, 0 # reset the in-pot and pot for this street
-    HISTORY.ButtonPlayer = 0 if NEWHAND_PACKET.button == True else 1
     HISTORY.P1_Bankroll, HISTORY.P2_Bankroll = 200, 200 # reset both bankrolls to 200
     HISTORY.Street, HISTORY.CurrentRound, HISTORY.NodeType = 0,0,1 # preflop
     HISTORY.P1_Hand, HISTORY.P2_Hand, HISTORY.Board, HISTORY.History = [], [], [], []
@@ -280,6 +279,7 @@ def convertSyntaxToEngineAndUpdate(i_action):
     else: # parsed action
         # Note: if it is the preflop and we are BB, we should RAISE not BET after SB calls 
         # extra conditions added to account for that
+        print "Street:", HISTORY.Street, "ButtonPlayer:", HISTORY.ButtonPlayer
         if i_action[0]=='B' and not (HISTORY.Street==0 and HISTORY.ButtonPlayer==1):
 
             # get the legal betting range
@@ -405,6 +405,7 @@ class Player:
                     if FORCED_ACTION != None:
                         print "Was forced to choose %s" % FORCED_ACTION
                         action_e = convertSyntaxToEngineAndUpdate(FORCED_ACTION)
+                        FORCED_ACTION = None # reset the forced action to None
                         #s.send(FORCED_ACTION)
 
                     else: # not a forced action, so we can look up our strategy
@@ -454,6 +455,9 @@ class Player:
 
                 global NEWHAND_PACKET
                 NEWHAND_PACKET = NEWHAND(data)
+
+                # set who has the button! important!
+                HISTORY.ButtonPlayer = 0 if (NEWHAND_PACKET.button=='true') else 1
 
                 # update the player's hand in the HISTORY
                 # doing so will also automatically append the right item to the HISTORY list
