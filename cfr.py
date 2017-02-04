@@ -1197,7 +1197,7 @@ class LightweightHistory(object):
                 elif s_parsed[1]=="CK":
                     if inDiscardSection==True: 
                         numDiscardActions += 1
-                        print "checking in discard section convert h to i"
+                        #print "checking in discard section convert h to i"
                     else: infoset_str+="CK"
 
                 elif s_parsed[1]=="B":

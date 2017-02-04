@@ -60,7 +60,8 @@ def mapBetToAbstractionFractional(betAmt):
     # this means we are forced to CALL
     if len(betOptions) == 0: 
         #print "Tried to map bet to abstraction, found no bettings options. FORCING CALL"
-        FORCED_ACTION='CL'
+        # (action_to_send, action_to_append_history)
+        #FORCED_ACTION=('CL', None)
         return None
         #assert len(betOptions)>0, "Error: history doesn't think there are any legal betting options"
 
@@ -110,7 +111,7 @@ def extractInfoFromLastActions():
     """
     Reads through lastActions in GETACTION_PACKET and updates global information if an opponent betting action was made.
     """
-    global GETACTION_PACKET, NEWGAME_PACKET, HISTORY
+    global GETACTION_PACKET, NEWGAME_PACKET, HISTORY, FORCED_ACTION, NEWHAND_PACKET
 
     for action in GETACTION_PACKET.lastActions:
         # SPLIT THE ACTION INTO PIECES OF INFORMATION SEPARATED BY ':''
@@ -178,6 +179,10 @@ def extractInfoFromLastActions():
 
                     mappedBet = mapBetToAbstractionFractional(betAmount)
                     if mappedBet == None:
+                        # TODO: update FORCED_ACTION
+                        #global FORCED_ACTION
+                        #print "Button (FORCED ACTION):", NEWHAND_PACKET.button
+                        FORCED_ACTION = ('CL', '0:CK') if NEWHAND_PACKET.button=='true' else ('CL', None)
                         oppActionStr = '1:CK'
                     else:
                         oppActionStr = "1:B:%s" % mappedBet
@@ -204,11 +209,17 @@ def extractInfoFromLastActions():
                     mappedBet = mapBetToAbstractionFractional(betAmount)
                     if callAmount == 0: # treat this like a bet
                         if mappedBet == None:
+                            # TODO: update FORCED_ACTION
+                            
+                            FORCED_ACTION = ('CL', '0:CK')
                             oppActionStr = '1:CK'
                         else:
                             oppActionStr = "1:B:%s" % mappedBet
                     else: # treat this as a raise
                         if mappedBet == None:
+                            # TODO: update FORCED_ACTION
+                            
+                            FORCED_ACTION = ('CL', None)
                             oppActionStr = '1:CL'
                         else:
                             oppActionStr = "1:R:%s" % mappedBet
@@ -349,6 +360,8 @@ class Player:
         f_in = input_socket.makefile()
         
         while True:
+            
+            #print "FORCED ACTION:", FORCED_ACTION
             # Block until the engine sends us a packet.
             data = f_in.readline().strip()
             # If data is None, connection has closed.
@@ -401,9 +414,15 @@ class Player:
                     # that our strategy lookup won't find
                     global FORCED_ACTION
                     if FORCED_ACTION != None:
-                        print "Was forced to choose %s" % FORCED_ACTION
-                        action_i = FORCED_ACTION
-                        action_e = convertSyntaxToEngineAndUpdate(action_i)
+                        print "Was forced to choose %s" % FORCED_ACTION[0]
+                        
+                        action_to_send, action_to_append = FORCED_ACTION
+                        action_e = convertSyntaxToEngineAndUpdate(action_to_send)
+
+                        if action_to_append != None:
+                            print "However, appending %s to history" % FORCED_ACTION[1]
+                            HISTORY.History.append(action_to_append)
+
                         FORCED_ACTION = None # reset the forced action to None
                         
 
@@ -425,13 +444,14 @@ class Player:
                         # bet amounts like H/P/A are converted to integer values
                         action_e = convertSyntaxToEngineAndUpdate(action_i)
                         
-                    # update the global history every time we make an action
-                    # convert actions to HISTORY list syntax to get appended
-                    if action_i[0]=='B' or action_i[0]=='R':
-                        action_h = "0:%s:%s" % (action_i[0], action_i[1])
-                    else: # just add the player 0 tag to the beginning of the action
-                        action_h = "0:%s" % action_i
-                    HISTORY.History.append(action_h)
+                        # update the global history every time we make an action
+                        # convert actions to HISTORY list syntax to get appended
+                        if action_i[0]=='B' or action_i[0]=='R':
+                            action_h = "0:%s:%s" % (action_i[0], action_i[1])
+                        else: # just add the player 0 tag to the beginning of the action
+                            action_h = "0:%s" % action_i
+                        HISTORY.History.append(action_h)
+
                     print "Choosing:", action_e
                     s.send(action_e)
 
@@ -468,7 +488,6 @@ class Player:
 
         # Clean up the socket.
         s.close()
-
 
 
 if __name__ == '__main__':
