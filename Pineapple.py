@@ -370,7 +370,7 @@ class Player:
                 # this will add opponent actions to the HISTORY list, and update our hand if we discarded
                 extractInfoFromLastActions()
 
-                HISTORY.printAttr() # print out the current HISTORY
+                #HISTORY.printAttr() # print out the current HISTORY
 
                 # determine if this is a discard action
                 inDiscardSection = False
@@ -402,9 +402,10 @@ class Player:
                     global FORCED_ACTION
                     if FORCED_ACTION != None:
                         print "Was forced to choose %s" % FORCED_ACTION
-                        action_e = convertSyntaxToEngineAndUpdate(FORCED_ACTION)
+                        action_i = FORCED_ACTION
+                        action_e = convertSyntaxToEngineAndUpdate(action_i)
                         FORCED_ACTION = None # reset the forced action to None
-                        #s.send(FORCED_ACTION)
+                        
 
                     else: # not a forced action, so we can look up our strategy
                         # convert the current HISTORY to an information set from our perspective
@@ -414,25 +415,24 @@ class Player:
 
                         # look up our strategy for the given info. set
                         strategy = getStrategy(I_player)
-                        print "I:", I_player
+                        print "Info:", I_player
                         print "Strategy:", strategy
 
                         # if we could find a learned strategy, use it, otherwise choose randomly from available actions
                         action_i = chooseActionRandom(playerActions) if strategy==None else chooseAction(strategy)
 
-                        # convert actions to HISTORY list syntax to get appended
-                        if action_i[0]=='B' or action_i[0]=='R':
-                            action_h = "0:%s:%s" % (action_i[0], action_i[1])
-                        else: # just add the player 0 tag to the beginning of the action
-                            action_h = "0:%s" % action_i
-                        HISTORY.History.append(action_h)
-
                         # convert the action we chose to syntax compatible with the engine
                         # bet amounts like H/P/A are converted to integer values
                         action_e = convertSyntaxToEngineAndUpdate(action_i)
-
-                        # update the global history every time we make an action
-                    
+                        
+                    # update the global history every time we make an action
+                    # convert actions to HISTORY list syntax to get appended
+                    if action_i[0]=='B' or action_i[0]=='R':
+                        action_h = "0:%s:%s" % (action_i[0], action_i[1])
+                    else: # just add the player 0 tag to the beginning of the action
+                        action_h = "0:%s" % action_i
+                    HISTORY.History.append(action_h)
+                    print "Choosing:", action_e
                     s.send(action_e)
 
 

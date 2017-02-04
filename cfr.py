@@ -1235,6 +1235,7 @@ class LightweightHistory(object):
             # decide whether or not we ended a discard section
             # if so, add the player's hand strength to the info set
             if inDiscardSection:
+                #print "Num discards:", numDiscards, "num discard actions:", numDiscardActions
                 if numDiscards >= 1 and numDiscardActions == 3:
                     infoset_str += Current_Player_HS
                     numDiscards = 0
