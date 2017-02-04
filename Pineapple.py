@@ -23,7 +23,7 @@ FORCED_ACTION = None
 HISTORY = LightweightHistory([], 1, 0, 0, 0, 0, 0, 0, 0, 200, 200, [], [], [])
 
 
-def mapBetToAbstraction(betAmt):
+def mapBetToAbstractionFractional(betAmt):
     """
     Given an amount that an opponent bet, determines whether this corresponds to H/P/A
     Note: this is used to map raises also, which still have a "bet" amount associated with their increase over the last bet.
@@ -59,7 +59,7 @@ def mapBetToAbstraction(betAmt):
     # this means that the opponent probably went close to all in, but not quite
     # this means we are forced to CALL
     if len(betOptions) == 0: 
-        print "Tried to map bet to abstraction, found no bettings options. FORCING CALL"
+        #print "Tried to map bet to abstraction, found no bettings options. FORCING CALL"
         FORCED_ACTION='CL'
         return None
         #assert len(betOptions)>0, "Error: history doesn't think there are any legal betting options"
@@ -176,7 +176,7 @@ def extractInfoFromLastActions():
                 if parsedAction[0]=='BET': # increment the P2_inPot
                     betAmount = int(parsedAction[1])
 
-                    mappedBet = mapBetToAbstraction(betAmount)
+                    mappedBet = mapBetToAbstractionFractional(betAmount)
                     if mappedBet == None:
                         oppActionStr = '1:CK'
                     else:
@@ -201,7 +201,7 @@ def extractInfoFromLastActions():
 
                     # map the raise-amount to the abstracted letters
                     # Note: had to add case where callAmount == zero to handle engine allowing the BB to 'RAISE' after SB calls on PREFLOP
-                    mappedBet = mapBetToAbstraction(betAmount)
+                    mappedBet = mapBetToAbstractionFractional(betAmount)
                     if callAmount == 0: # treat this like a bet
                         if mappedBet == None:
                             oppActionStr = '1:CK'
@@ -216,14 +216,14 @@ def extractInfoFromLastActions():
                     HISTORY.History.append(oppActionStr)
 
                     # update the history AFTER abstraction determined!!
-                    print "callAmount:", callAmount, "raiseToAmt:", raiseToAmount, "betAmt:", betAmount, "raiseAmt:", raiseAmount
+                    #print "callAmount:", callAmount, "raiseToAmt:", raiseToAmount, "betAmt:", betAmount, "raiseAmt:", raiseAmount
                     HISTORY.P2_inPot += raiseAmount
                     HISTORY.P2_Bankroll -= raiseAmount
 
                 # update the pot AFTER map bets to abstraction, to prevent the function from seeing the change in the pot due to the opponents bet/raise
                 HISTORY.Pot = GETACTION_PACKET.potSize
 
-                print "P1:Bank", HISTORY.P1_Bankroll, "P2:Bank", HISTORY.P2_Bankroll, "Pot:", HISTORY.Pot
+                #print "P1:Bank", HISTORY.P1_Bankroll, "P2:Bank", HISTORY.P2_Bankroll, "Pot:", HISTORY.Pot
                 assert (HISTORY.P1_Bankroll+HISTORY.P2_Bankroll+HISTORY.Pot) == 400, "Error: bankroll's and pot to not match up for oppponent: %d" % (HISTORY.P1_Bankroll+HISTORY.P2_Bankroll+HISTORY.Pot)
 
 
@@ -260,7 +260,6 @@ def convertSyntaxToEngineAndUpdate(i_action):
     Note: this function only works for OUR player!!! Do not use for opponent.
     """
     global HISTORY
-    print "Converting i_action:", i_action
     if i_action=="CK":
         a = "CHECK\n"
     elif i_action=="CL":
@@ -279,7 +278,6 @@ def convertSyntaxToEngineAndUpdate(i_action):
     else: # parsed action
         # Note: if it is the preflop and we are BB, we should RAISE not BET after SB calls 
         # extra conditions added to account for that
-        print "Street:", HISTORY.Street, "ButtonPlayer:", HISTORY.ButtonPlayer
         if i_action[0]=='B' and not (HISTORY.Street==0 and HISTORY.ButtonPlayer==1):
 
             # get the legal betting range
@@ -309,7 +307,7 @@ def convertSyntaxToEngineAndUpdate(i_action):
             # get the legal raising range
             minRaise, maxRaise = GETACTION_PACKET.getRaisingRange()
             callAmt = HISTORY.P2_inPot - HISTORY.P1_inPot
-            assert callAmt > 0, "Error: expected positive call amount, got %d" % callAmt
+            assert callAmt >= 0, "Error: expected positive call amount, got %d" % callAmt
 
             assert (i_action[1] in ['H','P','A']), "Error: got raise letter %s" % i_action[1]
 
@@ -334,8 +332,8 @@ def convertSyntaxToEngineAndUpdate(i_action):
             HISTORY.P1_Bankroll -= (callAmt + betAmt)
 
     # finally, return the action
-    print "Converting syntax for:", i_action
-    print "Chose action", a
+    #print "Converting syntax for:", i_action
+    #print "Chose action", a
     return a
 
 
@@ -449,7 +447,6 @@ class Player:
                 # don't reset the history on the first hand (hits error)
                 self.handCounter += 1
                 if self.handCounter > 1:
-                    print "Resetting history after NEWHAND packet received"
                     resetHistory()
                 
 
